@@ -3,27 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BAR PREMIUM | Элитный бар в центре города</title>
+    <title>День / Ночь | Элитный бар в центре города</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Admin Login (Initially hidden) -->
+    <!-- Вход в админку -->
     <div class="admin-login" id="adminLogin" style="display: none;">
         <div class="login-form">
             <h2><i class="fas fa-lock"></i> Вход для администратора</h2>
             <input type="password" id="adminPassword" placeholder="Введите пароль администратора">
             <button class="btn" id="loginBtn">Войти</button>
-            <p style="margin-top: 20px; color: rgba(255, 255, 255, 0.5); font-size: 14px;">Подсказка: пароль "admin123"</p>
+            <p style="margin-top: 20px; color: rgba(255, 255, 255, 0.5); font-size: 14px;">пароль 1</p>
         </div>
     </div>
 
-    <!-- Admin Panel (Initially hidden) -->
+    <!-- Панель администратора -->
     <div class="admin-panel" id="adminPanel" style="display: none;">
         <button class="admin-btn" id="adminDashboardBtn" title="Панель администратора"><i class="fas fa-cog"></i></button>
         <button class="admin-btn" id="logoutBtn" title="Выйти"><i class="fas fa-sign-out-alt"></i></button>
     </div>
 
-    <!-- Admin Dashboard Modal -->
+    <!-- Админ панели -->
     <div class="modal" id="adminDashboardModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -37,7 +37,7 @@
                 <button class="admin-tab" data-tab="announcements">Объявления</button>
             </div>
             
-            <!-- Menu Management Tab -->
+            <!-- Управление меню -->
             <div class="admin-tab-content active" id="menu-tab">
                 <h4>Добавить новую позицию в меню</h4>
                 <form class="admin-form" id="menuForm">
@@ -74,12 +74,12 @@
                 <div class="item-list">
                     <h4>Текущее меню</h4>
                     <div id="currentMenuItems">
-                        <!-- Current menu items will be listed here -->
+                        <!-- Здесь будет перечислен текущий список блюд из меню -->
                     </div>
                 </div>
             </div>
             
-            <!-- Promotions Management Tab -->
+            <!-- Управление рекламными акциями-->
             <div class="admin-tab-content" id="promotions-tab">
                 <h4>Добавить новую акцию</h4>
                 <form class="admin-form" id="promoForm">
@@ -103,12 +103,12 @@
                 <div class="item-list">
                     <h4>Текущие акции</h4>
                     <div id="currentPromotions">
-                        <!-- Current promotions will be listed here -->
+                        <!-- Здесь будет указан список текущих акций -->
                     </div>
                 </div>
             </div>
             
-            <!-- Announcements Tab -->
+            <!-- Объявления -->
             <div class="admin-tab-content" id="announcements-tab">
                 <h4>Создать новое объявление</h4>
                 <form class="admin-form" id="announcementForm">
@@ -122,7 +122,7 @@
                 <div class="item-list">
                     <h4>Текущее объявление</h4>
                     <div id="currentAnnouncement">
-                        <!-- Current announcement will be shown here -->
+                        <!-- Текущее объявление будет показано здесь -->
                     </div>
                 </div>
             </div>
@@ -132,7 +132,7 @@
     <!-- Header -->
     <header>
         <div class="container header-content">
-            <a href="#" class="logo"><i class="fas fa-cocktail"></i> BAR <span>PREMIUM</span></a>
+            <a href="#" class="logo"><i class="fas fa-cocktail"></i> День/ <span>Ночь</span></a>
             
             <button class="mobile-menu-btn" id="mobileMenuBtn">
                 <i class="fas fa-bars"></i>
@@ -151,17 +151,17 @@
         </div>
     </header>
 
-    <!-- Announcement -->
+    <!-- Объявление -->
     <div class="container" style="margin-top: 100px;">
         <div class="announcement" id="announcement">
             🎉 Счастливые часы! Скидка 20% на все коктейли с 18:00 до 21:00 каждый день!
         </div>
     </div>
 
-    <!-- Hero Section -->
+    <!-- Верхняя панель -->
     <section class="hero" id="home">
         <div class="container hero-content">
-            <h1>BAR PREMIUM</h1>
+            <h1>День / Ночь</h1>
             <p>Элитный бар в центре города с авторскими коктейлями, изысканной кухней и неповторимой атмосферой. У нас вы найдете идеальное сочетание вкуса, стиля и комфорта для настоящих ценителей.</p>
             <div>
                 <a href="#reservation" class="btn">Забронировать столик</a>
@@ -170,7 +170,7 @@
         </div>
     </section>
 
-    <!-- Menu Section -->
+    <!-- Раздел меню -->
     <section id="menu">
         <div class="container">
             <h2 class="section-title">Наше меню</h2>
@@ -186,12 +186,12 @@
             </div>
             
             <div class="menu-items" id="menuItems">
-                <!-- Menu items will be loaded by JavaScript -->
+                <!--Пункты меню будут загружаться с помощью JavaScript -->
             </div>
         </div>
     </section>
 
-    <!-- Reservation Section -->
+    <!-- Раздел бронирования -->
     <section id="reservation">
         <div class="container">
             <h2 class="section-title">Бронирование столика</h2>
@@ -245,8 +245,6 @@
                                 <option value="any">Любой</option>
                                 <option value="window">У окна</option>
                                 <option value="bar">Барная стойка</option>
-                                <option value="vip">VIP зона</option>
-                                <option value="terrace">Терраса</option>
                             </select>
                         </div>
                     </div>
@@ -262,23 +260,23 @@
         </div>
     </section>
 
-    <!-- Promotions Section -->
+    <!-- Акции -->
     <section class="promotions" id="promotions">
         <div class="container">
             <h2 class="section-title">Акции и события</h2>
             
             <div class="promotion-cards" id="promotionCards">
-                <!-- Promotions will be loaded by JavaScript -->
+                <!-- Рекламные акции будут загружаться с помощью JavaScript. -->
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
+    <!-- Панель -->
     <footer id="contacts">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>BAR PREMIUM</h3>
+                    <h3>День / Ночь</h3>
                     <p>Элитный бар в центре города с авторскими коктейлями и изысканной кухней. Место, где рождаются впечатления.</p>
                     <div class="social-icons">
                         <a href="#"><i class="fab fa-instagram"></i></a>
@@ -291,8 +289,8 @@
                 <div class="footer-section">
                     <h3>Контакты</h3>
                     <p><i class="fas fa-map-marker-alt"></i> ул. Центральная, 15, г. Москва</p>
-                    <p><i class="fas fa-phone"></i> +7 (495) 123-45-67</p>
-                    <p><i class="fas fa-envelope"></i> info@barpremium.ru</p>
+                    <p><i class="fas fa-phone"></i>  <!-- Номер --> </p>
+                    <p><i class="fas fa-envelope"></i>  <!-- Почта --></p>
                     <p><i class="fas fa-clock"></i> Вс-Чт: 18:00 - 01:00</p>
                     <p>Пт-Сб: 18:00 - 03:00</p>
                 </div>
@@ -308,13 +306,13 @@
             </div>
             
             <div class="copyright">
-                &copy; 2023 BAR PREMIUM. Все права защищены.
+                &copy; 2025 День / Ночь. Все права защищены.
             </div>
         </div>
     </footer>
 
     <script>
-        // Data storage
+        // Хранение данных
         let menuItems = [
             { id: 1, name: "Мохито классический", category: "cocktails", price: 550, description: "Классический коктейль с белым ромом, свежей мятой, лаймом и содовой" },
             { id: 2, name: "Негрони", category: "cocktails", price: 650, description: "Итальянский коктейль с джином, красным вермутом и кампари" },
@@ -339,11 +337,11 @@
 
         let announcement = "🎉 Счастливые часы! Скидка 20% на все коктейли с 18:00 до 21:00 каждый день!";
         
-        // Admin password
-        const ADMIN_PASSWORD = "admin123";
+        // Пароль администратора
+        const ADMIN_PASSWORD = "1";
         let isAdminLoggedIn = false;
 
-        // DOM elements
+        // Доп-элементы
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const navMenu = document.getElementById('navMenu');
         const menuItemsContainer = document.getElementById('menuItems');
@@ -352,7 +350,7 @@
         const categoryButtons = document.querySelectorAll('.category-btn');
         const announcementContainer = document.getElementById('announcement');
         
-        // Admin elements
+        // Элементы администрирования
         const adminAccessBtn = document.getElementById('adminAccessBtn');
         const adminAccessBtnFooter = document.getElementById('adminAccessBtnFooter');
         const adminLogin = document.getElementById('adminLogin');
@@ -364,69 +362,69 @@
         const adminDashboardModal = document.getElementById('adminDashboardModal');
         const closeDashboardModal = document.getElementById('closeDashboardModal');
         
-        // Admin tabs
+        // Вкладки администратора
         const adminTabs = document.querySelectorAll('.admin-tab');
         const adminTabContents = document.querySelectorAll('.admin-tab-content');
         
-        // Admin forms
+        // Формы администратора
         const menuForm = document.getElementById('menuForm');
         const promoForm = document.getElementById('promoForm');
         const announcementForm = document.getElementById('announcementForm');
         
-        // Admin content containers
+        // Контейнеры контента администратора
         const currentMenuItems = document.getElementById('currentMenuItems');
         const currentPromotions = document.getElementById('currentPromotions');
         const currentAnnouncement = document.getElementById('currentAnnouncement');
 
-        // Initialize the page
+        // Инициализация
         document.addEventListener('DOMContentLoaded', function() {
-            // Set min date for reservation to today
+            // Установите минимальную дату бронирования на сегодня.
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('date').min = today;
             
-            // Set min date for promotions to today
+            // Установите минимальную дату начала акций на сегодня.
             document.getElementById('promoDate').min = today;
             
-            // Load initial data
+            // Загрузить исходные данные
             renderMenuItems('all');
             renderPromotions();
             updateAnnouncement();
             
-            // Set up event listeners
+            //Настройте обработчики событий.
             setupEventListeners();
             
-            // Set announcement
+            // Установить объявление
             announcementContainer.textContent = announcement;
         });
 
-        // Set up event listeners
+        // Настройте обработчики событий.
         function setupEventListeners() {
-            // Mobile menu toggle
+            // Переключение мобильного меню
             mobileMenuBtn.addEventListener('click', () => {
                 navMenu.classList.toggle('active');
             });
 
-            // Close mobile menu when clicking on a link
+            // Мобильное меню закрывается при нажатии на ссылку.
             document.querySelectorAll('nav ul li a').forEach(link => {
                 link.addEventListener('click', () => {
                     navMenu.classList.remove('active');
                 });
             });
 
-            // Menu category filtering
+            // Фильтрация категорий меню
             categoryButtons.forEach(button => {
                 button.addEventListener('click', () => {
-                    // Remove active class from all buttons
+                    // Удалить класс "активный" со всех кнопок
                     categoryButtons.forEach(btn => btn.classList.remove('active'));
-                    // Add active class to clicked button
+                    // Добавьте класс "активный" к нажатой кнопке.
                     button.classList.add('active');
-                    // Filter menu items
+                    // Фильтровать пункты меню
                     const category = button.getAttribute('data-category');
                     renderMenuItems(category);
                 });
             });
 
-            // Booking form submission
+            // Отправка формы бронирования
             bookingForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
@@ -438,21 +436,21 @@
                 const table = document.getElementById('table').value;
                 const comments = document.getElementById('comments').value;
                 
-                // Simple validation
+                // Простая проверка
                 if (!name || !phone || !date || !time || !guests) {
                     alert('Пожалуйста, заполните все обязательные поля');
                     return;
                 }
                 
-                // In a real app, this would send data to a server
+                // В реальном приложении это означало бы отправку данных на сервер.
                 alert(`Спасибо, ${name}! Ваш столик забронирован на ${date} в ${time} для ${guests}. Мы свяжемся с вами по телефону ${phone} для подтверждения.`);
                 
-                // Reset form
+                // Сбросить форму
                 bookingForm.reset();
                 document.getElementById('date').min = new Date().toISOString().split('T')[0];
             });
 
-            // Admin access buttons
+            // Кнопки доступа администратора
             adminAccessBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 showAdminLogin();
@@ -463,7 +461,7 @@
                 showAdminLogin();
             });
 
-            // Admin login
+            //Вход администратора
             loginBtn.addEventListener('click', () => {
                 const password = adminPasswordInput.value;
                 
@@ -477,7 +475,7 @@
                 }
             });
 
-            // Admin dashboard
+            // Панель администратора
             adminDashboardBtn.addEventListener('click', () => {
                 if (!isAdminLoggedIn) {
                     showAdminLogin();
@@ -490,19 +488,19 @@
                 renderCurrentAnnouncement();
             });
 
-            // Logout
+            //Выход из системы
             logoutBtn.addEventListener('click', () => {
                 isAdminLoggedIn = false;
                 adminPanel.style.display = 'none';
                 alert('Вы вышли из панели администратора.');
             });
 
-            // Close dashboard modal
+            // Закрыть модальное окно панели управления
             closeDashboardModal.addEventListener('click', () => {
                 adminDashboardModal.style.display = 'none';
             });
 
-            // Close modal when clicking outside
+            // Закрывать модальное окно при щелчке вне его границ
             window.addEventListener('click', (e) => {
                 if (e.target === adminDashboardModal) {
                     adminDashboardModal.style.display = 'none';
@@ -512,22 +510,22 @@
                 }
             });
 
-            // Admin tabs switching
+            // переключение вкладок администратора
             adminTabs.forEach(tab => {
                 tab.addEventListener('click', () => {
                     const tabId = tab.getAttribute('data-tab');
                     
-                    // Remove active class from all tabs and contents
+                    // Удалите класс "active" со всех вкладок и содержимого.
                     adminTabs.forEach(t => t.classList.remove('active'));
                     adminTabContents.forEach(content => content.classList.remove('active'));
                     
-                    // Add active class to clicked tab and corresponding content
+                    // Добавьте класс "активный" к нажатой вкладке и соответствующему содержимому.
                     tab.classList.add('active');
                     document.getElementById(`${tabId}-tab`).classList.add('active');
                 });
             });
 
-            // Admin form submissions
+            // Отправка форм администратором
             menuForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 
@@ -541,7 +539,7 @@
                 const itemPrice = document.getElementById('itemPrice').value;
                 const itemDescription = document.getElementById('itemDescription').value;
                 
-                // Add new menu item
+                // Добавить новый пункт меню
                 const newItem = {
                     id: menuItems.length > 0 ? Math.max(...menuItems.map(item => item.id)) + 1 : 1,
                     name: itemName,
@@ -552,14 +550,14 @@
                 
                 menuItems.push(newItem);
                 
-                // Reset form
+                // Сбросить форму
                 menuForm.reset();
                 
-                // Update displays
+                // Обновление дисплеев
                 renderCurrentMenuItems();
                 renderMenuItems('all');
                 
-                // Update active category button if needed
+                // При необходимости обновите кнопку активной категории.
                 categoryButtons.forEach(btn => {
                     if (btn.getAttribute('data-category') === itemCategory) {
                         btn.click();
@@ -581,7 +579,7 @@
                 const promoDescription = document.getElementById('promoDescription').value;
                 const promoDate = document.getElementById('promoDate').value;
                 
-                // Add new promotion
+                // Добавить новую акцию
                 const newPromo = {
                     id: promotions.length > 0 ? Math.max(...promotions.map(promo => promo.id)) + 1 : 1,
                     title: promoTitle,
@@ -591,11 +589,11 @@
                 
                 promotions.push(newPromo);
                 
-                // Reset form
+                // Сбросить форму
                 promoForm.reset();
                 document.getElementById('promoDate').min = new Date().toISOString().split('T')[0];
                 
-                // Update displays
+                // Обновление дисплеев
                 renderCurrentPromotions();
                 renderPromotions();
                 
@@ -621,7 +619,7 @@
                 }
             });
 
-            // Smooth scrolling for anchor links
+            // Плавная прокрутка для якорных ссылок
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -640,14 +638,14 @@
             });
         }
 
-        // Show admin login
+        // Показать логин администратора
         function showAdminLogin() {
             adminLogin.style.display = 'flex';
             adminPasswordInput.value = '';
             adminPasswordInput.focus();
         }
 
-        // Render menu items
+        // Рендеринг пунктов меню
         function renderMenuItems(category) {
             menuItemsContainer.innerHTML = '';
             
@@ -676,7 +674,7 @@
             });
         }
 
-        // Render promotions
+        // Рендеринг рекламных акций
         function renderPromotions() {
             promotionCardsContainer.innerHTML = '';
             
@@ -694,7 +692,7 @@
             });
         }
 
-        // Render current menu items in admin panel
+        // Отображение текущих пунктов меню в панели администратора
         function renderCurrentMenuItems() {
             currentMenuItems.innerHTML = '';
             
@@ -721,7 +719,7 @@
                 currentMenuItems.appendChild(itemElement);
             });
             
-            // Add event listeners to delete buttons
+            // Добавьте обработчики событий к кнопкам удаления.
             document.querySelectorAll('.item-list-btn.delete').forEach(button => {
                 button.addEventListener('click', function() {
                     if (!isAdminLoggedIn) {
@@ -739,7 +737,7 @@
                 });
             });
             
-            // Add event listeners to edit buttons
+            // Добавьте обработчики событий к кнопкам редактирования.
             document.querySelectorAll('.item-list-btn.edit').forEach(button => {
                 button.addEventListener('click', function() {
                     if (!isAdminLoggedIn) {
@@ -756,11 +754,11 @@
                         document.getElementById('itemPrice').value = item.price;
                         document.getElementById('itemDescription').value = item.description;
                         
-                        // Change button text to "Сохранить изменения"
+                        // Измените текст кнопки на «Сохранить изменения».
                         const submitButton = menuForm.querySelector('.btn');
                         submitButton.textContent = 'Сохранить изменения';
                         
-                        // Change form submit behavior to update instead of add
+                        // Изменить поведение отправки формы: вместо добавления теперь выполнять обновление.
                         menuForm.onsubmit = function(e) {
                             e.preventDefault();
                             
@@ -769,17 +767,17 @@
                             item.price = parseInt(document.getElementById('itemPrice').value);
                             item.description = document.getElementById('itemDescription').value;
                             
-                            // Reset form
+                            // Сбросить форму
                             menuForm.reset();
                             submitButton.textContent = 'Добавить в меню';
                             
-                            // Restore original submit behavior
+                            // Восстановить исходное поведение отправки формы.
                             menuForm.onsubmit = function(e) {
                                 e.preventDefault();
                                 menuForm.dispatchEvent(new Event('submit'));
                             };
                             
-                            // Update displays
+                            // Обновление дисплеев
                             renderCurrentMenuItems();
                             renderMenuItems('all');
                             
@@ -790,7 +788,7 @@
             });
         }
 
-        // Render current promotions in admin panel
+        // Отображение текущих акций в панели администратора.
         function renderCurrentPromotions() {
             currentPromotions.innerHTML = '';
             
@@ -815,7 +813,7 @@
                 currentPromotions.appendChild(promoElement);
             });
             
-            // Add event listeners to delete buttons
+            // Добавьте обработчики событий к кнопкам удаления.
             document.querySelectorAll('#currentPromotions .item-list-btn.delete').forEach(button => {
                 button.addEventListener('click', function() {
                     if (!isAdminLoggedIn) {
@@ -834,7 +832,7 @@
             });
         }
 
-        // Render current announcement in admin panel
+        // Отобразить текущее объявление в панели администратора
         function renderCurrentAnnouncement() {
             currentAnnouncement.innerHTML = '';
             
@@ -849,12 +847,12 @@
             currentAnnouncement.appendChild(announcementElement);
         }
 
-        // Update announcement on the page
+        // Обновите объявление на странице.
         function updateAnnouncement() {
             announcementContainer.textContent = announcement;
         }
 
-        // Helper function to format date
+        // Вспомогательная функция для форматирования даты
         function formatDate(dateString) {
             const date = new Date(dateString);
             const day = date.getDate().toString().padStart(2, '0');
@@ -863,7 +861,7 @@
             return `${day}.${month}.${year}`;
         }
 
-        // Helper function to get category name
+        //Вспомогательная функция для получения названия категории
         function getCategoryName(categoryKey) {
             const categories = {
                 'cocktails': 'Коктейли',
