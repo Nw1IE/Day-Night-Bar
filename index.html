@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BAR PREMIUM | Элитный бар в центре города</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Admin Login (Initially hidden) -->
+    <div class="admin-login" id="adminLogin" style="display: none;">
+        <div class="login-form">
+            <h2><i class="fas fa-lock"></i> Вход для администратора</h2>
+            <input type="password" id="adminPassword" placeholder="Введите пароль администратора">
+            <button class="btn" id="loginBtn">Войти</button>
+            <p style="margin-top: 20px; color: rgba(255, 255, 255, 0.5); font-size: 14px;">Подсказка: пароль "admin123"</p>
+        </div>
+    </div>
+
+    <!-- Admin Panel (Initially hidden) -->
+    <div class="admin-panel" id="adminPanel" style="display: none;">
+        <button class="admin-btn" id="adminDashboardBtn" title="Панель администратора"><i class="fas fa-cog"></i></button>
+        <button class="admin-btn" id="logoutBtn" title="Выйти"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+
+    <!-- Admin Dashboard Modal -->
+    <div class="modal" id="adminDashboardModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-tachometer-alt"></i> Панель администратора</h3>
+                <button class="close-modal" id="closeDashboardModal">&times;</button>
+            </div>
+            
+            <div class="admin-tabs">
+                <button class="admin-tab active" data-tab="menu">Управление меню</button>
+                <button class="admin-tab" data-tab="promotions">Управление акциями</button>
+                <button class="admin-tab" data-tab="announcements">Объявления</button>
+            </div>
+            
+            <!-- Menu Management Tab -->
+            <div class="admin-tab-content active" id="menu-tab">
+                <h4>Добавить новую позицию в меню</h4>
+                <form class="admin-form" id="menuForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="itemName">Название</label>
+                            <input type="text" id="itemName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="itemCategory">Категория</label>
+                            <select id="itemCategory" required>
+                                <option value="cocktails">Коктейли</option>
+                                <option value="wine">Вино</option>
+                                <option value="beer">Пиво</option>
+                                <option value="snacks">Закуски</option>
+                                <option value="main">Основные блюда</option>
+                                <option value="desserts">Десерты</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="itemPrice">Цена (руб.)</label>
+                            <input type="number" id="itemPrice" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="itemDescription">Описание</label>
+                            <textarea id="itemDescription" rows="3" required></textarea>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">Добавить в меню</button>
+                </form>
+                
+                <div class="item-list">
+                    <h4>Текущее меню</h4>
+                    <div id="currentMenuItems">
+                        <!-- Current menu items will be listed here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Promotions Management Tab -->
+            <div class="admin-tab-content" id="promotions-tab">
+                <h4>Добавить новую акцию</h4>
+                <form class="admin-form" id="promoForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="promoTitle">Название акции</label>
+                            <input type="text" id="promoTitle" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="promoDate">Дата окончания</label>
+                            <input type="date" id="promoDate" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="promoDescription">Описание акции</label>
+                        <textarea id="promoDescription" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn">Добавить акцию</button>
+                </form>
+                
+                <div class="item-list">
+                    <h4>Текущие акции</h4>
+                    <div id="currentPromotions">
+                        <!-- Current promotions will be listed here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Announcements Tab -->
+            <div class="admin-tab-content" id="announcements-tab">
+                <h4>Создать новое объявление</h4>
+                <form class="admin-form" id="announcementForm">
+                    <div class="form-group">
+                        <label for="announcementText">Текст объявления</label>
+                        <textarea id="announcementText" rows="3" required placeholder="Введите текст объявления..."></textarea>
+                    </div>
+                    <button type="submit" class="btn">Опубликовать объявление</button>
+                </form>
+                
+                <div class="item-list">
+                    <h4>Текущее объявление</h4>
+                    <div id="currentAnnouncement">
+                        <!-- Current announcement will be shown here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <a href="#" class="logo"><i class="fas fa-cocktail"></i> BAR <span>PREMIUM</span></a>
+            
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <nav>
+                <ul id="navMenu">
+                    <li><a href="#home"><i class="fas fa-home"></i> Главная</a></li>
+                    <li><a href="#menu"><i class="fas fa-utensils"></i> Меню</a></li>
+                    <li><a href="#reservation"><i class="fas fa-calendar-alt"></i> Бронирование</a></li>
+                    <li><a href="#promotions"><i class="fas fa-tags"></i> Акции</a></li>
+                    <li><a href="#contacts"><i class="fas fa-map-marker-alt"></i> Контакты</a></li>
+                    <li><a href="#" id="adminAccessBtn"><i class="fas fa-user-shield"></i> Админ</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Announcement -->
+    <div class="container" style="margin-top: 100px;">
+        <div class="announcement" id="announcement">
+            🎉 Счастливые часы! Скидка 20% на все коктейли с 18:00 до 21:00 каждый день!
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container hero-content">
+            <h1>BAR PREMIUM</h1>
+            <p>Элитный бар в центре города с авторскими коктейлями, изысканной кухней и неповторимой атмосферой. У нас вы найдете идеальное сочетание вкуса, стиля и комфорта для настоящих ценителей.</p>
+            <div>
+                <a href="#reservation" class="btn">Забронировать столик</a>
+                <a href="#menu" class="btn btn-outline">Посмотреть меню</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu">
+        <div class="container">
+            <h2 class="section-title">Наше меню</h2>
+            
+            <div class="menu-categories">
+                <button class="category-btn active" data-category="all">Все</button>
+                <button class="category-btn" data-category="cocktails">Коктейли</button>
+                <button class="category-btn" data-category="wine">Вино</button>
+                <button class="category-btn" data-category="beer">Пиво</button>
+                <button class="category-btn" data-category="snacks">Закуски</button>
+                <button class="category-btn" data-category="main">Основные блюда</button>
+                <button class="category-btn" data-category="desserts">Десерты</button>
+            </div>
+            
+            <div class="menu-items" id="menuItems">
+                <!-- Menu items will be loaded by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Reservation Section -->
+    <section id="reservation">
+        <div class="container">
+            <h2 class="section-title">Бронирование столика</h2>
+            
+            <div class="reservation-form">
+                <form id="bookingForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name"><i class="fas fa-user"></i> Ваше имя *</label>
+                            <input type="text" id="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone"><i class="fas fa-phone"></i> Телефон *</label>
+                            <input type="tel" id="phone" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="date"><i class="fas fa-calendar"></i> Дата *</label>
+                            <input type="date" id="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="time"><i class="fas fa-clock"></i> Время *</label>
+                            <select id="time" required>
+                                <option value="">Выберите время</option>
+                                <option value="18:00">18:00</option>
+                                <option value="19:00">19:00</option>
+                                <option value="20:00">20:00</option>
+                                <option value="21:00">21:00</option>
+                                <option value="22:00">22:00</option>
+                                <option value="23:00">23:00</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="guests"><i class="fas fa-users"></i> Количество гостей *</label>
+                            <select id="guests" required>
+                                <option value="">Выберите количество</option>
+                                <option value="1-2">1-2 человека</option>
+                                <option value="3-4">3-4 человека</option>
+                                <option value="5-6">5-6 человек</option>
+                                <option value="7+">Более 6 человек</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="table"><i class="fas fa-chair"></i> Тип столика</label>
+                            <select id="table">
+                                <option value="any">Любой</option>
+                                <option value="window">У окна</option>
+                                <option value="bar">Барная стойка</option>
+                                <option value="vip">VIP зона</option>
+                                <option value="terrace">Терраса</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="comments"><i class="fas fa-comment"></i> Дополнительные пожелания</label>
+                        <textarea id="comments" rows="4" placeholder="Укажите особые пожелания, например: день рождения, свидание, бизнес-ужин..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn"><i class="fas fa-check"></i> Забронировать</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Promotions Section -->
+    <section class="promotions" id="promotions">
+        <div class="container">
+            <h2 class="section-title">Акции и события</h2>
+            
+            <div class="promotion-cards" id="promotionCards">
+                <!-- Promotions will be loaded by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contacts">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>BAR PREMIUM</h3>
+                    <p>Элитный бар в центре города с авторскими коктейлями и изысканной кухней. Место, где рождаются впечатления.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-vk"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Контакты</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> ул. Центральная, 15, г. Москва</p>
+                    <p><i class="fas fa-phone"></i> +7 (495) 123-45-67</p>
+                    <p><i class="fas fa-envelope"></i> info@barpremium.ru</p>
+                    <p><i class="fas fa-clock"></i> Вс-Чт: 18:00 - 01:00</p>
+                    <p>Пт-Сб: 18:00 - 03:00</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Быстрые ссылки</h3>
+                    <a href="#home"><i class="fas fa-chevron-right"></i> Главная</a>
+                    <a href="#menu"><i class="fas fa-chevron-right"></i> Меню</a>
+                    <a href="#reservation"><i class="fas fa-chevron-right"></i> Бронирование</a>
+                    <a href="#promotions"><i class="fas fa-chevron-right"></i> Акции</a>
+                    <a href="#" id="adminAccessBtnFooter"><i class="fas fa-chevron-right"></i> Панель администратора</a>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                &copy; 2023 BAR PREMIUM. Все права защищены.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Data storage
+        let menuItems = [
+            { id: 1, name: "Мохито классический", category: "cocktails", price: 550, description: "Классический коктейль с белым ромом, свежей мятой, лаймом и содовой" },
+            { id: 2, name: "Негрони", category: "cocktails", price: 650, description: "Итальянский коктейль с джином, красным вермутом и кампари" },
+            { id: 3, name: "Маргарита", category: "cocktails", price: 600, description: "Коктейль с текилой, лаймовым соком и апельсиновым ликером, солью по краю бокала" },
+            { id: 4, name: "Кьянти Классико", category: "wine", price: 420, description: "Итальянское красное вино из региона Тоскана, бокал" },
+            { id: 5, name: "Шардоне", category: "wine", price: 480, description: "Белое вино из Бургундии, бокал" },
+            { id: 6, name: "Пино Нуар", category: "wine", price: 520, description: "Красное вино с тонким ароматом, бокал" },
+            { id: 7, name: "IPA крафтовое", category: "beer", price: 350, description: "Крафтовое пиво с насыщенным хмелевым вкусом, 0.5 л" },
+            { id: 8, name: "Пшеничное пиво", category: "beer", price: 320, description: "Светлое пшеничное пиво с цитрусовыми нотами, 0.5 л" },
+            { id: 9, name: "Сырное ассорти", category: "snacks", price: 1200, description: "Ассорти из европейских сыров, грецкие орехи, мед, груша" },
+            { id: 10, name: "Брускетты", category: "snacks", price: 480, description: "Тосты с томатами, базиликом, моцареллой и оливковым маслом" },
+            { id: 11, name: "Стейк Рибай", category: "main", price: 2200, description: "Стейк из мраморной говядины с овощами гриль и соусом пеперони" },
+            { id: 12, name: "Тирамису", category: "desserts", price: 650, description: "Классический итальянский десерт с кофе и маскарпоне" }
+        ];
+
+        let promotions = [
+            { id: 1, title: "Счастливые часы", description: "Скидка 20% на все коктейли с 18:00 до 21:00 каждый день", date: "2023-12-31" },
+            { id: 2, title: "Вино вторникам", description: "По вторникам бутылка вина со скидкой 30% при заказе от двух блюд", date: "2023-12-25" },
+            { id: 3, title: "День рождения", description: "Именинникам бесплатный десерт и бутылка просекко при заказе от 5000 руб.", date: "2023-12-31" },
+            { id: 4, title: "Бизнес-ланч", description: "С понедельника по пятницу с 12:00 до 16:00 специальное меню за 990 руб.", date: "2023-11-30" }
+        ];
+
+        let announcement = "🎉 Счастливые часы! Скидка 20% на все коктейли с 18:00 до 21:00 каждый день!";
+        
+        // Admin password
+        const ADMIN_PASSWORD = "admin123";
+        let isAdminLoggedIn = false;
+
+        // DOM elements
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navMenu = document.getElementById('navMenu');
+        const menuItemsContainer = document.getElementById('menuItems');
+        const promotionCardsContainer = document.getElementById('promotionCards');
+        const bookingForm = document.getElementById('bookingForm');
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        const announcementContainer = document.getElementById('announcement');
+        
+        // Admin elements
+        const adminAccessBtn = document.getElementById('adminAccessBtn');
+        const adminAccessBtnFooter = document.getElementById('adminAccessBtnFooter');
+        const adminLogin = document.getElementById('adminLogin');
+        const adminPanel = document.getElementById('adminPanel');
+        const adminPasswordInput = document.getElementById('adminPassword');
+        const loginBtn = document.getElementById('loginBtn');
+        const adminDashboardBtn = document.getElementById('adminDashboardBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const adminDashboardModal = document.getElementById('adminDashboardModal');
+        const closeDashboardModal = document.getElementById('closeDashboardModal');
+        
+        // Admin tabs
+        const adminTabs = document.querySelectorAll('.admin-tab');
+        const adminTabContents = document.querySelectorAll('.admin-tab-content');
+        
+        // Admin forms
+        const menuForm = document.getElementById('menuForm');
+        const promoForm = document.getElementById('promoForm');
+        const announcementForm = document.getElementById('announcementForm');
+        
+        // Admin content containers
+        const currentMenuItems = document.getElementById('currentMenuItems');
+        const currentPromotions = document.getElementById('currentPromotions');
+        const currentAnnouncement = document.getElementById('currentAnnouncement');
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set min date for reservation to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').min = today;
+            
+            // Set min date for promotions to today
+            document.getElementById('promoDate').min = today;
+            
+            // Load initial data
+            renderMenuItems('all');
+            renderPromotions();
+            updateAnnouncement();
+            
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Set announcement
+            announcementContainer.textContent = announcement;
+        });
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Mobile menu toggle
+            mobileMenuBtn.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+            });
+
+            // Close mobile menu when clicking on a link
+            document.querySelectorAll('nav ul li a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navMenu.classList.remove('active');
+                });
+            });
+
+            // Menu category filtering
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    // Add active class to clicked button
+                    button.classList.add('active');
+                    // Filter menu items
+                    const category = button.getAttribute('data-category');
+                    renderMenuItems(category);
+                });
+            });
+
+            // Booking form submission
+            bookingForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('name').value;
+                const phone = document.getElementById('phone').value;
+                const date = document.getElementById('date').value;
+                const time = document.getElementById('time').value;
+                const guests = document.getElementById('guests').value;
+                const table = document.getElementById('table').value;
+                const comments = document.getElementById('comments').value;
+                
+                // Simple validation
+                if (!name || !phone || !date || !time || !guests) {
+                    alert('Пожалуйста, заполните все обязательные поля');
+                    return;
+                }
+                
+                // In a real app, this would send data to a server
+                alert(`Спасибо, ${name}! Ваш столик забронирован на ${date} в ${time} для ${guests}. Мы свяжемся с вами по телефону ${phone} для подтверждения.`);
+                
+                // Reset form
+                bookingForm.reset();
+                document.getElementById('date').min = new Date().toISOString().split('T')[0];
+            });
+
+            // Admin access buttons
+            adminAccessBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                showAdminLogin();
+            });
+            
+            adminAccessBtnFooter.addEventListener('click', (e) => {
+                e.preventDefault();
+                showAdminLogin();
+            });
+
+            // Admin login
+            loginBtn.addEventListener('click', () => {
+                const password = adminPasswordInput.value;
+                
+                if (password === ADMIN_PASSWORD) {
+                    isAdminLoggedIn = true;
+                    adminLogin.style.display = 'none';
+                    adminPanel.style.display = 'flex';
+                    alert('Вы успешно вошли в панель администратора!');
+                } else {
+                    alert('Неверный пароль! Попробуйте снова.');
+                }
+            });
+
+            // Admin dashboard
+            adminDashboardBtn.addEventListener('click', () => {
+                if (!isAdminLoggedIn) {
+                    showAdminLogin();
+                    return;
+                }
+                
+                adminDashboardModal.style.display = 'flex';
+                renderCurrentMenuItems();
+                renderCurrentPromotions();
+                renderCurrentAnnouncement();
+            });
+
+            // Logout
+            logoutBtn.addEventListener('click', () => {
+                isAdminLoggedIn = false;
+                adminPanel.style.display = 'none';
+                alert('Вы вышли из панели администратора.');
+            });
+
+            // Close dashboard modal
+            closeDashboardModal.addEventListener('click', () => {
+                adminDashboardModal.style.display = 'none';
+            });
+
+            // Close modal when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target === adminDashboardModal) {
+                    adminDashboardModal.style.display = 'none';
+                }
+                if (e.target === adminLogin) {
+                    adminLogin.style.display = 'none';
+                }
+            });
+
+            // Admin tabs switching
+            adminTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    
+                    // Remove active class from all tabs and contents
+                    adminTabs.forEach(t => t.classList.remove('active'));
+                    adminTabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    tab.classList.add('active');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+
+            // Admin form submissions
+            menuForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                if (!isAdminLoggedIn) {
+                    alert('Для выполнения этого действия необходимо войти в панель администратора.');
+                    return;
+                }
+                
+                const itemName = document.getElementById('itemName').value;
+                const itemCategory = document.getElementById('itemCategory').value;
+                const itemPrice = document.getElementById('itemPrice').value;
+                const itemDescription = document.getElementById('itemDescription').value;
+                
+                // Add new menu item
+                const newItem = {
+                    id: menuItems.length > 0 ? Math.max(...menuItems.map(item => item.id)) + 1 : 1,
+                    name: itemName,
+                    category: itemCategory,
+                    price: parseInt(itemPrice),
+                    description: itemDescription
+                };
+                
+                menuItems.push(newItem);
+                
+                // Reset form
+                menuForm.reset();
+                
+                // Update displays
+                renderCurrentMenuItems();
+                renderMenuItems('all');
+                
+                // Update active category button if needed
+                categoryButtons.forEach(btn => {
+                    if (btn.getAttribute('data-category') === itemCategory) {
+                        btn.click();
+                    }
+                });
+                
+                alert('Позиция успешно добавлена в меню!');
+            });
+
+            promoForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                if (!isAdminLoggedIn) {
+                    alert('Для выполнения этого действия необходимо войти в панель администратора.');
+                    return;
+                }
+                
+                const promoTitle = document.getElementById('promoTitle').value;
+                const promoDescription = document.getElementById('promoDescription').value;
+                const promoDate = document.getElementById('promoDate').value;
+                
+                // Add new promotion
+                const newPromo = {
+                    id: promotions.length > 0 ? Math.max(...promotions.map(promo => promo.id)) + 1 : 1,
+                    title: promoTitle,
+                    description: promoDescription,
+                    date: promoDate
+                };
+                
+                promotions.push(newPromo);
+                
+                // Reset form
+                promoForm.reset();
+                document.getElementById('promoDate').min = new Date().toISOString().split('T')[0];
+                
+                // Update displays
+                renderCurrentPromotions();
+                renderPromotions();
+                
+                alert('Акция успешно добавлена!');
+            });
+
+            announcementForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                if (!isAdminLoggedIn) {
+                    alert('Для выполнения этого действия необходимо войти в панель администратора.');
+                    return;
+                }
+                
+                const text = document.getElementById('announcementText').value;
+                
+                if (text.trim()) {
+                    announcement = text;
+                    announcementContainer.textContent = announcement;
+                    document.getElementById('announcementText').value = '';
+                    renderCurrentAnnouncement();
+                    alert('Объявление успешно опубликовано!');
+                }
+            });
+
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        }
+
+        // Show admin login
+        function showAdminLogin() {
+            adminLogin.style.display = 'flex';
+            adminPasswordInput.value = '';
+            adminPasswordInput.focus();
+        }
+
+        // Render menu items
+        function renderMenuItems(category) {
+            menuItemsContainer.innerHTML = '';
+            
+            const filteredItems = category === 'all' 
+                ? menuItems 
+                : menuItems.filter(item => item.category === category);
+            
+            if (filteredItems.length === 0) {
+                menuItemsContainer.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; font-size: 18px; color: rgba(255, 255, 255, 0.7);">Позиции в этой категории пока отсутствуют</p>';
+                return;
+            }
+            
+            filteredItems.forEach(item => {
+                const menuItem = document.createElement('div');
+                menuItem.className = 'menu-item';
+                menuItem.innerHTML = `
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <div class="menu-item-name">${item.name}</div>
+                            <div class="menu-item-price">${item.price} ₽</div>
+                        </div>
+                        <div class="menu-item-desc">${item.description}</div>
+                    </div>
+                `;
+                menuItemsContainer.appendChild(menuItem);
+            });
+        }
+
+        // Render promotions
+        function renderPromotions() {
+            promotionCardsContainer.innerHTML = '';
+            
+            promotions.forEach(promo => {
+                const promoCard = document.createElement('div');
+                promoCard.className = 'promotion-card';
+                promoCard.innerHTML = `
+                    <div class="promotion-content">
+                        <div class="promotion-title">${promo.title}</div>
+                        <div class="promotion-date"><i class="far fa-calendar-alt"></i> Действует до: ${formatDate(promo.date)}</div>
+                        <p>${promo.description}</p>
+                    </div>
+                `;
+                promotionCardsContainer.appendChild(promoCard);
+            });
+        }
+
+        // Render current menu items in admin panel
+        function renderCurrentMenuItems() {
+            currentMenuItems.innerHTML = '';
+            
+            if (menuItems.length === 0) {
+                currentMenuItems.innerHTML = '<p style="color: rgba(255, 255, 255, 0.7);">Меню пусто</p>';
+                return;
+            }
+            
+            menuItems.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'item-list-item';
+                itemElement.innerHTML = `
+                    <div class="item-list-info">
+                        <h5>${item.name}</h5>
+                        <p>${item.description}</p>
+                        <small>Категория: ${getCategoryName(item.category)}</small>
+                    </div>
+                    <div class="item-list-price">${item.price} ₽</div>
+                    <div class="item-list-actions">
+                        <button class="item-list-btn edit" data-id="${item.id}">Изменить</button>
+                        <button class="item-list-btn delete" data-id="${item.id}">Удалить</button>
+                    </div>
+                `;
+                currentMenuItems.appendChild(itemElement);
+            });
+            
+            // Add event listeners to delete buttons
+            document.querySelectorAll('.item-list-btn.delete').forEach(button => {
+                button.addEventListener('click', function() {
+                    if (!isAdminLoggedIn) {
+                        alert('Для выполнения этого действия необходимо войти в панель администратора.');
+                        return;
+                    }
+                    
+                    const id = parseInt(this.getAttribute('data-id'));
+                    if (confirm('Вы уверены, что хотите удалить эту позицию из меню?')) {
+                        menuItems = menuItems.filter(item => item.id !== id);
+                        renderCurrentMenuItems();
+                        renderMenuItems('all');
+                        alert('Позиция удалена из меню!');
+                    }
+                });
+            });
+            
+            // Add event listeners to edit buttons
+            document.querySelectorAll('.item-list-btn.edit').forEach(button => {
+                button.addEventListener('click', function() {
+                    if (!isAdminLoggedIn) {
+                        alert('Для выполнения этого действия необходимо войти в панель администратора.');
+                        return;
+                    }
+                    
+                    const id = parseInt(this.getAttribute('data-id'));
+                    const item = menuItems.find(item => item.id === id);
+                    
+                    if (item) {
+                        document.getElementById('itemName').value = item.name;
+                        document.getElementById('itemCategory').value = item.category;
+                        document.getElementById('itemPrice').value = item.price;
+                        document.getElementById('itemDescription').value = item.description;
+                        
+                        // Change button text to "Сохранить изменения"
+                        const submitButton = menuForm.querySelector('.btn');
+                        submitButton.textContent = 'Сохранить изменения';
+                        
+                        // Change form submit behavior to update instead of add
+                        menuForm.onsubmit = function(e) {
+                            e.preventDefault();
+                            
+                            item.name = document.getElementById('itemName').value;
+                            item.category = document.getElementById('itemCategory').value;
+                            item.price = parseInt(document.getElementById('itemPrice').value);
+                            item.description = document.getElementById('itemDescription').value;
+                            
+                            // Reset form
+                            menuForm.reset();
+                            submitButton.textContent = 'Добавить в меню';
+                            
+                            // Restore original submit behavior
+                            menuForm.onsubmit = function(e) {
+                                e.preventDefault();
+                                menuForm.dispatchEvent(new Event('submit'));
+                            };
+                            
+                            // Update displays
+                            renderCurrentMenuItems();
+                            renderMenuItems('all');
+                            
+                            alert('Позиция успешно обновлена!');
+                        };
+                    }
+                });
+            });
+        }
+
+        // Render current promotions in admin panel
+        function renderCurrentPromotions() {
+            currentPromotions.innerHTML = '';
+            
+            if (promotions.length === 0) {
+                currentPromotions.innerHTML = '<p style="color: rgba(255, 255, 255, 0.7);">Акции отсутствуют</p>';
+                return;
+            }
+            
+            promotions.forEach(promo => {
+                const promoElement = document.createElement('div');
+                promoElement.className = 'item-list-item';
+                promoElement.innerHTML = `
+                    <div class="item-list-info">
+                        <h5>${promo.title}</h5>
+                        <p>${promo.description}</p>
+                        <small>Действует до: ${formatDate(promo.date)}</small>
+                    </div>
+                    <div class="item-list-actions">
+                        <button class="item-list-btn delete" data-id="${promo.id}">Удалить</button>
+                    </div>
+                `;
+                currentPromotions.appendChild(promoElement);
+            });
+            
+            // Add event listeners to delete buttons
+            document.querySelectorAll('#currentPromotions .item-list-btn.delete').forEach(button => {
+                button.addEventListener('click', function() {
+                    if (!isAdminLoggedIn) {
+                        alert('Для выполнения этого действия необходимо войти в панель администратора.');
+                        return;
+                    }
+                    
+                    const id = parseInt(this.getAttribute('data-id'));
+                    if (confirm('Вы уверены, что хотите удалить эту акцию?')) {
+                        promotions = promotions.filter(promo => promo.id !== id);
+                        renderCurrentPromotions();
+                        renderPromotions();
+                        alert('Акция удалена!');
+                    }
+                });
+            });
+        }
+
+        // Render current announcement in admin panel
+        function renderCurrentAnnouncement() {
+            currentAnnouncement.innerHTML = '';
+            
+            const announcementElement = document.createElement('div');
+            announcementElement.className = 'item-list-item';
+            announcementElement.innerHTML = `
+                <div class="item-list-info">
+                    <h5>Текущее объявление</h5>
+                    <p>${announcement}</p>
+                </div>
+            `;
+            currentAnnouncement.appendChild(announcementElement);
+        }
+
+        // Update announcement on the page
+        function updateAnnouncement() {
+            announcementContainer.textContent = announcement;
+        }
+
+        // Helper function to format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}.${month}.${year}`;
+        }
+
+        // Helper function to get category name
+        function getCategoryName(categoryKey) {
+            const categories = {
+                'cocktails': 'Коктейли',
+                'wine': 'Вино',
+                'beer': 'Пиво',
+                'snacks': 'Закуски',
+                'main': 'Основные блюда',
+                'desserts': 'Десерты'
+            };
+            return categories[categoryKey] || categoryKey;
+        }
+    </script>
+</body>
+</html>
