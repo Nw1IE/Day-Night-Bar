@@ -880,3 +880,141 @@
                 padding: 25px;
             }
         }
+
+
+
+    /* ПК и Большие экраны (от 1366px и выше) */
+@media (min-width: 1366px) {
+    .container {
+        max-width: 1320px;
+    }
+    
+    .hero h1 {
+        font-size: 64px;
+    }
+    
+    .menu-items, .promotion-cards {
+        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    }
+}
+
+   /* 2. Планшеты и небольшие ноутбуки (от 768px до 1365px) */
+@media (min-width: 768px) and (max-width: 1365px) {
+    .menu-items, .promotion-cards {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
+    
+    .hero {
+        padding: 160px 0 100px;
+    }
+}
+
+   /* 3. Мобильные устройства (до 767px, включая базу от 375px) */
+@media (max-width: 767px) {
+    .menu-items, .promotion-cards {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .menu-item-img, .promotion-card-img {
+        height: 180px;
+    }
+    
+    .menu-item-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .hero .btn, .hero .btn-outline {
+        display: block;
+        width: 100%;
+        margin-left: 0;
+        margin-bottom: 15px;
+    }
+
+    .form-group {
+        min-width: 100%;
+    }
+    
+    .form-row {
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 20px;
+        max-height: 90vh;
+    }
+    
+    .modal-title {
+        font-size: 22px;
+    }
+
+    .admin-tabs {
+        flex-direction: column;
+        border-bottom: none;
+        gap: 5px;
+    }
+    
+    .admin-tab {
+        width: 100%;
+        text-align: left;
+        border: 1px solid #555;
+        border-radius: 4px;
+        padding: 12px 15px;
+    }
+    
+    .admin-tab.active:after {
+        display: none;
+    }
+    
+    .admin-tab.active {
+        background-color: rgba(201, 167, 105, 0.1);
+        border-color: var(--primary);
+    }
+
+    .item-list-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .item-list-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .announcement {
+        font-size: 15px;
+        padding: 15px;
+        margin-top: 80px !important;
+    }
+
+    .footer-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 35px;
+    }
+    
+    .social-icons {
+        justify-content: center;
+    }
+}
+
+
+   /* СКРЫТИЕ СКРОЛЛБАРОВ ДЛЯ ВСЕХ ЭЛЕМЕНТОВ */
+html, body, * {
+    -ms-overflow-style: none !important;
+    scrollbar-width: none !important;
+}
+
+html::-webkit-scrollbar, 
+body::-webkit-scrollbar, 
+*::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
+}
