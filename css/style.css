@@ -1018,3 +1018,94 @@ body::-webkit-scrollbar,
     height: 0 !important;
     background: transparent !important;
 }
+
+
+/* --- Исправленная стилизация форм без задержек и белых вспышек --- */
+
+input[type="text"],
+input[type="password"],
+input[type="number"],
+input[type="tel"],
+input[type="date"],
+select,
+textarea {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: var(--gray) !important;
+    border: 1px solid #444;
+    border-radius: 5px;
+    color: var(--light) !important;
+    font-family: inherit;
+    font-size: 15px;
+    outline: none;
+    appearance: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    -webkit-appearance: none;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--light) !important;
+    box-shadow: 0 0 0px 1000px var(--gray) inset !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+input:focus, 
+select:focus, 
+textarea:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 8px rgba(201, 167, 105, 0.3) !important;
+    background-color: #1a1a1a !important;
+}
+
+input[type="date"] {
+    position: relative;
+    color-scheme: dark; 
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(70%) sepia(20%) saturate(1000%) hue-rotate(10deg) brightness(90%);
+    cursor: pointer;
+}
+
+
+input::selection, textarea::selection {
+    background: var(--primary);
+    color: var(--dark);
+}
+
+input, textarea, select, button {
+    -webkit-tap-highlight-color: transparent;
+}
+
+input, textarea, select {
+    caret-color: var(--primary);
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    opacity: 1;
+    filter: sepia(100%) hue-rotate(5deg) saturate(2) brightness(0.9);
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--light) !important;
+    box-shadow: 0 0 0px 1000px var(--gray) inset !important;
+    caret-color: var(--primary) !important;
+}
+
+select:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 var(--light);
+}
