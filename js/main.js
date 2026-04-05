@@ -25,3 +25,4 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.classList.add('light-theme');
     }
 });
+
