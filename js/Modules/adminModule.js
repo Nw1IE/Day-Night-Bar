@@ -14,6 +14,40 @@ export function initAdmin() {
     const menuForm = document.getElementById('menuForm');
     const promoForm = document.getElementById('promoForm');
 
+    const allowedCharsRegex = /[^a-zA-Zа-яА-ЯёЁ0-9+(),.\s]/g;
+
+    function applyValidation(element, maxLength) {
+        element.addEventListener('input', function() {
+            this.value = this.value.replace(allowedCharsRegex, '');
+            if (this.value.length > maxLength) {
+                this.value = this.value.substring(0, maxLength);
+            }
+        });
+    }
+
+    const itemName = document.getElementById('itemName');
+    const itemDescription = document.getElementById('itemDescription');
+    const itemPrice = document.getElementById('itemPrice');
+    applyValidation(itemName, 50);
+    applyValidation(itemDescription, 200);
+
+    const promoTitle = document.getElementById('promoTitle');
+    const promoDescription = document.getElementById('promoDescription');
+    const promoDateInput = document.getElementById('promoDate');
+    applyValidation(promoTitle, 100);
+    applyValidation(promoDescription, 500);
+
+    if (promoDateInput) {
+        promoDateInput.min = new Date().toISOString().split('T')[0];
+    }
+
+    const announcementText = document.getElementById('announcementText');
+    applyValidation(announcementText, 300);
+
+    function isFieldInvalid(value) {
+        return !value || value.trim().length === 0;
+    }
+
     function showAdminLogin() {
         adminLogin.style.display = 'flex';
         document.getElementById('adminPassword').value = '';
@@ -62,6 +96,15 @@ export function initAdmin() {
         document.querySelectorAll('.item-list-btn.edit').forEach(button => {
             button.addEventListener('click', function() {
                 if (!isAdminLoggedIn) return alert('Требуется авторизация.');
+
+                const modalHeader = document.querySelector('#adminDashboardModal .modal-header');
+                if (modalHeader) {
+                    modalHeader.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+
                 const id = parseInt(this.getAttribute('data-id'));
                 const item = menuItems.find(i => i.id === id);
                 if (item) {
@@ -75,6 +118,9 @@ export function initAdmin() {
                     
                     menuForm.onsubmit = function(e) {
                         e.preventDefault();
+                        if (isFieldInvalid(itemName.value) || isFieldInvalid(itemPrice.value)) {
+                            return alert('Заполните обязательные поля корректно');
+                        }
                         item.name = document.getElementById('itemName').value;
                         item.category = document.getElementById('itemCategory').value;
                         item.price = parseInt(document.getElementById('itemPrice').value);
@@ -96,6 +142,11 @@ export function initAdmin() {
     const defaultMenuSubmit = function(e) {
         e.preventDefault();
         if (!isAdminLoggedIn) return alert('Требуется авторизация.');
+
+        if (isFieldInvalid(itemName.value) || isFieldInvalid(itemPrice.value) || isFieldInvalid(itemDescription.value)) {
+            return alert('Пожалуйста, заполните все поля меню');
+        }
+
         const newItem = {
             id: menuItems.length > 0 ? Math.max(...menuItems.map(i => i.id)) + 1 : 1,
             name: document.getElementById('itemName').value,
@@ -197,11 +248,16 @@ export function initAdmin() {
     promoForm.addEventListener('submit', (e) => {
         e.preventDefault();
         if (!isAdminLoggedIn) return alert('Требуется авторизация.');
+
+        if (isFieldInvalid(promoTitle.value) || isFieldInvalid(promoDescription.value) || isFieldInvalid(promoDateInput.value)) {
+            return alert('Пожалуйста, заполните все поля акции');
+        }
+
         promotions.push({
             id: promotions.length > 0 ? Math.max(...promotions.map(p => p.id)) + 1 : 1,
-            title: document.getElementById('promoTitle').value,
-            description: document.getElementById('promoDescription').value,
-            date: document.getElementById('promoDate').value
+            title: promoTitle.value,
+            description: promoDescription.value,
+            date: promoDateInput.value
         });
         promoForm.reset();
         renderCurrentPromotions();
@@ -209,16 +265,19 @@ export function initAdmin() {
         alert('Акция добавлена!');
     });
 
-    document.getElementById('announcementForm').addEventListener('submit', (e) => {
+    announcementForm.addEventListener('submit', (e) => {
         e.preventDefault();
         if (!isAdminLoggedIn) return alert('Требуется авторизация.');
-        const text = document.getElementById('announcementText').value;
-        if (text.trim()) {
-            updateAnnouncement(text);
-            updateAnnouncementUI();
-            document.getElementById('announcementText').value = '';
-            renderCurrentAnnouncement();
-            alert('Объявление опубликовано!');
+        
+        const text = announcementText.value;
+        if (isFieldInvalid(text)) {
+            return alert('Введите текст объявления');
         }
+
+        updateAnnouncement(text);
+        updateAnnouncementUI();
+        announcementForm.reset();
+        renderCurrentAnnouncement();
+        alert('Объявление опубликовано!');
     });
 }
