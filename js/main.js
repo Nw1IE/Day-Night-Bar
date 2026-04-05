@@ -13,4 +13,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     initPublicEvents();
     initAdmin();
+
+    const themeBtn = document.getElementById('ChangeButton');
+    themeBtn.addEventListener('click', () => {
+        document.body.classList.toggle('light-theme');
+        const isLight = document.body.classList.contains('light-theme');
+        localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    });
+    
+    if (localStorage.getItem('theme') === 'light') {
+        document.body.classList.add('light-theme');
+    }
 });

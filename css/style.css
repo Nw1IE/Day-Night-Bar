@@ -1109,3 +1109,147 @@ select:-moz-focusring {
     color: transparent;
     text-shadow: 0 0 0 var(--light);
 }
+
+
+/* ---------------------- СВЕТЛАЯ ТЕМА -----------------------------*/
+body.light-theme {
+    background-color: #f5f5f5 !important; 
+    color: #121212 !important;
+
+    --gray: #ffffff;         
+    --dark: #e0e0e0;        
+    --light: #121212;        
+    --gray-light: #555;      
+    --shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+body.light-theme header {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .section-title,
+body.light-theme .hero p,
+body.light-theme .footer-section p {
+    color: #121212;
+}
+
+#ChangeButton {
+    background: var(--primary);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+    z-index: 1000;
+}
+
+#ChangeButton::before {
+    content: '\f186';
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    color: #121212;
+    font-size: 18px;
+}
+
+body.light-theme #ChangeButton::before {
+    content: '\f185';
+}
+
+#ChangeButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.5);
+}
+
+@media (max-width: 768px) {
+    #ChangeButton {
+        margin-left: auto;
+        margin-right: 15px;
+    }
+}
+
+body.light-theme .form-group input, 
+body.light-theme .form-group select, 
+body.light-theme .form-group textarea,
+body.light-theme .login-form input {
+    background-color: #ffffff;
+    color: #121212;
+    border: 1px solid #ccc;
+}
+
+body.light-theme .menu-item-desc {
+    color: #444 !important; 
+}
+
+body.light-theme .footer-section p, 
+body.light-theme .footer-section a,
+body.light-theme .footer-section i {
+    color: #333 !important;
+}
+
+body.light-theme .footer-section h3 {
+    color: var(--primary);
+}
+
+
+body.light-theme .promotion-date,
+body.light-theme .promotion-date i {
+    color: #555 !important;
+}
+
+body.light-theme .admin-tab-content h4,
+body.light-theme .admin-form label {
+    color: #1a1a1a !important;
+}
+
+body.light-theme .admin-form textarea, 
+body.light-theme .admin-form input, 
+body.light-theme .admin-form select {
+    background-color: #ffffff !important;
+    color: #1a1a1a !important;
+    border: 1px solid #ccc !important;
+}
+
+body.light-theme .admin-form textarea::placeholder {
+    color: #888 !important;
+}
+
+body.light-theme .announcement {
+    background-color: #f5f5f5 !important;
+    color: #222 !important;
+    border: 1px solid var(--primary) !important;
+}
+
+body.light-theme #adminDashboardModal .modal-content {
+    background-color: #ffffff !important;
+    color: #1a1a1a !important;
+}
+
+body.light-theme .admin-form textarea,
+body.light-theme .admin-form input,
+body.light-theme .admin-form select {
+    background-color: #ffffff !important;
+    color: #1a1a1a !important;
+    border: 1px solid #ccc !important;
+}
+
+body.light-theme .admin-tab-content h4,
+body.light-theme .admin-form label,
+body.light-theme .modal-title {
+    color: #1a1a1a !important;
+}
+
+body.light-theme .admin-tab {
+    background-color: #f0f0f0 !important;
+    color: #444 !important;
+}
+body.light-theme .admin-tab.active {
+    background-color: var(--primary) !important;
+    color: #fff !important;
+}
