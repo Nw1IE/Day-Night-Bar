@@ -1308,3 +1308,31 @@ body.light-theme .admin-tab.active {
     }
     .slider-nav { display: none; }
 }
+
+.slide img {
+    will-change: transform, opacity;
+    background: linear-gradient(110deg, #1a1a1a 8%, #252525 18%, #1a1a1a 33%);
+    background-size: 200% 100%;
+    animation: skeleton-shine 1.5s linear infinite;
+}
+
+@keyframes skeleton-shine {
+    to { background-position-x: -200%; }
+}
+
+#sliderTrack {
+    display: flex;
+    gap: 30px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.slide img {
+    display: block;
+    width: 300px;
+    height: 400px;
+    object-fit: cover;
+    transition: opacity 0.5s ease-in-out;
+    background-color: #1a1a1a; 
+    will-change: transform;
+}
