@@ -1253,3 +1253,58 @@ body.light-theme .admin-tab.active {
     background-color: var(--primary) !important;
     color: #fff !important;
 }
+
+
+/* слайдер коктейлей */
+.slider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.slider-container {
+    overflow: hidden;
+    position: relative;
+    padding: 10px 0;
+}
+
+.slider-track {
+    display: flex;
+    gap: 30px;
+    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+}
+
+.slider-nav {
+    display: flex;
+    gap: 15px;
+}
+
+.nav-btn {
+    background: transparent;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+    background: var(--primary);
+    color: var(--dark);
+    box-shadow: 0 0 15px rgba(201, 167, 105, 0.4);
+}
+
+@media (max-width: 768px) {
+    .slider-container {
+        overflow-x: auto;
+        scroll-behavior: smooth;
+    }
+    .slider-nav { display: none; }
+}
