@@ -14,6 +14,8 @@
             --gray-light: #777;
             --success: #4CAF50;
             --error: #f44336;
+            --social-bg: rgba(255, 255, 255, 0.05);
+            --social-text: #ffffff;
             --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
@@ -490,10 +492,24 @@
             box-shadow: -5px 5px 15px rgba(0, 0, 0, 0.3);
         }
 
-        .admin-btn {
-            background-color: var(--primary);
-            color: var(--dark);
-            border: none;
+        .admin-pass 
+        {
+            color: rgba(255, 255, 255, 0.5); /* Полупрозрачный белый */
+            transition: color 0.3s ease;
+        }
+
+        /* Цвет для светлой темы */
+        body.light-theme .admin-pass 
+        {
+            color: rgba(0, 0, 0, 0.5); /* Полупрозрачный черный */
+        }
+
+        .admin-btn 
+        {
+            /* Используем ваш основной цвет, но с прозрачностью 20% (0.2) */
+            background-color: rgba(255, 255, 255, 0.1) !important; 
+            color: #ffffff; /* Белые иконки */
+            border: 1px solid rgba(255, 255, 255, 0.2);
             width: 45px;
             height: 45px;
             border-radius: 50%;
@@ -503,15 +519,59 @@
             justify-content: center;
             font-size: 20px;
             transition: all 0.3s;
+            backdrop-filter: blur(5px); /* Легкое размытие под кнопкой для стиля */
         }
 
-        .admin-btn:hover {
-            background-color: var(--light);
-            transform: scale(1.1);
+        .admin-btn:hover 
+        {
+            background-color: var(--primary) !important; /* Становится полностью золотым */
+            color: var(--dark);
+            transform: translateY(-3px);
+            opacity: 1;
+        }
+
+        #adminPanel 
+        {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 30px;
+    
+            background-color: rgba(0, 0, 0, 0.4) !important;
+            backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            
+            transition: all 0.3s ease;
+        }
+
+        /* Стили для СВЕТЛОЙ темы */
+        body.light-theme #adminPanel 
+        {
+            background-color: rgba(255, 255, 255, 0.5) !important; 
+            border: 1px solid rgba(0, 0, 0, 0.1); 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); 
+        }
+
+        #adminPanel .admin-btn 
+        {
+            background-color: transparent !important; 
+            color: #fff;
+        }
+
+        body.light-theme #adminPanel .admin-btn 
+        {
+            color: #333;
+        }
+
+        #adminPanel .admin-btn:hover 
+        {
+            background-color: var(--primary) !important;
+            color: #000;
         }
 
         /* Admin Login Modal */
-        .admin-login {
+        .admin-login 
+        {
             position: fixed;
             top: 0;
             left: 0;
@@ -525,7 +585,8 @@
             backdrop-filter: blur(5px);
         }
 
-        .login-form {
+        .login-form 
+        {
             background-color: var(--gray);
             padding: 50px;
             border-radius: 10px;
@@ -536,13 +597,15 @@
             text-align: center;
         }
 
-        .login-form h2 {
+        .login-form h2 
+        {
             margin-bottom: 30px;
             color: var(--primary);
             font-size: 32px;
         }
 
-        .login-form input {
+        .login-form input 
+        {
             width: 100%;
             padding: 15px;
             margin-bottom: 20px;
@@ -553,14 +616,16 @@
             color: var(--light);
         }
 
-        .login-form button {
+        .login-form button 
+        {
             width: 100%;
             padding: 15px;
             margin-top: 10px;
         }
 
         /* Admin Dashboard Modal */
-        .modal {
+        .modal 
+        {
             display: none;
             position: fixed;
             top: 0;
@@ -574,7 +639,8 @@
             backdrop-filter: blur(5px);
         }
 
-        .modal-content {
+        .modal-content 
+        {
             background-color: var(--gray);
             padding: 40px;
             border-radius: 10px;
@@ -586,21 +652,22 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
-        .modal-header {
+        .modal-header 
+        {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #555;
+            margin-bottom: 10px;
         }
 
-        .modal-title {
+        .modal-title 
+        {
             font-size: 28px;
             color: var(--primary);
         }
 
-        .close-modal {
+        .close-modal 
+        {
             background: none;
             border: none;
             font-size: 32px;
@@ -609,21 +676,31 @@
             transition: color 0.3s;
         }
 
-        .close-modal:hover {
+        .close-modal:hover 
+        {
             color: var(--primary);
         }
 
-        .admin-form .form-group {
-            margin-bottom: 25px;
+        .admin-form .form-group 
+        {
+            margin-bottom: 5px;
         }
 
-        .admin-tabs {
+        .admin-tabs 
+        {
             display: flex;
-            margin-bottom: 30px;
-            border-bottom: 1px solid #555;
+            gap: 20px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #555; /* Нижняя полоса */
+            border-top: 1px solid #555;    /* Верхняя полоса */
+            justify-content: center;       /* Если нужно центрировать кнопки по горизонтали */
+            align-items: center;  /* Выравнивание кнопок по вертикали */
         }
 
-        .admin-tab {
+        .admin-tab 
+        {
             padding: 15px 25px;
             background: none;
             border: none;
@@ -635,11 +712,14 @@
             position: relative;
         }
 
-        .admin-tab.active {
+
+        .admin-tab.active 
+        {
             color: var(--primary);
         }
 
-        .admin-tab.active:after {
+        .admin-tab.active:after 
+        {
             content: '';
             position: absolute;
             bottom: -1px;
@@ -649,31 +729,37 @@
             background-color: var(--primary);
         }
 
-        .admin-tab:hover {
+        .admin-tab:hover 
+        {
             color: var(--primary);
         }
 
-        .admin-tab-content {
+        .admin-tab-content 
+        {
             display: none;
         }
 
-        .admin-tab-content.active {
+        .admin-tab-content.active 
+        {
             display: block;
         }
 
-        .item-list {
+        .item-list 
+        {
             margin-top: 30px;
             border-top: 1px solid #555;
             padding-top: 30px;
         }
 
-        .item-list h4 {
+        .item-list h4 
+        {
             margin-bottom: 20px;
             color: var(--primary);
             font-size: 22px;
         }
 
-        .item-list-item {
+        .item-list-item 
+        {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -685,34 +771,40 @@
             transition: all 0.3s;
         }
 
-        .item-list-item:hover {
+        .item-list-item:hover 
+        {
             border-color: var(--primary);
             background-color: rgba(201, 167, 105, 0.05);
         }
 
-        .item-list-info h5 {
+        .item-list-info h5 
+        {
             font-size: 18px;
             color: var(--primary);
             margin-bottom: 5px;
         }
 
-        .item-list-info p {
+        .item-list-info p 
+        {
             color: rgba(255, 255, 255, 0.7);
             font-size: 14px;
         }
 
-        .item-list-price {
+        .item-list-price 
+        {
             font-weight: bold;
             color: var(--primary);
             font-size: 18px;
         }
 
-        .item-list-actions {
+        .item-list-actions 
+        {
             display: flex;
             gap: 10px;
         }
 
-        .item-list-btn {
+        .item-list-btn 
+        {
             padding: 8px 15px;
             background-color: var(--dark);
             border: 1px solid #555;
@@ -722,12 +814,14 @@
             transition: all 0.3s;
         }
 
-        .item-list-btn.delete:hover {
+        .item-list-btn.delete:hover 
+        {
             background-color: var(--error);
             border-color: var(--error);
         }
 
-        .item-list-btn.edit:hover {
+        .item-list-btn.edit:hover 
+        {
             background-color: var(--primary);
             border-color: var(--primary);
             color: var(--dark);
@@ -741,20 +835,23 @@
             border-top: 1px solid rgba(201, 167, 105, 0.2);
         }
 
-        .footer-content {
+        .footer-content 
+        {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 50px;
             margin-bottom: 50px;
         }
 
-        .footer-section h3 {
+        .footer-section h3 
+        {
             font-size: 24px;
             margin-bottom: 25px;
             color: var(--primary);
         }
 
-        .footer-section p, .footer-section a {
+        .footer-section p, .footer-section a
+        {
             color: rgba(255, 255, 255, 0.7);
             margin-bottom: 15px;
             display: block;
@@ -762,36 +859,47 @@
             transition: color 0.3s;
         }
 
-        .footer-section a:hover {
+        .footer-section a:hover 
+        {
             color: var(--primary);
         }
 
-        .social-icons {
+        .social-icons 
+        {
             display: flex;
             gap: 15px;
             margin-top: 25px;
         }
 
-        .social-icons a {
+        body.light-theme 
+        {
+            --social-bg: #868383;
+            --social-text: #222222;
+        }
+
+        .social-icons a 
+        {
             width: 45px;
             height: 45px;
-            background-color: rgba(255, 255, 255, 0.05);
+            background-color: var(--social-bg); /* Используем переменную */
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--light);
+            color: var(--social-text);         /* Используем переменную */
             font-size: 20px;
             transition: all 0.3s;
         }
 
-        .social-icons a:hover {
+        .social-icons a:hover 
+        {
             background-color: var(--primary);
             color: var(--dark);
             transform: translateY(-5px);
         }
 
-        .copyright {
+        .copyright 
+        {
             text-align: center;
             padding-top: 30px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -800,7 +908,8 @@
         }
 
         /* Responsive */
-        @media (max-width: 992px) {
+        @media (max-width: 992px) 
+        {
             .hero h1 {
                 font-size: 46px;
             }
@@ -814,7 +923,8 @@
             }
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 768px) 
+        {
             nav ul {
                 display: none;
                 position: absolute;
@@ -829,40 +939,49 @@
                 border-top: 1px solid rgba(201, 167, 105, 0.2);
             }
 
-            nav ul.active {
+            nav ul.active 
+            {
                 display: flex;
             }
 
-            nav ul li {
+            nav ul li 
+            {
                 margin: 10px 0;
             }
 
-            .mobile-menu-btn {
+            .mobile-menu-btn
+            {
                 display: block;
             }
 
-            .hero {
+            .hero 
+            {
                 padding: 150px 0 80px;
             }
             
-            .hero h1 {
+            .hero h1 
+            {
                 font-size: 38px;
             }
             
-            .hero p {
+            .hero p 
+            {
                 font-size: 18px;
             }
             
-            .section-title {
+            .section-title 
+            {
                 font-size: 32px;
             }
             
-            .btn-outline {
+            .btn-outline 
+            {
                 margin-left: 0;
                 margin-top: 15px;
             }
             
-            .admin-panel {
+            .admin-panel 
+            {
                 top: auto;
                 bottom: 20px;
                 transform: none;
@@ -872,11 +991,13 @@
                 padding: 10px 15px;
             }
             
-            .reservation-form {
+            .reservation-form 
+            {
                 padding: 30px;
             }
             
-            .modal-content {
+            .modal-content 
+            {
                 padding: 25px;
             }
         }
@@ -884,81 +1005,99 @@
 
 
     /* ПК и Большие экраны (от 1366px и выше) */
-@media (min-width: 1366px) {
-    .container {
-        max-width: 1320px;
-    }
+        @media (min-width: 1366px) 
+        {
+            .container 
+            {
+            max-width: 1320px;
+            }
     
-    .hero h1 {
-        font-size: 64px;
-    }
+            .hero h1 
+            {
+            font-size: 64px;
+            }
     
-    .menu-items, .promotion-cards {
-        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-    }
-}
+            .menu-items, .promotion-cards 
+            {
+                grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            }
+        }
 
    /* 2. Планшеты и небольшие ноутбуки (от 768px до 1365px) */
-@media (min-width: 768px) and (max-width: 1365px) {
-    .menu-items, .promotion-cards {
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    }
-    
-    .hero {
-        padding: 160px 0 100px;
-    }
-}
+            @media (min-width: 768px) and (max-width: 1365px) 
+            {
+                .menu-items, .promotion-cards 
+                {
+                    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                }
+                
+                .hero 
+                {
+                    padding: 160px 0 100px;
+                }
+            }
 
    /* 3. Мобильные устройства (до 767px, включая базу от 375px) */
-@media (max-width: 767px) {
-    .menu-items, .promotion-cards {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
+    @media (max-width: 767px) 
+    {
+        .menu-items, .promotion-cards 
+        {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
 
-    .menu-item-img, .promotion-card-img {
+    .menu-item-img, .promotion-card-img 
+    {
         height: 180px;
     }
     
-    .menu-item-header {
+    .menu-item-header 
+    {
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
     }
 
-    .hero .btn, .hero .btn-outline {
+    .hero .btn, .hero .btn-outline 
+    {
         display: block;
         width: 100%;
         margin-left: 0;
         margin-bottom: 15px;
     }
 
-    .form-group {
+    .form-group 
+    {
         min-width: 100%;
     }
     
-    .form-row {
+    .form-row 
+    {
         gap: 15px;
         margin-bottom: 15px;
     }
 
-    .modal-content {
+    .modal-content
+     {
         width: 95%;
         padding: 20px;
         max-height: 90vh;
     }
     
-    .modal-title {
+    .modal-title 
+    {
         font-size: 22px;
     }
 
-    .admin-tabs {
+    .admin-tabs 
+    {
         flex-direction: column;
         border-bottom: none;
         gap: 5px;
     }
     
-    .admin-tab {
+    .admin-tab 
+    {
         width: 100%;
         text-align: left;
         border: 1px solid #555;
@@ -966,42 +1105,49 @@
         padding: 12px 15px;
     }
     
-    .admin-tab.active:after {
+    .admin-tab.active:after 
+    {
         display: none;
     }
     
-    .admin-tab.active {
+    .admin-tab.active 
+    {
         background-color: rgba(201, 167, 105, 0.1);
         border-color: var(--primary);
     }
 
-    .item-list-item {
+    .item-list-item
+    {
         flex-direction: column;
         align-items: flex-start;
         gap: 15px;
     }
     
-    .item-list-actions {
+    .item-list-actions 
+    {
         width: 100%;
         justify-content: flex-end;
     }
 
-    .announcement {
+    .announcement 
+    {
         font-size: 15px;
         padding: 15px;
         margin-top: 80px !important;
     }
 
-    .footer-content {
+    .footer-content 
+    {
         grid-template-columns: 1fr;
         text-align: center;
         gap: 35px;
     }
     
-    .social-icons {
+    .social-icons 
+    {
         justify-content: center;
     }
-}
+ }
 
 
    /* СКРЫТИЕ СКРОЛЛБАРОВ ДЛЯ ВСЕХ ЭЛЕМЕНТОВ */
@@ -1254,6 +1400,403 @@ body.light-theme .admin-tab.active {
     color: #fff !important;
 }
 
+.White {
+    color: white !important;
+}
+
+.copyright {
+    padding: 20px 0;
+    transition: all 0.3s ease; 
+}
+
+body {
+    background-color: #1a1a1a;
+}
+
+.copyright {
+    color: #f0f0f0;
+    -bottom: 1px solid #444444; 
+}
+
+body.light-theme {
+    background-color: #ffffff;
+}
+
+body.light-theme .copyright {
+    color: #333333; 
+    border-bottom: 1px solid #888888; 
+}
+
+/* --- Стили для СВЕТЛОЙ ТЕМЫ (body.light-theme) --- */
+
+body.light-theme .reservation-form input,
+body.light-theme .reservation-form select,
+body.light-theme .reservation-form textarea {
+    background-color: #f9f9f9; /* Светлый фон полей */
+    color: #333333;           /* Темный текст */
+    border: 1px solid #ccc;    /* Заметная граница */
+}
+
+body.light-theme .reservation-form input:focus,
+body.light-theme .reservation-form select:focus,
+body.light-theme .reservation-form textarea:focus {
+    background-color: #ffffff; 
+    color: #000000;
+    border-color: var(--primary); /* Цвет акцента при фокусе */
+    outline: none;
+}
+
+body.light-theme .reservation-form select option {
+    background-color: #ffffff;
+    color: #333333;
+}
+
+body.light-theme .reservation-form label {
+    color: #444444;
+}
+
+body.light-theme .reservation-form label i {
+    color: var(--primary); /* Иконки оставляем золотыми/акцентными */
+}
+
+body.light-theme .reservation-form ::placeholder {
+    color: #999999;
+}
+
+body.light-theme .item-list h4 {
+    color: #000000; /* Делаем заголовок почти черным */
+}
+
+body.light-theme #currentMenuItems {
+    color: #000000; /* Базовый цвет текста для всего списка */
+}
+
+body.light-theme #currentMenuItems .menu-item-title, 
+body.light-theme #currentMenuItems strong {
+    color: #000000; /* Названия делаем черными */
+}
+
+body.light-theme #currentMenuItems .menu-item-description,
+body.light-theme #currentMenuItems p,
+body.light-theme #currentMenuItems span.description {
+    color: #555555 !important; /* Темно-серый цвет, который хорошо видно */
+}
+
+body.light-theme #currentMenuItems .menu-item-price {
+    color: var(--primary); /* Оставляем золотой/акцентный цвет */
+    font-weight: bold;
+}
+
+/* --- Стили для Акций в СВЕТЛОЙ ТЕМЕ --- */
+
+body.light-theme .item-list h4 {
+    color: #000000 !important;
+    font-weight: 800;
+    border-bottom: 2px solid #000000;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+body.light-theme #currentPromotions strong,
+body.light-theme #currentPromotions h5,
+body.light-theme #currentPromotions .promo-title {
+  color: var(--primary); 
+    font-weight: bold;
+    display: inline-block;
+}
+
+body.light-theme #currentPromotions p,
+body.light-theme #currentPromotions .promo-text {
+    color: #555555 !important; /* Темный графит, отличная читаемость */
+}
+
+body.light-theme #currentPromotions small,
+body.light-theme #currentPromotions .date-info {
+    color: #000000 !important;
+}
+
+body.light-theme #currentPromotions > div {
+    background-color: #ffffff;
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 4px;
+}
+
+body.light-theme #currentMenuItems{
+    background-color: #f9f9f9; 
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+body.light-theme .reservation-form input:focus,
+body.light-theme .reservation-form select:focus,
+body.light-theme .reservation-form textarea:focus,
+body.light-theme .reservation-form input:active,
+body.light-theme .reservation-form select:active {
+    background-color: #ffffff !important; 
+    color: #000000 !important;         
+    border-color: #888888;               
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); 
+}
+
+body.light-theme .reservation-form select {
+    background-color: #f9f9f9;
+    color: #333333 !important;
+}
+
+body.light-theme .reservation-form input[type="date"],
+body.light-theme .reservation-form input[type="time"] {
+    color: #333333 !important;
+}
+
+body.light-theme .reservation-form select option {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+body.light-theme #currentPromotions{
+    background-color: #f9f9f9; 
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+body.light-theme .item-list h4 {
+    color: #000000 !important;
+}
+
+body.light-theme #currentAnnouncement {
+    color: #1a1a1a !important; 
+}
+
+body.light-theme #currentAnnouncement p,
+body.light-theme #currentAnnouncement span,
+body.light-theme #currentAnnouncement strong,
+body.light-theme #currentAnnouncement div {
+    color: #000000 !important;
+}
+
+body.light-theme .item-list h4 {
+    color: #000000 !important;
+}
+
+body.light-theme #currentAnnouncement {
+    color: #1a1a1a !important;
+}
+
+body.light-theme #currentAnnouncement p,
+body.light-theme #currentAnnouncement span,
+body.light-theme #currentAnnouncement strong,
+body.light-theme #currentAnnouncement div {
+    color: #000000 !important;
+}
+
+body.light-theme #currentAnnouncement {
+    background-color: #f9f9f9; 
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.item-list h4 {
+    color: #ffffff; 
+}
+
+/* Контейнер списка меню */
+#currentMenuItems {
+    color: #ffffff;
+    background-color: #1a1a1a; 
+    border: 1px solid #333333; 
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+/* Название блюда */
+#currentMenuItems .menu-item-title, 
+#currentMenuItems strong {
+    color: #ffffff; 
+}
+
+/* Описание блюда */
+#currentMenuItems .menu-item-description,
+#currentMenuItems p,
+#currentMenuItems span.description {
+    color: #bbbbbb !important; 
+}
+
+/* Цена */
+#currentMenuItems .menu-item-price {
+    color: var(--primary);
+    font-weight: bold;
+}
+
+/* Заголовок "Текущие акции" */
+.item-list h4 {
+    color: #ffffff !important;
+    font-weight: 800;
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* Названия акций */
+#currentPromotions strong,
+#currentPromotions h5,
+#currentPromotions .promo-title {
+    color: var(--primary);
+    font-weight: bold;
+}
+
+/* Описание акции */
+#currentPromotions p,
+#currentPromotions .promo-text {
+    color: #cccccc !important;
+}
+
+/* Сроки */
+#currentPromotions small,
+#currentPromotions .date-info {
+    color: #ffffff !important;
+}
+
+/* Контейнер акций */
+#currentPromotions {
+    background-color: #1a1a1a;
+    border: 1px solid #333333;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+/* Карточки внутри акций */
+#currentPromotions > div {
+    background-color: #252525;
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 4px;
+    border: 1px solid #3a3a3a;
+}
+
+/* Заголовок объявления */
+.item-list h4 {
+    color: #ffffff !important;
+}
+
+/* Основной текст объявления */
+#currentAnnouncement {
+    color: #eeeeee !important;
+    background-color: #1a1a1a; 
+    border: 1px solid #333333;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+/* Вложенные элементы в объявлении */
+#currentAnnouncement p,
+#currentAnnouncement span,
+#currentAnnouncement strong,
+#currentAnnouncement div {
+    color: #ffffff !important;
+}
+
+.item-list-btn {
+    background-color: transparent;
+    color: var(--primary) !important;
+    border: 1px solid var(--primary);
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    margin-right: 5px;
+    text-transform: uppercase;
+}
+
+/* --- МОБИЛЬНОЕ МЕНЮ (когда экран узкий) --- */
+/* --- ОБЩИЕ СТИЛИ МОБИЛЬНОГО МЕНЮ (для обеих тем) --- */
+@media (max-width: 768px) {
+    #navMenu {
+        display: flex;
+        flex-direction: column;
+        padding: 10px 0; /* Одинаковый внутренний отступ */
+        border-radius: 8px;
+        margin-top: 10px;
+        transition: all 0.3s ease;
+    }
+
+    #navMenu li a {
+        padding: 15px 20px; /* Фиксированный размер кнопок в меню */
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        font-size: 16px;
+        border-bottom: 1px solid transparent; /* Чтобы не прыгало при смене темы */
+    }
+
+    /* --- ЦВЕТА ДЛЯ СВЕТЛОЙ ТЕМЫ --- */
+    body.light-theme #navMenu {
+        background-color: #ffffff !important;
+        border: 1px solid #ddd;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    body.light-theme #navMenu li a {
+        color: #000000 !important;
+        border-bottom-color: #f0f0f0;
+    }
+
+    /* --- ЦВЕТА ДЛЯ ЧЕРНОЙ ТЕМЫ --- */
+    body:not(.light-theme) #navMenu {
+        background-color: #111111 !important;
+        border: 1px solid #333;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    }
+    body:not(.light-theme) #navMenu li a {
+        color: #ffffff !important;
+        border-bottom-color: #222;
+    }
+}
+
+/* --- ОБЩИЕ СТИЛИ ХЕДЕРА --- */
+header {
+    height: 70px; /* Задай фиксированную высоту, чтобы хедер не "прыгал" */
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    padding: 0 20px;
+}
+
+/* --- ЦВЕТА ДЛЯ СВЕТЛОЙ ТЕМЫ --- */
+body.light-theme header {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #ddd;
+}
+body.light-theme #navMenu li a {
+    color: #000000 !important;
+}
+
+/* --- ЦВЕТА ДЛЯ ЧЕРНОЙ ТЕМЫ --- */
+body:not(.light-theme) header {
+    background-color: #000000 !important;
+    border-bottom: 1px solid #333;
+}
+body:not(.light-theme) #navMenu li a {
+    color: #ffffff !important;
+}
+
+/* Иконки всегда одинаковые */
+#navMenu li a i {
+    color: var(--primary) !important;
+    width: 20px; /* Фиксированная ширина под иконку, чтобы текст был в ровную колонку */
+    text-align: center;
+}
 
 /* слайдер коктейлей */
 .slider-header {
