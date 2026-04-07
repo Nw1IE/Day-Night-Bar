@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>День / Ночь | Элитный бар</title>
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script type="module" src="./js/main.js" defer></script>
 </head>
 <body>
@@ -14,13 +15,13 @@
             <h2><i class="fas fa-lock"></i> Вход для администратора</h2>
             <input type="password" id="adminPassword" placeholder="Введите пароль администратора">
             <button class="btn" id="loginBtn">Войти</button>
-            <p style="margin-top: 20px; color: rgba(255, 255, 255, 0.5); font-size: 14px;">пароль 1</p>
+            <p class="admin-pass" style="margin-top: 20px; font-size: 14px;">пароль 1</p>
         </div>
     </div>
 
     <!-- Панель администратора -->
     <div class="admin-panel" id="adminPanel" style="display: none;">
-        <button class="admin-btn" id="adminDashboardBtn" title="Панель администратора"><i class="fas fa-cog"></i></button>
+        <button class="admin-btn" id="adminDashboardBtn" title="Панель администратора"><i class="fas fa-edit"></i></button>
         <button class="admin-btn" id="logoutBtn" title="Выйти"><i class="fas fa-sign-out-alt"></i></button>
     </div>
 
@@ -162,7 +163,7 @@
     <section class="hero" id="home">
         <div class="container hero-content">
             <h1>День / Ночь</h1>
-            <p>Элитный бар в центре города с авторскими коктейлями, изысканной кухней и неповторимой атмосферой. У нас вы найдете идеальное сочетание вкуса, стиля и комфорта для настоящих ценителей.</p>
+            <p class="White">Элитный бар в центре города с авторскими коктейлями, изысканной кухней и неповторимой атмосферой. У нас вы найдете идеальное сочетание вкуса, стиля и комфорта для настоящих ценителей.</p>
             <div>
                 <a href="#reservation" class="btn">Забронировать столик</a>
                 <a href="#menu" class="btn btn-outline">Посмотреть меню</a>
@@ -265,7 +266,7 @@
                         <div class="form-group">
                             <label for="time"><i class="fas fa-clock"></i> Время *</label>
                             <select id="time" required>
-                                <option value="">Выберите время</option>
+                                <option value="" disabled selected hidden>Выберите время</option>
                                 <option value="18:00">18:00</option>
                                 <option value="19:00">19:00</option>
                                 <option value="20:00">20:00</option>
@@ -280,7 +281,7 @@
                         <div class="form-group">
                             <label for="guests"><i class="fas fa-users"></i> Количество гостей *</label>
                             <select id="guests" required>
-                                <option value="">Выберите количество</option>
+                                <option value="" disabled selected hidden>Выберите количество</option>
                                 <option value="1-2">1-2 человека</option>
                                 <option value="3-4">3-4 человека</option>
                                 <option value="5-6">5-6 человек</option>
@@ -290,6 +291,7 @@
                         <div class="form-group">
                             <label for="table"><i class="fas fa-chair"></i> Тип столика</label>
                             <select id="table">
+                                <option value="" disabled selected hidden>Выберите столик</option>
                                 <option value="any">Любой</option>
                                 <option value="window">У окна</option>
                                 <option value="bar">Барная стойка</option>
