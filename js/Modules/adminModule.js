@@ -4,6 +4,7 @@ import {
 } from './dataModule.js';
 import { formatDate, getCategoryName } from './utilsModule.js';
 import { renderMenuItems, renderPromotions, updateAnnouncementUI } from './renderModule.js';
+import { saveMenuToStorage, savePromosToStorage, saveAnnouncementToStorage } from './storageModule.js';
 
 export function initAdmin() {
     const adminLogin = document.getElementById('adminLogin');
@@ -86,6 +87,7 @@ export function initAdmin() {
                 const id = parseInt(this.getAttribute('data-id'));
                 if (confirm('Удалить эту позицию?')) {
                     updateMenuItems(menuItems.filter(item => item.id !== id));
+                    saveMenuToStorage(menuItems);
                     renderCurrentMenuItems();
                     renderMenuItems('all');
                 }
@@ -126,6 +128,7 @@ export function initAdmin() {
                         item.price = parseInt(document.getElementById('itemPrice').value);
                         item.description = document.getElementById('itemDescription').value;
                         
+                        saveMenuToStorage(menuItems);
                         menuForm.reset();
                         submitBtn.textContent = 'Добавить в меню';
                         menuForm.onsubmit = defaultMenuSubmit;
@@ -154,7 +157,9 @@ export function initAdmin() {
             price: parseInt(document.getElementById('itemPrice').value),
             description: document.getElementById('itemDescription').value
         };
+
         menuItems.push(newItem);
+        saveMenuToStorage(menuItems);
         menuForm.reset();
         renderCurrentMenuItems();
         renderMenuItems('all');
@@ -188,6 +193,7 @@ export function initAdmin() {
                 const id = parseInt(this.getAttribute('data-id'));
                 if (confirm('Удалить эту акцию?')) {
                     updatePromotions(promotions.filter(p => p.id !== id));
+                    savePromosToStorage(promotions);
                     renderCurrentPromotions();
                     renderPromotions();
                 }
@@ -259,6 +265,8 @@ export function initAdmin() {
             description: promoDescription.value,
             date: promoDateInput.value
         });
+
+        savePromosToStorage(promotions);
         promoForm.reset();
         renderCurrentPromotions();
         renderPromotions();
@@ -275,6 +283,7 @@ export function initAdmin() {
         }
 
         updateAnnouncement(text);
+        saveAnnouncementToStorage(text);
         updateAnnouncementUI();
         announcementForm.reset();
         renderCurrentAnnouncement();

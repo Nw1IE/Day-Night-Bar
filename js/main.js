@@ -2,8 +2,11 @@ import { renderMenuItems, renderPromotions, updateAnnouncementUI } from './Modul
 import { initPublicEvents } from './Modules/publicModule.js';
 import { initAdmin } from './Modules/adminModule.js';
 import { initSlider } from './Modules/slidebarModule.js';
+import { initPersistentData } from './Modules/storageModule.js';
 
 document.addEventListener('DOMContentLoaded', function() {
+    initPersistentData();
+
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('date').min = today;
     document.getElementById('promoDate').min = today;
