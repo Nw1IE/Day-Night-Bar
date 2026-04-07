@@ -15,11 +15,13 @@ export function initAdmin() {
     const menuForm = document.getElementById('menuForm');
     const promoForm = document.getElementById('promoForm');
 
-    const allowedCharsRegex = /[^a-zA-Zа-яА-ЯёЁ0-9+(),.\s]/g;
+    const menuCharsRegex = /[^a-zA-Zа-яА-ЯёЁ0-9+(),%:.\s]/g;
 
-    function applyValidation(element, maxLength) {
+    function applyValidation(element, maxLength, regex = null) {
         element.addEventListener('input', function() {
-            this.value = this.value.replace(allowedCharsRegex, '');
+            if (regex) {
+                this.value = this.value.replace(regex, '');
+            }
             if (this.value.length > maxLength) {
                 this.value = this.value.substring(0, maxLength);
             }
@@ -29,8 +31,8 @@ export function initAdmin() {
     const itemName = document.getElementById('itemName');
     const itemDescription = document.getElementById('itemDescription');
     const itemPrice = document.getElementById('itemPrice');
-    applyValidation(itemName, 50);
-    applyValidation(itemDescription, 200);
+    applyValidation(itemName, 50, menuCharsRegex);
+    applyValidation(itemDescription, 200, menuCharsRegex);
 
     const promoTitle = document.getElementById('promoTitle');
     const promoDescription = document.getElementById('promoDescription');
@@ -80,7 +82,6 @@ export function initAdmin() {
             currentMenuItems.appendChild(itemElement);
         });
 
-        // удаление
         document.querySelectorAll('.item-list-btn.delete').forEach(button => {
             button.addEventListener('click', function() {
                 if (!isAdminLoggedIn) return alert('Требуется авторизация.');
@@ -94,7 +95,6 @@ export function initAdmin() {
             });
         });
 
-        // редактирование
         document.querySelectorAll('.item-list-btn.edit').forEach(button => {
             button.addEventListener('click', function() {
                 if (!isAdminLoggedIn) return alert('Требуется авторизация.');
@@ -210,7 +210,6 @@ export function initAdmin() {
             </div>`;
     }
 
-    // Логика кнопок и вкладок
     document.getElementById('adminAccessBtn').addEventListener('click', (e) => { e.preventDefault(); showAdminLogin(); });
     document.getElementById('adminAccessBtnFooter').addEventListener('click', (e) => { e.preventDefault(); showAdminLogin(); });
     
