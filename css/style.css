@@ -822,7 +822,7 @@
 
         .item-list-btn.edit:hover 
         {
-            background-color: var(--primary);
+            background-color: var(--social-text);
             border-color: var(--primary);
             color: var(--dark);
         }
