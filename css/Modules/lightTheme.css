@@ -1,0 +1,559 @@
+/* ---------------------- СВЕТЛАЯ ТЕМА -----------------------------*/
+body.light-theme {
+    background-color: #f5f5f5 !important; 
+    color: #121212 !important;
+
+    --gray: #ffffff;         
+    --dark: #e0e0e0;        
+    --light: #121212;        
+    --gray-light: #555;      
+    --shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+body.light-theme header {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .section-title,
+body.light-theme .hero p,
+body.light-theme .footer-section p {
+    color: #121212;
+}
+
+#ChangeButton {
+    background: var(--primary);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+    z-index: 1000;
+}
+
+#ChangeButton::before {
+    content: '\f186';
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    color: #121212;
+    font-size: 18px;
+}
+
+body.light-theme #ChangeButton::before {
+    content: '\f185';
+}
+
+#ChangeButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.5);
+}
+
+@media (max-width: 768px) {
+    #ChangeButton {
+        margin-left: auto;
+        margin-right: 15px;
+    }
+}
+
+body.light-theme .form-group input, 
+body.light-theme .form-group select, 
+body.light-theme .form-group textarea,
+body.light-theme .login-form input {
+    background-color: #ffffff;
+    color: #121212;
+    border: 1px solid #ccc;
+}
+
+body.light-theme .menu-item-desc {
+    color: #444 !important; 
+}
+
+body.light-theme .footer-section p, 
+body.light-theme .footer-section a,
+body.light-theme .footer-section i {
+    color: #333 !important;
+}
+
+body.light-theme .footer-section h3 {
+    color: var(--primary);
+}
+
+
+body.light-theme .promotion-date,
+body.light-theme .promotion-date i {
+    color: #555 !important;
+}
+
+body.light-theme .admin-tab-content h4,
+body.light-theme .admin-form label {
+    color: #1a1a1a !important;
+}
+
+body.light-theme .admin-form textarea, 
+body.light-theme .admin-form input, 
+body.light-theme .admin-form select {
+    background-color: #ffffff !important;
+    color: #1a1a1a !important;
+    border: 1px solid #ccc !important;
+}
+
+body.light-theme .admin-form textarea::placeholder {
+    color: #888 !important;
+}
+
+body.light-theme .announcement {
+    background-color: #f5f5f5 !important;
+    color: #222 !important;
+    border: 1px solid var(--primary) !important;
+}
+
+body.light-theme #adminDashboardModal .modal-content {
+    background-color: #ffffff !important;
+    color: #1a1a1a !important;
+}
+
+body.light-theme .admin-form textarea,
+body.light-theme .admin-form input,
+body.light-theme .admin-form select {
+    background-color: #ffffff !important;
+    color: #1a1a1a !important;
+    border: 1px solid #ccc !important;
+}
+
+body.light-theme .admin-tab-content h4,
+body.light-theme .admin-form label,
+body.light-theme .modal-title {
+    color: #1a1a1a !important;
+}
+
+body.light-theme .admin-tab {
+    background-color: #f0f0f0 !important;
+    color: #444 !important;
+}
+body.light-theme .admin-tab.active {
+    background-color: var(--primary) !important;
+    color: #fff !important;
+}
+
+.White {
+    color: white !important;
+}
+
+.copyright {
+    padding: 20px 0;
+    transition: all 0.3s ease; 
+}
+
+body {
+    background-color: #1a1a1a;
+}
+
+.copyright {
+    color: #f0f0f0;
+    -bottom: 1px solid #444444; 
+}
+
+body.light-theme {
+    background-color: #ffffff;
+}
+
+body.light-theme .copyright {
+    color: #333333; 
+    border-bottom: 1px solid #888888; 
+}
+
+
+body.light-theme .reservation-form input,
+body.light-theme .reservation-form select,
+body.light-theme .reservation-form textarea {
+    background-color: #f9f9f9;
+    color: #333333;
+    border: 1px solid #ccc;
+}
+
+body.light-theme .reservation-form input:focus,
+body.light-theme .reservation-form select:focus,
+body.light-theme .reservation-form textarea:focus {
+    background-color: #ffffff; 
+    color: #000000;
+    border-color: var(--primary);
+    outline: none;
+}
+
+body.light-theme .reservation-form select option {
+    background-color: #ffffff;
+    color: #333333;
+}
+
+body.light-theme .reservation-form label {
+    color: #444444;
+}
+
+body.light-theme .reservation-form label i {
+    color: var(--primary);
+}
+
+body.light-theme .reservation-form ::placeholder {
+    color: #999999;
+}
+
+body.light-theme .item-list h4 {
+    color: #000000;
+}
+
+body.light-theme #currentMenuItems {
+    color: #000000;
+}
+
+body.light-theme #currentMenuItems .menu-item-title, 
+body.light-theme #currentMenuItems strong {
+    color: #000000;
+}
+
+body.light-theme #currentMenuItems .menu-item-description,
+body.light-theme #currentMenuItems p,
+body.light-theme #currentMenuItems span.description {
+    color: #555555 !important;
+}
+
+body.light-theme #currentMenuItems .menu-item-price {
+    color: var(--primary);
+    font-weight: bold;
+}
+
+/* --- Стили для Акций в СВЕТЛОЙ ТЕМЕ --- */
+body.light-theme .item-list h4 {
+    color: #000000 !important;
+    font-weight: 800;
+    border-bottom: 2px solid #000000;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+body.light-theme #currentPromotions strong,
+body.light-theme #currentPromotions h5,
+body.light-theme #currentPromotions .promo-title {
+color: var(--primary); 
+    font-weight: bold;
+    display: inline-block;
+}
+
+body.light-theme #currentPromotions p,
+body.light-theme #currentPromotions .promo-text {
+    color: #555555 !important;
+}
+
+body.light-theme #currentPromotions small,
+body.light-theme #currentPromotions .date-info {
+    color: #000000 !important;
+}
+
+body.light-theme #currentPromotions > div {
+    background-color: #ffffff;
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 4px;
+}
+
+body.light-theme #currentMenuItems{
+    background-color: #f9f9f9; 
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+body.light-theme .reservation-form input:focus,
+body.light-theme .reservation-form select:focus,
+body.light-theme .reservation-form textarea:focus,
+body.light-theme .reservation-form input:active,
+body.light-theme .reservation-form select:active {
+    background-color: #ffffff !important; 
+    color: #000000 !important;         
+    border-color: #888888;               
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); 
+}
+
+body.light-theme .reservation-form select {
+    background-color: #f9f9f9;
+    color: #333333 !important;
+}
+
+body.light-theme .reservation-form input[type="date"],
+body.light-theme .reservation-form input[type="time"] {
+    color: #333333 !important;
+}
+
+body.light-theme .reservation-form select option {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+body.light-theme #currentPromotions{
+    background-color: #f9f9f9; 
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+body.light-theme .item-list h4 {
+    color: #000000 !important;
+}
+
+body.light-theme #currentAnnouncement {
+    color: #1a1a1a !important; 
+}
+
+body.light-theme #currentAnnouncement p,
+body.light-theme #currentAnnouncement span,
+body.light-theme #currentAnnouncement strong,
+body.light-theme #currentAnnouncement div {
+    color: #000000 !important;
+}
+
+body.light-theme .item-list h4 {
+    color: #000000 !important;
+}
+
+body.light-theme #currentAnnouncement {
+    color: #1a1a1a !important;
+}
+
+body.light-theme #currentAnnouncement p,
+body.light-theme #currentAnnouncement span,
+body.light-theme #currentAnnouncement strong,
+body.light-theme #currentAnnouncement div {
+    color: #000000 !important;
+}
+
+body.light-theme #currentAnnouncement {
+    background-color: #f9f9f9; 
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.item-list h4 {
+    color: #ffffff; 
+}
+
+#currentMenuItems {
+    color: #ffffff;
+    background-color: #1a1a1a; 
+    border: 1px solid #333333; 
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+#currentMenuItems .menu-item-title, 
+#currentMenuItems strong {
+    color: #ffffff; 
+}
+
+#currentMenuItems .menu-item-description,
+#currentMenuItems p,
+#currentMenuItems span.description {
+    color: #bbbbbb !important; 
+}
+
+#currentMenuItems .menu-item-price {
+    color: var(--primary);
+    font-weight: bold;
+}
+
+.item-list h4 {
+    color: #ffffff !important;
+    font-weight: 800;
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+#currentPromotions strong,
+#currentPromotions h5,
+#currentPromotions .promo-title {
+    color: var(--primary);
+    font-weight: bold;
+}
+
+#currentPromotions p,
+#currentPromotions .promo-text {
+    color: #cccccc !important;
+}
+
+#currentPromotions small,
+#currentPromotions .date-info {
+    color: #ffffff !important;
+}
+
+#currentPromotions {
+    background-color: #1a1a1a;
+    border: 1px solid #333333;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+#currentPromotions > div {
+    background-color: #252525;
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 4px;
+    border: 1px solid #3a3a3a;
+}
+
+.item-list h4 {
+    color: #ffffff !important;
+}
+
+#currentAnnouncement {
+    color: #eeeeee !important;
+    background-color: #1a1a1a; 
+    border: 1px solid #333333;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+#currentAnnouncement p,
+#currentAnnouncement span,
+#currentAnnouncement strong,
+#currentAnnouncement div {
+    color: #ffffff !important;
+}
+
+.item-list-btn {
+    background-color: transparent;
+    color: var(--primary) !important;
+    border: 1px solid var(--primary);
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    margin-right: 5px;
+    text-transform: uppercase;
+}
+
+/* --- МОБИЛЬНОЕ МЕНЮ (когда экран узкий) --- */
+
+/* Базовые стили для мобилки (до 768px) */
+@media (max-width: 768px) {
+    #navMenu {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        position: absolute;
+        top: 85px;
+        left: 5;
+        background-color: #111;
+        padding: 20px 0;
+        z-index: 1000;
+    }
+
+    #navMenu li a i {
+        margin-right: 10px;
+        min-width: 40px;
+        text-align: center;
+    }
+
+    #navMenu.active {
+        display: flex !important;
+    }
+
+    body.light-theme #navMenu {
+        background-color: #ffffff !important;
+        border-bottom: 1px solid #ddd;
+    }
+}
+
+.slider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.slider-container {
+    overflow: hidden;
+    position: relative;
+    padding: 10px 0;
+}
+
+.slider-track {
+    display: flex;
+    gap: 30px;
+    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+}
+
+.slider-nav {
+    display: flex;
+    gap: 15px;
+}
+
+.nav-btn {
+    background: transparent;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+    background: var(--primary);
+    color: var(--dark);
+    box-shadow: 0 0 15px rgba(201, 167, 105, 0.4);
+}
+
+@media (max-width: 768px) {
+    .slider-container {
+        overflow-x: auto;
+        scroll-behavior: smooth;
+    }
+    .slider-nav { display: none; }
+}
+
+.slide img {
+    will-change: transform, opacity;
+    background: linear-gradient(110deg, #1a1a1a 8%, #252525 18%, #1a1a1a 33%);
+    background-size: 200% 100%;
+    animation: skeleton-shine 1.5s linear infinite;
+}
+
+@keyframes skeleton-shine {
+    to { background-position-x: -200%; }
+}
+
+#sliderTrack {
+    display: flex;
+    gap: 30px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.slide img {
+    display: block;
+    width: 300px;
+    height: 400px;
+    object-fit: cover;
+    transition: opacity 0.5s ease-in-out;
+    background-color: #1a1a1a; 
+    will-change: transform;
+}
