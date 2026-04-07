@@ -822,7 +822,7 @@
 
         .item-list-btn.edit:hover 
         {
-            background-color: var(--primary);
+            background-color: var(--social-text);
             border-color: var(--primary);
             color: var(--dark);
         }
@@ -1719,84 +1719,43 @@ body.light-theme #currentAnnouncement {
     text-transform: uppercase;
 }
 
+
+
 /* --- МОБИЛЬНОЕ МЕНЮ (когда экран узкий) --- */
 /* --- ОБЩИЕ СТИЛИ МОБИЛЬНОГО МЕНЮ (для обеих тем) --- */
+/* Базовые стили для мобилки (до 768px) */
+
+/* Базовые стили для мобилки (до 768px) */
 @media (max-width: 768px) {
     #navMenu {
-        display: flex;
+        display: none; /* Скрыто по умолчанию */
         flex-direction: column;
-        padding: 10px 0; /* Одинаковый внутренний отступ */
-        border-radius: 8px;
-        margin-top: 10px;
-        transition: all 0.3s ease;
+        width: 100%;
+        position: absolute;
+        top: 85px; /* Высота твоего хедера */
+        left: 5;
+        background-color: #111; /* Цвет для темной темы */
+        padding: 20px 0;
+        z-index: 1000;
     }
 
-    #navMenu li a {
-        padding: 15px 20px; /* Фиксированный размер кнопок в меню */
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        text-decoration: none;
-        font-size: 16px;
-        border-bottom: 1px solid transparent; /* Чтобы не прыгало при смене темы */
+    #navMenu li a i {
+        margin-right: 10px; /* Отступ от иконки до текста */
+        min-width: 40px;    /* Чтобы иконки стояли ровно в ряд */
+        text-align: center;
     }
 
-    /* --- ЦВЕТА ДЛЯ СВЕТЛОЙ ТЕМЫ --- */
+    #navMenu.active {
+        display: flex !important;
+    }
+
+    /* Цвета для светлой темы */
     body.light-theme #navMenu {
         background-color: #ffffff !important;
-        border: 1px solid #ddd;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-    body.light-theme #navMenu li a {
-        color: #000000 !important;
-        border-bottom-color: #f0f0f0;
-    }
-
-    /* --- ЦВЕТА ДЛЯ ЧЕРНОЙ ТЕМЫ --- */
-    body:not(.light-theme) #navMenu {
-        background-color: #111111 !important;
-        border: 1px solid #333;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-    }
-    body:not(.light-theme) #navMenu li a {
-        color: #ffffff !important;
-        border-bottom-color: #222;
+        border-bottom: 1px solid #ddd;
     }
 }
 
-/* --- ОБЩИЕ СТИЛИ ХЕДЕРА --- */
-header {
-    height: 70px; /* Задай фиксированную высоту, чтобы хедер не "прыгал" */
-    display: flex;
-    align-items: center;
-    transition: all 0.3s ease;
-    padding: 0 20px;
-}
-
-/* --- ЦВЕТА ДЛЯ СВЕТЛОЙ ТЕМЫ --- */
-body.light-theme header {
-    background-color: #ffffff !important;
-    border-bottom: 1px solid #ddd;
-}
-body.light-theme #navMenu li a {
-    color: #000000 !important;
-}
-
-/* --- ЦВЕТА ДЛЯ ЧЕРНОЙ ТЕМЫ --- */
-body:not(.light-theme) header {
-    background-color: #000000 !important;
-    border-bottom: 1px solid #333;
-}
-body:not(.light-theme) #navMenu li a {
-    color: #ffffff !important;
-}
-
-/* Иконки всегда одинаковые */
-#navMenu li a i {
-    color: var(--primary) !important;
-    width: 20px; /* Фиксированная ширина под иконку, чтобы текст был в ровную колонку */
-    text-align: center;
-}
 
 /* слайдер коктейлей */
 .slider-header {
