@@ -15,6 +15,22 @@ export function initAdmin() {
     const menuForm = document.getElementById('menuForm');
     const promoForm = document.getElementById('promoForm');
 
+    function toggleAdminAccessButtons(disable) {
+        const loginButtons = [
+            document.getElementById('adminAccessBtn'),
+            document.getElementById('adminAccessBtnFooter')
+        ];
+        
+        loginButtons.forEach(btn => {
+            if (btn) {
+                btn.style.opacity = disable ? '0.5' : '1';
+                btn.style.pointerEvents = disable ? 'none' : 'auto';
+                btn.title = disable ? 'Администратор уже вошел в систему' : 'Вход в панель управления';
+            }
+        });
+    }
+    if (isAdminLoggedIn) toggleAdminAccessButtons(true);
+
     const menuCharsRegex = /[^a-zA-Zа-яА-ЯёЁ0-9+(),%:.\s]/g;
 
     function applyValidation(element, maxLength, regex = null) {
@@ -41,7 +57,21 @@ export function initAdmin() {
     applyValidation(promoDescription, 500);
 
     if (promoDateInput) {
-        promoDateInput.min = new Date().toISOString().split('T')[0];
+        const today = new Date().toISOString().split('T')[0];
+        const currentYear = new Date().getFullYear();
+        const lastDayOfYear = `${currentYear}-12-31`;
+
+        promoDateInput.setAttribute('min', today);
+        promoDateInput.setAttribute('max', lastDayOfYear);
+        
+        promoDateInput.addEventListener('change', function() {
+            if (this.value < today) {
+                this.value = today;
+            } 
+            else if (this.value > lastDayOfYear) {
+                this.value = lastDayOfYear;
+            }
+        });
     }
 
     const announcementText = document.getElementById('announcementText');
@@ -52,6 +82,10 @@ export function initAdmin() {
     }
 
     function showAdminLogin() {
+        if (isAdminLoggedIn) {
+            return alert('Вы уже авторизованы как администратор!');
+        }
+
         adminLogin.style.display = 'flex';
         document.getElementById('adminPassword').value = '';
         document.getElementById('adminPassword').focus();
@@ -218,6 +252,8 @@ export function initAdmin() {
             setAdminLoggedIn(true);
             adminLogin.style.display = 'none';
             adminPanel.style.display = 'flex';
+
+            toggleAdminAccessButtons(true);
             alert('Вход выполнен!');
         } else alert('Неверный пароль!');
     });
@@ -233,6 +269,7 @@ export function initAdmin() {
     document.getElementById('logoutBtn').addEventListener('click', () => {
         setAdminLoggedIn(false);
         adminPanel.style.display = 'none';
+        toggleAdminAccessButtons(false);
         alert('Вы вышли из админ-панели.');
     });
 
