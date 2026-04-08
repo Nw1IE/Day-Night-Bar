@@ -255,7 +255,13 @@ export function initAdmin() {
 
             toggleAdminAccessButtons(true);
             alert('Вход выполнен!');
-        } else alert('Неверный пароль!');
+        } 
+        else 
+        {
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('adminPassword').focus();
+            alert('Неверный пароль!');
+        }
     });
 
     document.getElementById('adminDashboardBtn').addEventListener('click', () => {

@@ -1,4 +1,6 @@
 import { renderMenuItems } from './renderModule.js';
+import { showSuccessModal } from './successBookModule.js';
+import { showErrorModal } from './errorBookModule.js';
 
 export function initPublicEvents() {
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
@@ -89,18 +91,19 @@ export function initPublicEvents() {
         const guests = document.getElementById('guests').value;
         
         if (!name || !phone || !date || !time || !guests) {
-            alert('Пожалуйста, заполните все обязательные поля');
+            showErrorModal('Пожалуйста, заполните все обязательные поля, чтобы мы могли забронировать для вас столик.');
             return;
         }
 
         const rawPhoneDigits = phone.replace(/\D/g, '');
         if (rawPhoneDigits.length !== 11) {
-            alert('Пожалуйста, введите корректный номер телефона.');
+            showErrorModal('Введенный номер телефона некорректен. Пожалуйста, проверьте формат номера.');
             phoneInput.focus();
             return;
         }
         
-        alert(`Спасибо, ${name}! Ваш столик забронирован на ${date} в ${time} для ${guests}. Мы свяжемся с вами по телефону ${phone} для подтверждения.`);
+        showSuccessModal(name, date, time, guests, phone);
+
         bookingForm.reset();
         document.getElementById('date').min = new Date().toISOString().split('T')[0];
     });
