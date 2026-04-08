@@ -315,7 +315,7 @@
             color: var(--primary);
             font-size: 18px;
 
-        margin-left: auto;   
+            margin-left: auto;   
             white-space: nowrap;
             padding-left: 20px;  /* Чтобы цена не слипалась с текстом */
             padding-right: 20px;
