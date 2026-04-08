@@ -557,3 +557,24 @@ body.light-theme #currentAnnouncement {
     background-color: #1a1a1a; 
     will-change: transform;
 }
+
+.adminPassword
+{
+    background-color: white;
+}
+
+body.light-theme #adminPassword:focus {
+    background-color: #ffffff !important; 
+    color: #000000 !important;            
+    outline: 2px solid var(--primary);    
+    border-color: transparent;            
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); 
+}
+
+body.light-theme #adminPassword:-webkit-autofill,
+body.light-theme #adminPassword:-webkit-autofill:hover, 
+body.light-theme #adminPassword:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
+    box-shadow: 0 0 0px 1000px #ffffff inset !important;
+    -webkit-text-fill-color: #000 !important;
+}
