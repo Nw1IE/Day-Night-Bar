@@ -1,6 +1,6 @@
 import { renderMenuItems } from './renderModule.js';
-import { showSuccessModal } from './successBookModule.js';
-import { showErrorModal } from './errorBookModule.js';
+import { showSuccessModal } from './successModule.js';
+import { showErrorModal } from './errorModule.js';
 
 export function initPublicEvents() {
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');

@@ -4,7 +4,6 @@ export function showErrorModal(message) {
     modal.innerHTML = `
         <div class="booking-modal-content error">
             <div class="booking-modal-icon error">!</div>
-            <h2>Ошибка бронирования</h2>
             <p class="error-message">${message}</p>
             <button class="btn booking-modal-close error">Понятно</button>
         </div>
@@ -17,7 +16,7 @@ export function showErrorModal(message) {
         .booking-modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.85); display: flex; align-items: center;
-            justify-content: center; z-index: 1000; backdrop-filter: blur(5px);
+            justify-content: center; z-index: 100000; backdrop-filter: blur(5px);
         }
         .booking-modal-content.error {
             background: #1a1a1a; border: 1px solid #442222; padding: 40px;

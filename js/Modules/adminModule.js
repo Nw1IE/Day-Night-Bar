@@ -5,6 +5,8 @@ import {
 import { formatDate, getCategoryName } from './utilsModule.js';
 import { renderMenuItems, renderPromotions, updateAnnouncementUI } from './renderModule.js';
 import { saveMenuToStorage, savePromosToStorage, saveAnnouncementToStorage } from './storageModule.js';
+import { showErrorModal } from './errorModule.js';
+import { showSuccess } from './successModule.js';
 
 export function initAdmin() {
     const adminLogin = document.getElementById('adminLogin');
@@ -83,7 +85,8 @@ export function initAdmin() {
 
     function showAdminLogin() {
         if (isAdminLoggedIn) {
-            return alert('Вы уже авторизованы как администратор!');
+            showErrorModal('Вы уже авторизованы как администратор!');
+            return;
         }
 
         adminLogin.style.display = 'flex';
@@ -118,7 +121,7 @@ export function initAdmin() {
 
         document.querySelectorAll('.item-list-btn.delete').forEach(button => {
             button.addEventListener('click', function() {
-                if (!isAdminLoggedIn) return alert('Требуется авторизация.');
+                if (!isAdminLoggedIn) return showErrorModal('Требуется авторизация.');
                 const id = parseInt(this.getAttribute('data-id'));
                 if (confirm('Удалить эту позицию?')) {
                     updateMenuItems(menuItems.filter(item => item.id !== id));
@@ -131,7 +134,7 @@ export function initAdmin() {
 
         document.querySelectorAll('.item-list-btn.edit').forEach(button => {
             button.addEventListener('click', function() {
-                if (!isAdminLoggedIn) return alert('Требуется авторизация.');
+                if (!isAdminLoggedIn) return showErrorModal('Требуется авторизация.');
 
                 const modalHeader = document.querySelector('#adminDashboardModal .modal-header');
                 if (modalHeader) {
@@ -155,7 +158,7 @@ export function initAdmin() {
                     menuForm.onsubmit = function(e) {
                         e.preventDefault();
                         if (isFieldInvalid(itemName.value) || isFieldInvalid(itemPrice.value)) {
-                            return alert('Заполните обязательные поля корректно');
+                            return showErrorModal('Заполните обязательные поля корректно');
                         }
                         item.name = document.getElementById('itemName').value;
                         item.category = document.getElementById('itemCategory').value;
@@ -169,7 +172,7 @@ export function initAdmin() {
                         
                         renderCurrentMenuItems();
                         renderMenuItems('all');
-                        alert('Позиция успешно обновлена!');
+                        showSuccess('Позиция обновлена', `Позиция "${item.name}" была успешно обновлена в меню.`);
                     };
                 }
             });
@@ -178,10 +181,10 @@ export function initAdmin() {
 
     const defaultMenuSubmit = function(e) {
         e.preventDefault();
-        if (!isAdminLoggedIn) return alert('Требуется авторизация.');
+        if (!isAdminLoggedIn) return showErrorModal('Требуется авторизация.');
 
         if (isFieldInvalid(itemName.value) || isFieldInvalid(itemPrice.value) || isFieldInvalid(itemDescription.value)) {
-            return alert('Пожалуйста, заполните все поля меню');
+            return showErrorModal('Пожалуйста, заполните все поля меню');
         }
 
         const newItem = {
@@ -197,7 +200,7 @@ export function initAdmin() {
         menuForm.reset();
         renderCurrentMenuItems();
         renderMenuItems('all');
-        alert('Позиция добавлена!');
+        showSuccess('Позиция добавлена', `Позиция "${newItem.name}" была успешно добавлена в меню.`);
     };
     menuForm.onsubmit = defaultMenuSubmit;
 
@@ -254,13 +257,13 @@ export function initAdmin() {
             adminPanel.style.display = 'flex';
 
             toggleAdminAccessButtons(true);
-            alert('Вход выполнен!');
+            showSuccess('Добро пожаловать, администратор!', 'Вы успешно вошли в админ-панель. Теперь вы можете управлять меню, акциями и объявлениями.');
         } 
         else 
         {
             document.getElementById('adminPassword').value = '';
             document.getElementById('adminPassword').focus();
-            alert('Неверный пароль!');
+            showErrorModal('Неверный пароль!');
         }
     });
 
@@ -276,7 +279,7 @@ export function initAdmin() {
         setAdminLoggedIn(false);
         adminPanel.style.display = 'none';
         toggleAdminAccessButtons(false);
-        alert('Вы вышли из админ-панели.');
+        showSuccess('До свидания!', 'Вы успешно вышли из админ-панели. До новых встреч!');
     });
 
     document.getElementById('closeDashboardModal').addEventListener('click', () => adminDashboardModal.style.display = 'none');
@@ -295,10 +298,10 @@ export function initAdmin() {
 
     promoForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        if (!isAdminLoggedIn) return alert('Требуется авторизация.');
+        if (!isAdminLoggedIn) return showErrorModal('Требуется авторизация.');
 
         if (isFieldInvalid(promoTitle.value) || isFieldInvalid(promoDescription.value) || isFieldInvalid(promoDateInput.value)) {
-            return alert('Пожалуйста, заполните все поля акции');
+            return showErrorModal('Пожалуйста, заполните все поля акции');
         }
 
         promotions.push({
@@ -312,16 +315,16 @@ export function initAdmin() {
         promoForm.reset();
         renderCurrentPromotions();
         renderPromotions();
-        alert('Акция добавлена!');
+        showSuccess('Акция добавлена', 'Новая акция была успешно добавлена.');
     });
 
     announcementForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        if (!isAdminLoggedIn) return alert('Требуется авторизация.');
-        
+        if (!isAdminLoggedIn) return showErrorModal('Требуется авторизация.');
+
         const text = announcementText.value;
         if (isFieldInvalid(text)) {
-            return alert('Введите текст объявления');
+            return showErrorModal('Введите текст объявления');
         }
 
         updateAnnouncement(text);
@@ -329,6 +332,6 @@ export function initAdmin() {
         updateAnnouncementUI();
         announcementForm.reset();
         renderCurrentAnnouncement();
-        alert('Объявление опубликовано!');
+        showSuccess('Объявление опубликовано', 'Новое объявление было успешно опубликовано на сайте.');
     });
 }
