@@ -33,7 +33,6 @@
             padding: 0 20px;
         }
 
-        /* Header */
         header {
             background-color: rgba(18, 18, 18, 0.95);
             color: var(--light);
@@ -132,7 +131,6 @@
             color: var(--primary);
         }
 
-        /* Hero section */
         .hero {
             background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.8)), 
                         url('https://images.unsplash.com/photo-1514933651103-005eec06c04b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');
@@ -211,7 +209,6 @@
             color: var(--dark);
         }
 
-        /* Section styling */
         section {
             padding: 100px 0;
         }
@@ -236,7 +233,6 @@
             transform: translateX(-50%);
         }
 
-        /* Menu section */
         .menu-categories {
             display: flex;
             justify-content: center;
@@ -323,7 +319,6 @@
             line-height: 1.7;
         }
 
-        /* Reservation section */
         .reservation-form {
             background-color: var(--gray);
             padding: 50px;
@@ -371,7 +366,6 @@
             box-shadow: 0 0 0 2px rgba(201, 167, 105, 0.2);
         }
 
-        /* Promotions section */
         .promotions {
             background-color: var(--dark);
             position: relative;
@@ -437,7 +431,6 @@
             color: var(--primary);
         }
 
-        /* Announcements */
         .announcement {
             background: linear-gradient(90deg, var(--primary), var(--primary-dark));
             color: var(--dark);
