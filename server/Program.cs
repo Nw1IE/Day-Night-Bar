@@ -1,3 +1,8 @@
+using Microsoft.AspNetCore.RateLimiting;
+using server.Controllers;
+using server.Data;
+using server.Middlewares;
+using server.Models;
 
 namespace server
 {
@@ -6,6 +11,44 @@ namespace server
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddRateLimiter(options =>
+            {
+                options.OnRejected = async (context, token) =>
+                {
+                    var db = context.HttpContext.RequestServices.GetRequiredService<AppDbContext>();
+                    var ip = context.HttpContext.Connection.RemoteIpAddress?.ToString();
+
+                    if (!string.IsNullOrEmpty(ip))
+                    {
+                        var ban = new BannedIp
+                        {
+                            IpAddress = ip,
+                            BannedUntil = DateTime.UtcNow.AddHours(24)
+                        };
+                        db.BannedIps.Add(ban);
+                        await db.SaveChangesAsync();
+                    }
+
+                    context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+                    await context.HttpContext.Response.WriteAsJsonAsync(new { error = "Слишком много попыток. Ваш IP заблокирован на сутки." });
+                };
+
+                options.AddFixedWindowLimiter("auth-limit", opt =>
+                {
+                    opt.Window = TimeSpan.FromMinutes(1);
+                    opt.PermitLimit = 5;
+                });
+            });
+
+            builder.Services.AddRateLimiter(options =>
+            {
+                options.AddFixedWindowLimiter("auth-limit", opt =>
+                {
+                    opt.Window = TimeSpan.FromMinutes(1);
+                    opt.PermitLimit = 5;
+                });
+            });
 
             // Add services to the container.
 
@@ -20,6 +63,13 @@ namespace server
             {
                 app.MapOpenApi();
             }
+
+            app.UseMiddleware<IpBanMiddleware>();
+
+            app.UseRateLimiter();
+
+            app.MapAuthEndpoints();
+            //app.RequireRateLimiting("auth-limit");
 
             app.UseAuthorization();
 
