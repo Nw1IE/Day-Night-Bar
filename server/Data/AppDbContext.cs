@@ -53,9 +53,16 @@ namespace server.Data
                 entity.Property(e => e.BannedUntil).IsRequired();
                 entity.Property(e => e.Reason).HasMaxLength(255).HasDefaultValue("Brute-force attempt");
             });
+
+            modelBuilder.Entity<Announcment>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Text).IsRequired().HasMaxLength(1000);
+            });
         }
 
         public DbSet<Admin> Admins => Set<Admin>();
         public DbSet<BannedIp> BannedIps => Set<BannedIp>();
+        public DbSet<Announcment> Announcements => Set<Announcment>();
     }
 }
