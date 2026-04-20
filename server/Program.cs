@@ -63,6 +63,7 @@ namespace server
 
             app.MapAuthEndpoints();
             app.MapAnnouncementEndpoints();
+            app.MapPromotionEndpoints();
             app.MapControllers();
 
             app.Run();

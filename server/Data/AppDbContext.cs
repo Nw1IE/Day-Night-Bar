@@ -59,10 +59,18 @@ namespace server.Data
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Text).IsRequired().HasMaxLength(1000);
             });
+
+            modelBuilder.Entity<Promotion>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
+                entity.Property(e => e.Description).IsRequired();
+            });
         }
 
         public DbSet<Admin> Admins => Set<Admin>();
         public DbSet<BannedIp> BannedIps => Set<BannedIp>();
         public DbSet<Announcment> Announcements => Set<Announcment>();
+        public DbSet<Promotion> Promotions => Set<Promotion>();
     }
 }
