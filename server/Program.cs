@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.EntityFrameworkCore;
 using server.Controllers;
 using server.Data;
 using server.Middlewares;
@@ -11,6 +12,9 @@ namespace server
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddDbContext<AppDbContext>(options => 
+            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddRateLimiter(options =>
             {
@@ -41,15 +45,6 @@ namespace server
                 });
             });
 
-            builder.Services.AddRateLimiter(options =>
-            {
-                options.AddFixedWindowLimiter("auth-limit", opt =>
-                {
-                    opt.Window = TimeSpan.FromMinutes(1);
-                    opt.PermitLimit = 5;
-                });
-            });
-
             // Add services to the container.
 
             builder.Services.AddControllers();
@@ -66,10 +61,7 @@ namespace server
 
             app.UseMiddleware<IpBanMiddleware>();
 
-            app.UseRateLimiter();
-
             app.MapAuthEndpoints();
-            //app.RequireRateLimiting("auth-limit");
 
             app.UseAuthorization();
 

@@ -456,3 +456,7 @@ $RECYCLE.BIN/
 # EF
 Migrations/
 *.db*
+
+.env
+logs/
+*.log
