@@ -4,6 +4,7 @@ using server.Controllers;
 using server.Data;
 using server.Middlewares;
 using server.Models;
+using server.Properties.Services;
 
 
 namespace server
@@ -47,6 +48,7 @@ namespace server
                 });
             });
 
+            builder.Services.AddScoped<MenuService>();
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
 
@@ -64,6 +66,7 @@ namespace server
             app.MapAuthEndpoints();
             app.MapAnnouncementEndpoints();
             app.MapPromotionEndpoints();
+            app.MapMenuEndpoints();
             app.MapControllers();
 
             app.Run();
