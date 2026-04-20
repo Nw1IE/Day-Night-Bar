@@ -43,9 +43,7 @@ namespace server.Data
             modelBuilder.Entity<Admin>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.Username).IsRequired().HasMaxLength(50);
-                entity.Property(e => e.PasswordHash).IsRequired();
-                entity.HasIndex(e => e.Username).IsUnique();
+                entity.Property(e => e.PasscodeHash).IsRequired();
             });
 
             modelBuilder.Entity<BannedIp>(entity =>

@@ -5,16 +5,18 @@ using server.Data;
 using server.Middlewares;
 using server.Models;
 
+
 namespace server
 {
     public class Program
     {
         public static void Main(string[] args)
         {
+            DotNetEnv.Env.Load();
+
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddDbContext<AppDbContext>(options => 
-            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddDbContext<AppDbContext>();
 
             builder.Services.AddRateLimiter(options =>
             {
@@ -35,7 +37,7 @@ namespace server
                     }
 
                     context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
-                    await context.HttpContext.Response.WriteAsJsonAsync(new { error = "Слишком много попыток. Ваш IP заблокирован на сутки." });
+                    await context.HttpContext.Response.WriteAsJsonAsync(new { error = "Слишком много попыток. IP заблокирован на сутки." });
                 };
 
                 options.AddFixedWindowLimiter("auth-limit", opt =>
@@ -45,27 +47,21 @@ namespace server
                 });
             });
 
-            // Add services to the container.
-
             builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
             }
 
             app.UseMiddleware<IpBanMiddleware>();
+            app.UseRateLimiter();                 
+            app.UseAuthorization();               
 
             app.MapAuthEndpoints();
-
-            app.UseAuthorization();
-
-
             app.MapControllers();
 
             app.Run();
