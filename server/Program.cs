@@ -49,6 +49,10 @@ namespace server
             });
 
             builder.Services.AddScoped<MenuService>();
+            builder.Services.AddScoped<AnnouncementService>();
+            builder.Services.AddScoped<PromotionService>();
+            builder.Services.AddScoped<AuthService>();
+            builder.Services.AddScoped<BookingService>();
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
 

@@ -74,6 +74,23 @@ namespace server.Data
                 entity.Property(e => e.Price).HasColumnType("decimal(18,2)");
                 entity.Property(e => e.Category).HasConversion<string>();
             });
+
+            modelBuilder.Entity<Booking>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.ClientName).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Phone).IsRequired().HasMaxLength(20);
+                entity.Property(e => e.BookingTime).IsRequired();
+                entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            });
+
+            modelBuilder.Entity<TableStatus>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Capacity).IsRequired();
+                entity.Property(e => e.IsOccupied).HasDefaultValue(false);
+            });
         }
 
         public DbSet<Admin> Admins => Set<Admin>();
@@ -81,5 +98,7 @@ namespace server.Data
         public DbSet<Announcment> Announcements => Set<Announcment>();
         public DbSet<Promotion> Promotions => Set<Promotion>();
         public DbSet<Menu> Menus => Set<Menu>();
+        public DbSet<Booking> Bookings => Set<Booking>();
+        public DbSet<TableStatus> TableStatuses => Set<TableStatus>();
     }
 }
