@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using BCrypt.Net;
+﻿using BCrypt.Net;
+using Microsoft.EntityFrameworkCore;
 using server.Data;
 using server.Models;
+using server.Properties.Services;
 
 namespace server.Controllers
 {
@@ -11,11 +12,9 @@ namespace server.Controllers
         {
             var group = app.MapGroup("/api/auth");
 
-            group.MapPost("/login", async (AdminLoginDto dto, AppDbContext db, HttpContext ctx) =>
+            group.MapPost("/login", async (AdminLoginDto dto, AuthService auth, HttpContext ctx) =>
             {
-                var admin = await db.Admins.FirstOrDefaultAsync();
-
-                if (admin == null || !BCrypt.Net.BCrypt.Verify(dto.Passcode, admin.PasscodeHash))
+                if (!await auth.VerifyAdminAsync(dto.Passcode))
                     return Results.Unauthorized();
 
                 ctx.Response.Cookies.Append("AdminAuth", "secure_session_token_here", new CookieOptions
@@ -27,9 +26,7 @@ namespace server.Controllers
                 });
 
                 return Results.Ok(new { message = "Вход выполнен успешно" });
-
             }).RequireRateLimiting("auth-limit");
-
 
             group.MapPost("/logout", (HttpContext ctx) =>
             {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using server.Data;
 using server.Models;
+using server.Properties.Services;
 
 namespace server.Controllers
 {
@@ -10,52 +11,25 @@ namespace server.Controllers
         {
             var group = app.MapGroup("/api/promotions");
 
-            group.MapGet("/", async (AppDbContext db) =>
+            group.MapGet("/", async (PromotionService service) =>
             {
-                var now = DateTime.UtcNow;
-
-                var promotions = await db.Promotions
-                    .Where(p => p.EndDate > now)
-                    .OrderBy(p => p.EndDate)
-                    .Select(p => new PromoResponseDto(p.Id, p.Name, p.Description, p.EndDate))
-                    .ToListAsync();
-
-                return Results.Ok(promotions);
+                var promos = await service.GetActiveAsync();
+                return Results.Ok(promos.Select(p => new PromoResponseDto(p.Id, p.Name, p.Description, p.EndDate)));
             });
 
-            group.MapPost("/", async (CreatePromoDto dto, AppDbContext db, HttpContext ctx) =>
+            group.MapPost("/", async (CreatePromoDto dto, PromotionService service, HttpContext ctx) =>
             {
-                if (!ctx.Request.Cookies.ContainsKey("AdminAuth"))
-                    return Results.Unauthorized();
+                if (!ctx.Request.Cookies.ContainsKey("AdminAuth")) return Results.Unauthorized();
+                if (dto.EndDate <= DateTime.UtcNow) return Results.BadRequest("Дата в прошлом.");
 
-                if (dto.EndDate <= DateTime.UtcNow)
-                    return Results.BadRequest(new { error = "Дата окончания не может быть в прошлом." });
-
-                var promotion = new Promotion
-                {
-                    Name = dto.Title,
-                    Description = dto.Description,
-                    EndDate = dto.EndDate
-                };
-
-                db.Promotions.Add(promotion);
-                await db.SaveChangesAsync();
-
-                return Results.Ok(new { message = "Акция успешно создана", id = promotion.Id });
+                var p = await service.CreateAsync(dto.Title, dto.Description, dto.EndDate);
+                return Results.Ok(new { message = "Акция создана", id = p.Id });
             });
 
-            group.MapDelete("/{id:int}", async (int id, AppDbContext db, HttpContext ctx) =>
+            group.MapDelete("/{id:int}", async (int id, PromotionService service, HttpContext ctx) =>
             {
-                if (!ctx.Request.Cookies.ContainsKey("AdminAuth"))
-                    return Results.Unauthorized();
-
-                var promotion = await db.Promotions.FindAsync(id);
-                if (promotion == null) return Results.NotFound();
-
-                db.Promotions.Remove(promotion);
-                await db.SaveChangesAsync();
-
-                return Results.Ok(new { message = "Акция удалена" });
+                if (!ctx.Request.Cookies.ContainsKey("AdminAuth")) return Results.Unauthorized();
+                return await service.DeleteAsync(id) ? Results.Ok() : Results.NotFound();
             });
         }
 

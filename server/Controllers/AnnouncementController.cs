@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using server.Data;
 using server.Models;
+using server.Properties.Services;
 
 namespace server.Controllers
 {
@@ -10,41 +11,17 @@ namespace server.Controllers
         {
             var group = app.MapGroup("/api/announcements");
 
-            group.MapGet("/current", async (AppDbContext db) =>
+            group.MapGet("/current", async (AnnouncementService service) =>
             {
-                var announcement = await db.Announcements.FirstOrDefaultAsync();
-
-                if (announcement == null || string.IsNullOrWhiteSpace(announcement.Text))
-                    return Results.Ok(new AnnouncementResponseDto("", null));
-
-                return Results.Ok(new AnnouncementResponseDto(announcement.Text, announcement.UpdatedAt));
+                var a = await service.GetCurrentAsync();
+                return Results.Ok(new AnnouncementResponseDto(a?.Text ?? "", a?.UpdatedAt));
             });
 
-
-            group.MapPost("/", async (CreateAnnouncementDto dto, AppDbContext db, HttpContext ctx) =>
+            group.MapPost("/", async (CreateAnnouncementDto dto, AnnouncementService service, HttpContext ctx) =>
             {
-                if (!ctx.Request.Cookies.ContainsKey("AdminAuth"))
-                    return Results.Unauthorized();
+                if (!ctx.Request.Cookies.ContainsKey("AdminAuth")) return Results.Unauthorized();
 
-                var announcement = await db.Announcements.FirstOrDefaultAsync();
-
-                if (announcement == null)
-                {
-                    announcement = new Announcment
-                    {
-                        Text = dto.Message,
-                        UpdatedAt = DateTime.UtcNow
-                    };
-                    db.Announcements.Add(announcement);
-                }
-                else
-                {
-                    announcement.Text = dto.Message;
-                    announcement.UpdatedAt = DateTime.UtcNow;
-                }
-
-                await db.SaveChangesAsync();
-
+                await service.UpdateOrCreateAsync(dto.Message);
                 return Results.Ok(new { message = "Объявление успешно сохранено" });
             });
         }
