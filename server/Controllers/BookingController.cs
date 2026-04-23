@@ -22,7 +22,12 @@ namespace server.Controllers
                 if (!result.Success)
                     return Results.BadRequest(new { error = result.Message });
 
-                _ = email.SendAdminNotification($"🔔 Новая бронь!\n👤 {dto.Name}\n📞 {dto.Phone}\n⏰ {dto.Time:HH:mm}\n👥 Гостей: {dto.Guests}");
+                _ = email.SendAdminNotification($"" +
+                    $"🔔 Новая бронь!\n" +
+                    $"Имя Клиента: {dto.Name}\n" +
+                    $"Телефон: {dto.Phone}\n" +
+                    $"Время бронирования: {dto.Time:HH:mm}\n" +
+                    $"Количество гостей: {dto.Guests}");
 
                 return Results.Ok(new { message = "Заявка принята, ожидайте подтверждения" });
             });
