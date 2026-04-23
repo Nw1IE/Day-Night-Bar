@@ -7,7 +7,7 @@ namespace server.Controllers
     {
         public static void MapBookingEndpoints(this IEndpointRouteBuilder app)
         {
-            app.MapPost("/api/bookings", async (CreateBookingDto dto, BookingService service, TelegramBotService bot) =>
+            app.MapPost("/api/bookings", async (CreateBookingDto dto, BookingService service, EmailService email) =>
             {
                 var booking = new Booking
                 {
@@ -22,7 +22,7 @@ namespace server.Controllers
                 if (!result.Success)
                     return Results.BadRequest(new { error = result.Message });
 
-                _ = bot.SendAdminNotification($"🔔 Новая бронь!\n👤 {dto.Name}\n📞 {dto.Phone}\n⏰ {dto.Time:HH:mm}\n👥 Гостей: {dto.Guests}");
+                _ = email.SendAdminNotification($"🔔 Новая бронь!\n👤 {dto.Name}\n📞 {dto.Phone}\n⏰ {dto.Time:HH:mm}\n👥 Гостей: {dto.Guests}");
 
                 return Results.Ok(new { message = "Заявка принята, ожидайте подтверждения" });
             });
