@@ -1,4 +1,5 @@
 ﻿using server.Models;
+using server.Models.Enums;
 using server.Properties.Services;
 
 namespace server.Controllers

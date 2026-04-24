@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace server.Models
+namespace server.Models.Enums
 {
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum Category

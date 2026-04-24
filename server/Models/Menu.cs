@@ -1,4 +1,6 @@
-﻿namespace server.Models
+﻿using server.Models.Enums;
+
+namespace server.Models
 {
     public class Menu
     {
