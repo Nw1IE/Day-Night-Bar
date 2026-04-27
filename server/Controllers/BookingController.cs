@@ -9,7 +9,9 @@ namespace server.Controllers
         {
             app.MapPost("/api/bookings", async (CreateBookingDto dto, BookingService service, EmailService email) =>
             {
-                var booking = new Booking
+                Console.WriteLine("!!! ЗАПРОС НА БРОНИРОВАНИЕ ПОЛУЧЕН !!!");
+                // из за этого падает и выдает ошибку если вернуть то письмио не будет приходить!!
+                /*var booking = new Booking
                 {
                     ClientName = dto.Name,
                     Phone = dto.Phone,
@@ -21,8 +23,8 @@ namespace server.Controllers
 
                 if (!result.Success)
                     return Results.BadRequest(new { error = result.Message });
-
-                _ = email.SendAdminNotification($"" +
+                */
+                await email.SendAdminNotification($"" +
                     $"🔔 Новая бронь!\n" +
                     $"Имя Клиента: {dto.Name}\n" +
                     $"Телефон: {dto.Phone}\n" +
@@ -33,6 +35,8 @@ namespace server.Controllers
             });
         }
 
+        
         public record CreateBookingDto(string Name, string Phone, DateTime Time, int Guests);
     }
 }
+

@@ -102,6 +102,34 @@ export function initPublicEvents() {
             return;
         }
         
+        const bookingData = {
+            name: name,
+            phone: phone,
+            time: `${date}T${time}:00`, 
+            guests: parseInt(guests)
+        };
+
+        fetch('http://localhost:5101/api/bookings', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(bookingData)
+        })
+        .then(response => {
+            if (response.ok) {
+                showSuccessModal(name, date, time, guests, phone);
+                bookingForm.reset();
+                document.getElementById('date').min = new Date().toISOString().split('T')[0];
+            } else {
+                showErrorModal('Ошибка сервера при бронировании.');
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка:', error);
+            showErrorModal('Не удалось связаться с сервером. Проверьте, запущен ли бэкенд.');
+        });
+
         showSuccessModal(name, date, time, guests, phone);
 
         bookingForm.reset();

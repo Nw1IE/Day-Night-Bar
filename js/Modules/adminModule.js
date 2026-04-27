@@ -247,8 +247,12 @@ export function initAdmin() {
             </div>`;
     }
 
-    document.getElementById('adminAccessBtn').addEventListener('click', (e) => { e.preventDefault(); showAdminLogin(); });
-    document.getElementById('adminAccessBtnFooter').addEventListener('click', (e) => { e.preventDefault(); showAdminLogin(); });
+    const adminBtn = document.getElementById('adminAccessBtn');
+    if (adminBtn) {
+    adminBtn.addEventListener('click', () => {
+        document.getElementById('adminLogin').style.display = 'flex';
+    });
+    }
     
     document.getElementById('loginBtn').addEventListener('click', () => {
         if (document.getElementById('adminPassword').value === ADMIN_PASSWORD) {

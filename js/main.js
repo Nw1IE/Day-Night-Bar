@@ -30,4 +30,24 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     initSlider();
+
+    document.addEventListener('keydown', (event) => {
+
+    if (event.ctrlKey && event.altKey && event.code === 'KeyA') {
+        event.preventDefault();
+        
+        const loginDiv = document.querySelector('#adminLogin');
+        console.log("Попытка открыть админку. Найден элемент:", loginDiv);
+
+        if (loginDiv) {
+            loginDiv.style.display = 'flex'; 
+            loginDiv.style.position = 'fixed';
+            loginDiv.style.zIndex = '10000';
+            // Добавим принудительную видимость для теста
+            loginDiv.style.backgroundColor = 'rgba(0,0,0,0.9)';
+        } else {
+            alert("Ошибка: Элемент #adminLogin не найден в HTML!");
+        }
+    }
+});
 });

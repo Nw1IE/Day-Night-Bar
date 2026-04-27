@@ -17,6 +17,18 @@ namespace server
 
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.WithOrigins("http://127.0.0.1:5500") // Р Р°Р·СЂРµС€Р°РµРј С‚РІРѕРµРјСѓ Live Server
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
+            });
+
+            builder.Services.AddScoped<EmailService>(); // Р”РѕР»Р¶РЅРѕ Р±С‹С‚СЊ РґРѕ builder.Build()
+
             builder.Services.AddDbContext<AppDbContext>();
 
             builder.Services.AddRateLimiter(options =>
@@ -38,7 +50,7 @@ namespace server
                     }
 
                     context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
-                    await context.HttpContext.Response.WriteAsJsonAsync(new { error = "Слишком много попыток. IP заблокирован на сутки." });
+                    await context.HttpContext.Response.WriteAsJsonAsync(new { error = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ. IP пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ." });
                 };
 
                 options.AddFixedWindowLimiter("auth-limit", opt =>
@@ -57,15 +69,18 @@ namespace server
             builder.Services.AddOpenApi();
 
             var app = builder.Build();
+            app.UseCors();
+
 
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
             }
 
-            app.UseMiddleware<IpBanMiddleware>();
+           /* app.UseMiddleware<IpBanMiddleware>(); */
             app.UseRateLimiter();                 
-            app.UseAuthorization();               
+            app.UseAuthorization();       
+            app.MapBookingEndpoints();        
 
             app.MapAuthEndpoints();
             app.MapAnnouncementEndpoints();
@@ -74,6 +89,8 @@ namespace server
             app.MapControllers();
 
             app.Run();
+
+            
         }
     }
 }

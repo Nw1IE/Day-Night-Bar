@@ -31,7 +31,10 @@ namespace server.Properties.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Ошибка отправки почты: {ex.Message}");
+                Console.WriteLine("---------- ошибки ----------");
+                Console.WriteLine($"Сообщение: {ex.Message}");
+                Console.WriteLine($"Детали: {ex.InnerException?.Message}");
+                Console.WriteLine("-------------------------------------");
             }
         }
     }
