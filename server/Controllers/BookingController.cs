@@ -10,8 +10,7 @@ namespace server.Controllers
             app.MapPost("/api/bookings", async (CreateBookingDto dto, BookingService service, EmailService email) =>
             {
                 Console.WriteLine("!!! ЗАПРОС НА БРОНИРОВАНИЕ ПОЛУЧЕН !!!");
-                // из за этого падает и выдает ошибку если вернуть то письмио не будет приходить!!
-                /*var booking = new Booking
+                var booking = new Booking
                 {
                     ClientName = dto.Name,
                     Phone = dto.Phone,
@@ -23,7 +22,6 @@ namespace server.Controllers
 
                 if (!result.Success)
                     return Results.BadRequest(new { error = result.Message });
-                */
                 await email.SendAdminNotification($"" +
                     $"🔔 Новая бронь!\n" +
                     $"Имя Клиента: {dto.Name}\n" +

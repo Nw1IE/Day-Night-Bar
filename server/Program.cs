@@ -21,15 +21,12 @@ namespace server
             {
                 options.AddDefaultPolicy(policy =>
                 {
-                    policy.WithOrigins("http://127.0.0.1:5500") // Разрешаем твоему Live Server
+                    policy.WithOrigins("http://127.0.0.1:5500")
                     .AllowAnyHeader()
                     .AllowAnyMethod();
                 });
             });
-
-            builder.Services.AddScoped<EmailService>(); // Должно быть до builder.Build()
-
-            builder.Services.AddDbContext<AppDbContext>();
+            
 
             builder.Services.AddRateLimiter(options =>
             {
@@ -60,6 +57,8 @@ namespace server
                 });
             });
 
+            builder.Services.AddScoped<EmailService>();
+            builder.Services.AddDbContext<AppDbContext>();
             builder.Services.AddScoped<MenuService>();
             builder.Services.AddScoped<AnnouncementService>();
             builder.Services.AddScoped<PromotionService>();
@@ -77,7 +76,7 @@ namespace server
                 app.MapOpenApi();
             }
 
-           /* app.UseMiddleware<IpBanMiddleware>(); */
+            app.UseMiddleware<IpBanMiddleware>();
             app.UseRateLimiter();                 
             app.UseAuthorization();       
             app.MapBookingEndpoints();        
@@ -89,8 +88,6 @@ namespace server
             app.MapControllers();
 
             app.Run();
-
-            
         }
     }
 }
