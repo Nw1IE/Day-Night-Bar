@@ -30,7 +30,7 @@
 Проект придерживается классической структуры разделения ответственности, что делает код читаемым и поддерживаемым.
 
 ```text
-Day-Night-Bar/
+client/
 ├── css/ 
 │   ├── Modules/
 │   └── style.css
@@ -41,6 +41,17 @@ Day-Night-Bar/
 ├── images/
 ├── components/
 └── index.html
+
+server/
+├── Controllers/ 
+├── Data/
+│   └── AppDbContext.cs
+├── Middlewares/
+│   └── IpBanMiddleware.cs
+├── Models/
+│   └── Enums/
+├── Services/
+└── Program.cs
 ```
 
 -----
