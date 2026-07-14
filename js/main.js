@@ -36,17 +36,12 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault();
             
             const loginDiv = document.querySelector('#adminLogin');
-            console.log("Попытка открыть админку. Найден элемент:", loginDiv);
+            console.log("Попытка открыть админку");
 
-            if (loginDiv) {
-                loginDiv.style.display = 'flex'; 
-                loginDiv.style.position = 'fixed';
-                loginDiv.style.zIndex = '10000';
-                loginDiv.style.backgroundColor = 'rgba(0,0,0,0.9)';
-            } 
-            else {
-                alert("Ошибка: Элемент #adminLogin не найден в HTML!");
-            }
+            loginDiv.style.display = 'flex'; 
+            loginDiv.style.position = 'fixed';
+            loginDiv.style.zIndex = '10000';
+            loginDiv.style.backgroundColor = 'rgba(0,0,0,0.9)';
         }
     });
 });
