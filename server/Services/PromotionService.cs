@@ -14,7 +14,7 @@ namespace server.Properties.Services
 
         public async Task<Promotion> CreateAsync(string name, string desc, DateTime endDate)
         {
-            var promo = new Promotion { Name = name, Description = desc, EndDate = endDate };
+            var promo = new Promotion { Name = name, Description = desc, EndDate = endDate, StartDate = DateTime.UtcNow };
             db.Promotions.Add(promo);
             await db.SaveChangesAsync();
             return promo;
