@@ -47,7 +47,7 @@ namespace server
                     }
 
                     context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
-                    await context.HttpContext.Response.WriteAsJsonAsync(new { error = "������� ����� �������. IP ������������ �� �����." });
+                    await context.HttpContext.Response.WriteAsJsonAsync(new { error = "Too Many Requests" });
                 };
 
                 options.AddFixedWindowLimiter("auth-limit", opt =>
@@ -63,7 +63,6 @@ namespace server
             builder.Services.AddScoped<AnnouncementService>();
             builder.Services.AddScoped<PromotionService>();
             builder.Services.AddScoped<AuthService>();
-            builder.Services.AddScoped<BookingService>();
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
 
@@ -78,8 +77,7 @@ namespace server
 
             app.UseMiddleware<IpBanMiddleware>();
             app.UseRateLimiter();                 
-            app.UseAuthorization();       
-            app.MapBookingEndpoints();        
+            app.UseAuthorization();      
 
             app.MapAuthEndpoints();
             app.MapAnnouncementEndpoints();
