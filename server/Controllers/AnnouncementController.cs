@@ -21,16 +21,14 @@ namespace server.Controllers
 
             group.MapPost("/", async (CreateAnnouncementDto dto, AnnouncementService service, HttpContext ctx) =>
             {
-                if (!ctx.Request.Cookies.ContainsKey("AdminAuth")) return Results.Unauthorized();
                 if (string.IsNullOrWhiteSpace(dto.Text)) return Results.BadRequest("Текст объявления не может быть пустым.");
 
                 var a = await service.CreateAsync(dto.Text);
                 return Results.Created($"/api/announcements/{a.Id}", new AnnouncementResponseDto(a.Id, a.Text, a.UpdatedAt));
-            });
+            }).RequireAuthorization();
 
             group.MapPatch("/{id:int}", async (int id, PatchAnnouncementDto dto, AnnouncementService service, HttpContext ctx) =>
             {
-                if (!ctx.Request.Cookies.ContainsKey("AdminAuth")) return Results.Unauthorized();
                 if (string.IsNullOrWhiteSpace(dto.Text)) return Results.BadRequest("Текст объявления не может быть пустым.");
 
                 var existing = await service.GetByIdAsync(id);
@@ -42,18 +40,13 @@ namespace server.Controllers
 
                 await service.UpdateAsync(existing);
                 return Results.Ok(new AnnouncementResponseDto(existing.Id, existing.Text, existing.UpdatedAt));
-            });
+            }).RequireAuthorization();
 
             group.MapDelete("/{id:int}", async (int id, AnnouncementService service, HttpContext ctx) =>
             {
-                if (!ctx.Request.Cookies.ContainsKey("AdminAuth"))
-                {
-                    return Results.Unauthorized();
-                }
-
                 await service.DeleteAsync(id);
                 return Results.NoContent();
-            });
+            }).RequireAuthorization();
         }
 
         public record CreateAnnouncementDto(string Text);

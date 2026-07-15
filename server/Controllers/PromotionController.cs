@@ -21,13 +21,11 @@ namespace server.Controllers
 
             group.MapGet("/all", async (PromotionService service, HttpContext ctx) =>
             {
-                if (!ctx.Request.Cookies.ContainsKey("AdminAuth")) return Results.Unauthorized();
-
                 var promos = await service.GetAllAsync();
                 return Results.Ok(promos.Select(p => new PromoResponseDto(
                     p.Id, p.Name, p.Description, p.StartDate, p.EndDate
                 )));
-            });
+            }).RequireAuthorization();
 
             group.MapGet("/{id:int}", async (int id, PromotionService service) =>
             {
@@ -39,8 +37,6 @@ namespace server.Controllers
 
             group.MapPost("/", async (CreatePromoDto dto, PromotionService service, HttpContext ctx) =>
             {
-                if (!ctx.Request.Cookies.ContainsKey("AdminAuth")) return Results.Unauthorized();
-
                 if (dto.EndDate <= dto.StartDate)
                     return Results.BadRequest("Дата окончания должна быть позже даты начала.");
 
@@ -48,12 +44,10 @@ namespace server.Controllers
                 return Results.Created($"/api/promotions/{p.Id}", new PromoResponseDto(
                     p.Id, p.Name, p.Description, p.StartDate, p.EndDate
                 ));
-            });
+            }).RequireAuthorization();
 
             group.MapPut("/{id:int}", async (int id, UpdatePromoDto dto, PromotionService service, HttpContext ctx) =>
             {
-                if (!ctx.Request.Cookies.ContainsKey("AdminAuth")) return Results.Unauthorized();
-
                 if (dto.EndDate <= dto.StartDate)
                     return Results.BadRequest("Дата окончания должна быть позже даты начала.");
 
@@ -70,18 +64,13 @@ namespace server.Controllers
                 return Results.Ok(new PromoResponseDto(
                     existing.Id, existing.Name, existing.Description, existing.StartDate, existing.EndDate
                 ));
-            });
+            }).RequireAuthorization();
 
             group.MapDelete("/{id:int}", async (int id, PromotionService service, HttpContext ctx) =>
             {
-                if (!ctx.Request.Cookies.ContainsKey("AdminAuth"))
-                {
-                    return Results.Unauthorized();
-                }
-
                 await service.DeleteAsync(id);
                 return Results.NoContent();
-            });
+            }).RequireAuthorization();
         }
 
         public record CreatePromoDto(string Title, string Description, DateTime StartDate, DateTime EndDate);

@@ -23,8 +23,6 @@ namespace server.Controllers
 
             group.MapPost("/", async (CreateMenuDto dto, MenuService service, HttpContext ctx) =>
             {
-                if (!ctx.Request.Cookies.ContainsKey("AdminAuth")) return Results.Unauthorized();
-
                 var item = new Menu
                 {
                     Name = dto.Name,
@@ -35,12 +33,10 @@ namespace server.Controllers
 
                 await service.CreateAsync(item);
                 return Results.Created($"/api/menu/{item.Id}", item);
-            });
+            }).RequireAuthorization();
 
             group.MapPut("/{id:int}", async (int id, UpdateMenuDto dto, MenuService service, HttpContext ctx) =>
             {
-                if (!ctx.Request.Cookies.ContainsKey("AdminAuth")) return Results.Unauthorized();
-
                 var existing = await service.GetByIdAsync(id);
                 if (existing == null)
                     return Results.NotFound(new { message = $"Элемент меню с ID {id} не найден для обновления" });
@@ -52,22 +48,17 @@ namespace server.Controllers
 
                 await service.UpdateAsync(existing);
                 return Results.Ok(existing);
-            });
+            }).RequireAuthorization();
 
             group.MapDelete("/{id:int}", async (int id, MenuService service, HttpContext ctx) =>
             {
-                if (!ctx.Request.Cookies.ContainsKey("AdminAuth"))
-                {
-                    return Results.Unauthorized();
-                }
-
                 var existing = await service.GetByIdAsync(id);
                 if (existing == null)
                     return Results.NotFound(new { message = $"Элемент меню с ID {id} не найден для удаления" });
 
                 await service.DeleteAsync(id);
                 return Results.NoContent();
-            });
+            }).RequireAuthorization();
         }
 
         public record CreateMenuDto(string Name, Category Category, string Description, decimal Price);
