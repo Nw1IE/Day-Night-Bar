@@ -56,7 +56,10 @@ namespace server.Controllers
 
             group.MapDelete("/{id:int}", async (int id, MenuService service, HttpContext ctx) =>
             {
-                if (!ctx.Request.Cookies.ContainsKey("AdminAuth")) return Results.Unauthorized();
+                if (!ctx.Request.Cookies.ContainsKey("AdminAuth"))
+                {
+                    return Results.Unauthorized();
+                }
 
                 var existing = await service.GetByIdAsync(id);
                 if (existing == null)

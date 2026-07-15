@@ -7,27 +7,39 @@ namespace server.Properties.Services
     public class AnnouncementService(AppDbContext db)
     {
         public async Task<Announcement?> GetCurrentAsync() =>
-            await db.Announcements.FirstOrDefaultAsync();
+            await db.Announcements
+                .OrderByDescending(a => a.UpdatedAt)
+                .FirstOrDefaultAsync();
 
-        public async Task UpdateOrCreateAsync(string message)
+        public async Task<Announcement?> GetByIdAsync(int id) =>
+            await db.Announcements.FindAsync(id);
+
+        public async Task<Announcement> CreateAsync(string text)
         {
-            var announcement = await db.Announcements.FirstOrDefaultAsync();
-
-            if (announcement == null)
+            var announcement = new Announcement
             {
-                db.Announcements.Add(new Announcement
-                {
-                    Text = message,
-                    UpdatedAt = DateTime.UtcNow
-                });
-            }
-            else
-            {
-                announcement.Text = message;
-                announcement.UpdatedAt = DateTime.UtcNow;
-            }
-
+                Text = text,
+                UpdatedAt = DateTime.UtcNow
+            };
+            db.Announcements.Add(announcement);
             await db.SaveChangesAsync();
+            return announcement;
+        }
+
+        public async Task UpdateAsync(Announcement announcement)
+        {
+            db.Entry(announcement).State = EntityState.Modified;
+            await db.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var announcement = await db.Announcements.FindAsync(id);
+            if (announcement != null)
+            {
+                db.Announcements.Remove(announcement);
+                await db.SaveChangesAsync();
+            }
         }
     }
 }

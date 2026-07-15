@@ -74,12 +74,13 @@ namespace server.Controllers
 
             group.MapDelete("/{id:int}", async (int id, PromotionService service, HttpContext ctx) =>
             {
-                if (!ctx.Request.Cookies.ContainsKey("AdminAuth")) return Results.Unauthorized();
+                if (!ctx.Request.Cookies.ContainsKey("AdminAuth"))
+                {
+                    return Results.Unauthorized();
+                }
 
-                var success = await service.DeleteAsync(id);
-                return success
-                    ? Results.NoContent()
-                    : Results.NotFound(new { message = $"Акция с ID {id} не найдена для удаления" });
+                await service.DeleteAsync(id);
+                return Results.NoContent();
             });
         }
 

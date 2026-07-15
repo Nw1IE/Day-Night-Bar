@@ -15,7 +15,9 @@ namespace server.Controllers
             group.MapPost("/login", async (AdminLoginDto dto, AuthService auth, HttpContext ctx) =>
             {
                 if (!await auth.VerifyAdminAsync(dto.Passcode))
+                {
                     return Results.Unauthorized();
+                }
 
                 ctx.Response.Cookies.Append("AdminAuth", "secure_session_token_here", new CookieOptions
                 {
