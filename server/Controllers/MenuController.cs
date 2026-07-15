@@ -13,6 +13,13 @@ namespace server.Controllers
             group.MapGet("/", async (MenuService service) =>
                 Results.Ok(await service.GetAllAsync()));
 
+            group.MapGet("/{id:int}", async (int id, MenuService service) =>
+            {
+                var item = await service.GetByIdAsync(id);
+                return item is null
+                    ? Results.NotFound(new { message = $"Элемент меню с ID {id} не найден" })
+                    : Results.Ok(item);
+            });
 
             group.MapPost("/", async (CreateMenuDto dto, MenuService service, HttpContext ctx) =>
             {
@@ -30,13 +37,13 @@ namespace server.Controllers
                 return Results.Created($"/api/menu/{item.Id}", item);
             });
 
-
             group.MapPut("/{id:int}", async (int id, UpdateMenuDto dto, MenuService service, HttpContext ctx) =>
             {
                 if (!ctx.Request.Cookies.ContainsKey("AdminAuth")) return Results.Unauthorized();
 
                 var existing = await service.GetByIdAsync(id);
-                if (existing == null) return Results.NotFound();
+                if (existing == null)
+                    return Results.NotFound(new { message = $"Элемент меню с ID {id} не найден для обновления" });
 
                 existing.Name = dto.Name;
                 existing.Category = dto.Category;
@@ -47,10 +54,13 @@ namespace server.Controllers
                 return Results.Ok(existing);
             });
 
-
             group.MapDelete("/{id:int}", async (int id, MenuService service, HttpContext ctx) =>
             {
                 if (!ctx.Request.Cookies.ContainsKey("AdminAuth")) return Results.Unauthorized();
+
+                var existing = await service.GetByIdAsync(id);
+                if (existing == null)
+                    return Results.NotFound(new { message = $"Элемент меню с ID {id} не найден для удаления" });
 
                 await service.DeleteAsync(id);
                 return Results.NoContent();
