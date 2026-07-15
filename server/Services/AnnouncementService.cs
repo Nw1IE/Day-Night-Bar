@@ -6,7 +6,7 @@ namespace server.Properties.Services
 {
     public class AnnouncementService(AppDbContext db)
     {
-        public async Task<Announcment?> GetCurrentAsync() =>
+        public async Task<Announcement?> GetCurrentAsync() =>
             await db.Announcements.FirstOrDefaultAsync();
 
         public async Task UpdateOrCreateAsync(string message)
@@ -15,7 +15,7 @@ namespace server.Properties.Services
 
             if (announcement == null)
             {
-                db.Announcements.Add(new Announcment
+                db.Announcements.Add(new Announcement
                 {
                     Text = message,
                     UpdatedAt = DateTime.UtcNow
