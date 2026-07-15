@@ -81,5 +81,6 @@ namespace server.Data
         public DbSet<Announcement> Announcements => Set<Announcement>();
         public DbSet<Promotion> Promotions => Set<Promotion>();
         public DbSet<Menu> Menus => Set<Menu>();
+        public DbSet<LoginAttempt> LoginAttempts => Set<LoginAttempt>();
     }
 }
