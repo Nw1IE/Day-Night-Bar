@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>День/Ночь</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        <script type="module" src="/src/main.js"></script>
+        <link rel="icon" href="/images/favicon.ico">
+    </head>
+
+    <body>
+        <div class="admin-login" id="adminLogin" style="display: none;">
+            <div class="login-form">
+                <h2><i class="fas fa-lock"></i> Вход для администратора</h2>
+                <input type="password" id="adminPassword" placeholder="Введите пароль администратора">
+                <button class="btn" id="loginBtn">Войти</button>
+            </div>
+        </div>
+
+        <div class="admin-panel" id="adminPanel" style="display: none;">
+            <button class="admin-btn" id="adminDashboardBtn" title="Панель администратора"><i class="fas fa-edit"></i></button>
+            <button class="admin-btn" id="logoutBtn" title="Выйти"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
+
+        <div class="modal" id="adminDashboardModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title"><i class="fas fa-tachometer-alt"></i> Панель администратора</h3>
+                    <button class="close-modal" id="closeDashboardModal">&times;</button>
+                </div>
+                
+                <div class="admin-tabs">
+                    <button class="admin-tab active" data-tab="menu">Управление меню</button>
+                    <button class="admin-tab" data-tab="promotions">Управление акциями</button>
+                    <button class="admin-tab" data-tab="announcements">Объявления</button>
+                </div>
+
+                <div class="admin-tab-content active" id="menu-tab">
+                    <h4>Добавить новую позицию в меню</h4>
+                    <form class="admin-form" id="menuForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="itemName">Название</label>
+                                <input type="text" id="itemName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="itemCategory">Категория</label>
+                                <select id="itemCategory" required>
+                                    <option value="cocktails">Коктейли</option>
+                                    <option value="wine">Вино</option>
+                                    <option value="beer">Пиво</option>
+                                    <option value="snacks">Закуски</option>
+                                    <option value="main">Основные блюда</option>
+                                    <option value="desserts">Десерты</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="itemPrice">Цена (руб.)</label>
+                                <input type="number" id="itemPrice" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="itemDescription">Описание</label>
+                                <textarea id="itemDescription" rows="3" required></textarea>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn">Добавить в меню</button>
+                    </form>
+                    
+                    <div class="item-list">
+                        <h4>Текущее меню</h4>
+                        <div id="currentMenuItems">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-tab-content" id="promotions-tab">
+                    <h4>Добавить новую акцию</h4>
+                    <form class="admin-form" id="promoForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="promoTitle">Название акции</label>
+                                <input type="text" id="promoTitle" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="promoDate">Дата окончания</label>
+                                <input type="date" id="promoDate" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="promoDescription">Описание акции</label>
+                            <textarea id="promoDescription" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn">Добавить акцию</button>
+                    </form>
+                    
+                    <div class="item-list">
+                        <h4>Текущие акции</h4>
+                        <div id="currentPromotions">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-tab-content" id="announcements-tab">
+                    <h4>Создать новое объявление</h4>
+                    <form class="admin-form" id="announcementForm">
+                        <div class="form-group">
+                            <label for="announcementText">Текст объявления</label>
+                            <textarea id="announcementText" rows="3" required placeholder="Введите текст объявления..."></textarea>
+                        </div>
+                        <button type="submit" class="btn">Опубликовать объявление</button>
+                    </form>
+                    
+                    <div class="item-list">
+                        <h4>Текущее объявление</h4>
+                        <div id="currentAnnouncement">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <header>
+            <div class="container header-content">
+                <a href="#home" class="logo"><i class="fas fa-cocktail"></i> День/ <span>Ночь</span></a>
+                
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <nav>
+                    <ul id="navMenu">
+                        <li><a href="#home"><i class="fas fa-home"></i> Главная</a></li>
+                        <li><a href="#menu"><i class="fas fa-utensils"></i> Меню</a></li>
+                        <li><a href="#promotions"><i class="fas fa-tags"></i> Акции</a></li>
+                        <li><a href="#contacts"><i class="fas fa-map-marker-alt"></i> Контакты</a></li>
+                       <!-- <li><a href="#" id="adminAccessBtn"><i class="fas fa-user-shield"></i> Админ</a></li> -->
+                    </ul>
+                </nav>
+                <button id="ChangeButton" class="Change"></button>
+            </div>
+        </header>
+
+        <div class="container" style="margin-top: 100px;">
+            <div class="announcement" id="announcement">
+                🎉 Счастливые часы! Скидка 20% на все коктейли с 18:00 до 21:00 каждый день!
+            </div>
+        </div>
+
+        <section class="hero" id="home">
+            <div class="container hero-content">
+                <h1>День / Ночь</h1>
+                <p class="White">Элитный бар в центре города с авторскими коктейлями, изысканной кухней и неповторимой атмосферой. У нас вы найдете идеальное сочетание вкуса, стиля и комфорта для настоящих ценителей.</p>
+                <div>
+                    <a href="#contacts" class="btn">Связаться с нами</a>
+                    <a href="#menu" class="btn btn-outline">Посмотреть меню</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="cocktail-slider-section">
+            <div class="container">
+                <div class="slider-header">
+                    <h2 class="section-title">Наши шедевры</h2>
+                    <div class="slider-nav">
+                        <button class="nav-btn prev" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
+                        <button class="nav-btn next" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+                
+                <div class="slider-container">
+                    <div class="slider-track" id="sliderTrack">
+                        <div class="slide">
+                            <img src='./images/1.jpg' width="300" height="400" alt="Коктейль">
+                            <div class="slide-info"><h3>Мартини</h3></div>
+                        </div>
+                        <div class="slide">
+                            <img src='./images/2.jpg' width="300" height="400" alt="Коктейль">
+                            <div class="slide-info"><h3>Апероль Спритц</h3></div>
+                        </div>
+                        <div class="slide">
+                            <img src='./images/3.jpg' width="300" height="400" alt="Коктейль">
+                            <div class="slide-info"><h3>Виски</h3></div>
+                        </div>
+                        <div class="slide">
+                            <img src='./images/4.jpg' width="300" height="400" alt="Коктейль">
+                            <div class="slide-info"><h3>Уиски Сауэр</h3></div>
+                        </div>
+                        <div class="slide">
+                            <img src='./images/5.jpg' width="300" height="400" alt="Коктейль">
+                            <div class="slide-info"><h3>Космополитен</h3></div>
+                        </div>
+                        <div class="slide">
+                            <img src='./images/6.jpg' width="300" height="400" alt="Коктейль">
+                            <div class="slide-info"><h3>Экзотический Мартини</h3></div>
+                        </div>
+                        <div class="slide">
+                            <img src='./images/7.jpg' width="300" height="400" alt="Коктейль">
+                            <div class="slide-info"><h3>Космополитен</h3></div>
+                        </div>
+                        <div class="slide">
+                            <img src='./images/8.jpg' width="300" height="400" alt="Коктейль">
+                            <div class="slide-info"><h3>Яблочный Мартини</h3></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="menu">
+            <div class="container">
+                <h2 class="section-title">Наше меню</h2>
+                
+                <div class="menu-categories">
+                    <button class="category-btn active" data-category="all">Все</button>
+                    <button class="category-btn" data-category="cocktails">Коктейли</button>
+                    <button class="category-btn" data-category="wine">Вино</button>
+                    <button class="category-btn" data-category="beer">Пиво</button>
+                    <button class="category-btn" data-category="snacks">Закуски</button>
+                    <button class="category-btn" data-category="main">Основные блюда</button>
+                    <button class="category-btn" data-category="desserts">Десерты</button>
+                </div>
+                
+                <div class="menu-items" id="menuItems">
+                </div>
+            </div>
+        </section>
+
+        <section class="promotions" id="promotions">
+            <div class="container">
+                <h2 class="section-title">Акции и события</h2>
+                
+                <div class="promotion-cards" id="promotionCards">
+                </div>
+            </div>
+        </section>
+
+        <footer id="contacts">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h3>День / Ночь</h3>
+                        <p>Элитный бар в центре города с авторскими коктейлями и изысканной кухней. Место, где рождаются впечатления.</p>
+                        <div class="social-icons">
+                            <div class="social-icons">
+                                <a href="https://max.ru/join/60fU0xcnTe71N0qXPIUnQasK6-zqJxQw1x2peKOTLOM"><img src="./images/Max.jpg" height="45" width="45"></a>
+                                <a href="https://t.me/+7Oql1LJggm8yZmZi"><img src="./images/telegram.jpg" height="45" width="45"></a>
+                                <a href="https://vk.com/club228933906"><img src="./images/vk.jpg" height="50" width="50"></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h3>Контакты</h3>
+                            <p><i class="fas fa-map-marker-alt"></i> ул. Академика Королёва, 8А, Берёзовский</p>
+                            <p><i class="fas fa-phone"></i> +7-(922)-147-70-81</p>
+                            <p><i class="fas fa-envelope"></i> walentina.com18@mail.ru</p> 
+                            <p><i class="fas fa-clock"></i> Круглосуточно</p>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h3>Быстрые ссылки</h3>
+                        <a href="#home"><i class="fas fa-chevron-right"></i> Главная</a>
+                        <a href="#menu"><i class="fas fa-chevron-right"></i> Меню</a>
+                        <a href="#promotions"><i class="fas fa-chevron-right"></i> Акции</a>
+                        <!-- <a href="#" id="adminAccessBtnFooter"><i class="fas fa-chevron-right"></i> Панель администратора</a> -->
+                    </div>
+                </div>
+                
+                <div class="copyright">
+                    &copy; 2026 День / Ночь. Все права защищены.
+                </div>
+            </div>
+        </footer>
+    </body>
+</html>

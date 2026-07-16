@@ -1,0 +1,67 @@
+﻿using server.Models;
+using server.Models.Enums;
+using server.Properties.Services;
+
+namespace server.Controllers
+{
+    public static class MenuController
+    {
+        public static void MapMenuEndpoints(this IEndpointRouteBuilder app)
+        {
+            var group = app.MapGroup("/api/menu");
+
+            group.MapGet("/", async (MenuService service) =>
+                Results.Ok(await service.GetAllAsync()));
+
+            group.MapGet("/{id:int}", async (int id, MenuService service) =>
+            {
+                var item = await service.GetByIdAsync(id);
+                return item is null
+                    ? Results.NotFound(new { message = $"Элемент меню с ID {id} не найден" })
+                    : Results.Ok(item);
+            });
+
+            group.MapPost("/", async (CreateMenuDto dto, MenuService service, HttpContext ctx) =>
+            {
+                var item = new Menu
+                {
+                    Name = dto.Name,
+                    Category = dto.Category,
+                    Description = dto.Description,
+                    Price = dto.Price
+                };
+
+                await service.CreateAsync(item);
+                return Results.Created($"/api/menu/{item.Id}", item);
+            }).RequireAuthorization();
+
+            group.MapPut("/{id:int}", async (int id, UpdateMenuDto dto, MenuService service, HttpContext ctx) =>
+            {
+                var existing = await service.GetByIdAsync(id);
+                if (existing == null)
+                    return Results.NotFound(new { message = $"Элемент меню с ID {id} не найден для обновления" });
+
+                existing.Name = dto.Name;
+                existing.Category = dto.Category;
+                existing.Description = dto.Description;
+                existing.Price = dto.Price;
+
+                await service.UpdateAsync(existing);
+                return Results.Ok(existing);
+            }).RequireAuthorization();
+
+            group.MapDelete("/{id:int}", async (int id, MenuService service, HttpContext ctx) =>
+            {
+                var existing = await service.GetByIdAsync(id);
+                if (existing == null)
+                    return Results.NotFound(new { message = $"Элемент меню с ID {id} не найден для удаления" });
+
+                await service.DeleteAsync(id);
+                return Results.NoContent();
+            }).RequireAuthorization();
+        }
+
+        public record CreateMenuDto(string Name, Category Category, string Description, decimal Price);
+        public record UpdateMenuDto(string Name, Category Category, string Description, decimal Price);
+    }
+}
