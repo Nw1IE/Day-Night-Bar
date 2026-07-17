@@ -97,27 +97,20 @@ namespace server
 
             app.Use(async (context, next) =>
             {
-                // Получаем логгер из DI-контейнера запроса
                 var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
 
                 var method = context.Request.Method;
                 var path = context.Request.Path;
                 var ip = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
 
-                // Логируем входящий запрос
                 logger.LogInformation("--> Incoming Request: {Method} {Path} from {Ip}", method, path, ip);
 
-                // Запускаем таймер
                 var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-
-                // Передаем управление следующему Middleware в цепочке (запрос идет дальше в контроллеры/БД)
                 await next(context);
 
-                // Останавливаем таймер по возвращении ответа
                 stopwatch.Stop();
                 var statusCode = context.Response.StatusCode;
 
-                // Логируем исходящий ответ
                 logger.LogInformation("<-- Outgoing Response: {Method} {Path} responded {StatusCode} in {Elapsed}ms",
                     method, path, statusCode, stopwatch.ElapsedMilliseconds);
             });
@@ -127,6 +120,7 @@ namespace server
                 app.MapOpenApi();
             }
 
+            app.UseMiddleware<ExceptHandlerMiddleware>();
             app.UseMiddleware<IpBanMiddleware>();
 
             app.UseRateLimiter();
