@@ -33,7 +33,8 @@ namespace server.Data
                 }
 
                 _logger.LogInformation("Connecting to PostgreSQL database");
-                optionsBuilder.UseNpgsql(connectionString);
+                optionsBuilder.UseNpgsql(connectionString)
+                    .EnableDetailedErrors();
             }
         }
 
