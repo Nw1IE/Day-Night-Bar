@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5101';
+const BASE_URL = 'http://localhost:5101';
 const ADMIN_CLIENT_KEY = import.meta.env.VITE_ADMIN_CLIENT_KEY || '';
 
 class ApiError extends Error {
@@ -22,7 +22,8 @@ async function request(path, { method = 'GET', body, headers = {}, auth = false 
             },
             body: body ? JSON.stringify(body) : undefined
         });
-    } catch (networkError) {
+    } 
+    catch (networkError) {
         throw new ApiError('Не удалось связаться с сервером. Проверьте, запущен ли бэкенд.', 0);
     }
 
