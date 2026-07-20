@@ -1,0 +1,14 @@
+{
+  "name": "day-night-bar",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite client",
+    "build": "vite build client --outDir ../dist",
+    "preview": "vite preview client"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0" 
+  }
+}
