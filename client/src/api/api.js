@@ -1,126 +1,99 @@
-const BASE_URL = 'http://localhost:5101';
-const ADMIN_CLIENT_KEY = import.meta.env.VITE_ADMIN_CLIENT_KEY || '';
+// 1. Базовый URL (без rewrite в прокси, летит полный путь /api/auth/login)
+const BASE_URL = '/api'; 
 
-class ApiError extends Error {
-    constructor(message, status) {
+export class ApiError extends Error {
+    constructor(message, status, data = null) {
         super(message);
         this.name = 'ApiError';
         this.status = status;
+        this.data = data;
     }
 }
 
-async function request(path, { method = 'GET', body, headers = {}, auth = false } = {}) {
-    let response;
+async function request(endpoint, options = {}) {
+    const url = `${BASE_URL}${endpoint}`;
+    
+    if (options.body && typeof options.body === 'object') {
+        options.body = JSON.stringify(options.body);
+        options.headers = {
+            'Content-Type': 'application/json',
+            ...options.headers
+        };
+    }
+
     try {
-        response = await fetch(`${BASE_URL}${path}`, {
-            method,
-            credentials: 'include', // нужно, чтобы уходила/приходила httpOnly-кука AdminAuth
-            headers: {
-                ...(body ? { 'Content-Type': 'application/json' } : {}),
-                ...(auth ? { 'X-Admin-Client-Key': ADMIN_CLIENT_KEY } : {}),
-                ...headers
-            },
-            body: body ? JSON.stringify(body) : undefined
-        });
-    } 
-    catch (networkError) {
-        throw new ApiError('Не удалось связаться с сервером. Проверьте, запущен ли бэкенд.', 0);
-    }
+        const response = await fetch(url, options);
+        const result = await response.json().catch(() => ({}));
 
-    if (response.status === 204) return null;
-
-    let data = null;
-    const text = await response.text();
-    if (text) {
-        try { data = JSON.parse(text); } catch { data = text; }
-    }
-
-    if (!response.ok) {
-        const message = (data && (data.message || data.error))
-            || `Ошибка запроса (${response.status})`;
-        throw new ApiError(message, response.status);
-    }
-
-    return data;
-}
-
-// ---------- Категории меню: фронтовые ключи <-> enum на бэке ----------
-export const CATEGORY_MAP = {
-    cocktails: 'Коктейли',
-    wine: 'Вино',
-    beer: 'Пиво',
-    snacks: 'Закуски',
-    main: 'Основные_блюда',
-    desserts: 'Десерты'
-};
-export const CATEGORY_MAP_REVERSE = Object.fromEntries(
-    Object.entries(CATEGORY_MAP).map(([key, value]) => [value, key])
-);
-
-function mapMenuItemFromApi(item) {
-    return { ...item, category: CATEGORY_MAP_REVERSE[item.category] || item.category };
-}
-
-export const API = {
-    // ---------- Auth ----------
-    async login(passcode) {
-        return request('/api/auth/login', { method: 'POST', body: { Passcode: passcode }, auth: true });
-    },
-    async logout() {
-        return request('/api/auth/logout', { method: 'POST' });
-    },
-
-    // ---------- Menu ----------
-    async getMenu() {
-        const items = await request('/api/menu');
-        return (items || []).map(mapMenuItemFromApi);
-    },
-    async createMenuItem({ name, category, description, price }) {
-        return request('/api/menu', {
-            method: 'POST',
-            body: { Name: name, Category: CATEGORY_MAP[category] || category, Description: description, Price: price }
-        });
-    },
-    async updateMenuItem(id, { name, category, description, price }) {
-        return request(`/api/menu/${id}`, {
-            method: 'PUT',
-            body: { Name: name, Category: CATEGORY_MAP[category] || category, Description: description, Price: price }
-        });
-    },
-    async deleteMenuItem(id) {
-        return request(`/api/menu/${id}`, { method: 'DELETE' });
-    },
-
-    // ---------- Promotions ----------
-    async getPromotions() {
-        const promos = await request('/api/promotions');
-        return (promos || []).map(p => ({ id: p.id, title: p.title, description: p.description, date: p.endDate }));
-    },
-    async createPromotion({ title, description, startDate, endDate }) {
-        return request('/api/promotions', {
-            method: 'POST',
-            body: { Title: title, Description: description, StartDate: startDate, EndDate: endDate }
-        });
-    },
-    async deletePromotion(id) {
-        return request(`/api/promotions/${id}`, { method: 'DELETE' });
-    },
-
-    // ---------- Announcement ----------
-    async getAnnouncement() {
-        try {
-            return await request('/api/announcements/current');
-        } catch (e) {
-            if (e.status === 404) return null;
-            throw e;
+        if (!response.ok) {
+            throw new ApiError(result.message || 'Ошибка сервера', response.status, result);
         }
-    },
-    async createAnnouncement(text) {
-        return request('/api/announcements', { method: 'POST', body: { Text: text } });
-    },
-    async updateAnnouncement(id, text) {
-        return request(`/api/announcements/${id}`, { method: 'PATCH', body: { Text: text } });
+
+        return result;
+    } catch (error) {
+        if (error instanceof ApiError) throw error;
+        throw new ApiError(error.message || 'Сетевая ошибка', 500);
     }
+}
+
+// 3. Модуль Меню с поддержкой имен из adminModule.js
+export const menuApi = {
+    getAll: () => request('/menu'),
+    getById: (id) => request(`/menu/${id}`),
+    create: (data) => request('/menu', { method: 'POST', body: data }),
+    update: (id, data) => request(`/menu/${id}`, { method: 'PUT', body: data }),
+    delete: (id) => request(`/menu/${id}`, { method: 'DELETE' }),
+    
+    // Алиасы для adminModule.js:
+    createMenuItem: (data) => request('/menu', { method: 'POST', body: data }),
+    updateMenuItem: (id, data) => request(`/menu/${id}`, { method: 'PUT', body: data }),
+    deleteMenuItem: (id) => request(`/menu/${id}`, { method: 'DELETE' })
 };
 
-export { ApiError };
+// 4. Модуль Акций с поддержкой имен из adminModule.js
+export const promotionsApi = {
+    getAll: () => request('/promotions'),
+    create: (data) => request('/promotions', { method: 'POST', body: data }),
+    delete: (id) => request(`/promotions/${id}`, { method: 'DELETE' }),
+    
+    // Алиасы для adminModule.js:
+    getAllPromotions: () => request('/promotions'),
+    createPromotion: (data) => request('/promotions', { method: 'POST', body: data }),
+    deletePromotion: (id) => request(`/promotions/${id}`, { method: 'DELETE' })
+};
+
+// 5. Модуль Объявлений с поддержкой имен из adminModule.js
+export const announcementsApi = {
+    getAll: () => request('/announcements'),
+    create: (data) => request('/announcements', { method: 'POST', body: data }),
+    delete: (id) => request(`/announcements/${id}`, { method: 'DELETE' }),
+    
+    // Алиасы для adminModule.js:
+    getCurrentAnnouncement: async () => {
+        // Бэкенд возвращает массив, админка ждет один объект или null
+        const list = await request('/announcements').catch(() => []);
+        return list && list.length > 0 ? list[0] : null;
+    },
+    createAnnouncement: (text) => request('/announcements', { method: 'POST', body: { text } }),
+    updateAnnouncement: (id, text) => request(`/announcements/${id}`, { method: 'PUT', body: { text } }),
+    deleteAnnouncement: (id) => request(`/announcements/${id}`, { method: 'DELETE' })
+};
+
+export const announcementApi = announcementsApi;
+
+// 6. Модуль Авторизации (Умный разбор: принимает и строку, и объект)
+export const authApi = {
+    login: (credentials) => {
+        // Если прилетела просто строка (как из adminModule), заворачиваем в объект Passcode
+        const passcode = typeof credentials === 'object' 
+            ? (credentials.password || credentials.passcode || credentials.Passcode)
+            : credentials;
+
+        return request('/auth/login', { 
+            method: 'POST', 
+            body: { Passcode: passcode }
+        });
+    },
+    logout: () => request('/auth/logout', { method: 'POST' }),
+    check: () => request('/auth/check')
+};

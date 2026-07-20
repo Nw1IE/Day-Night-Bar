@@ -1,17 +1,27 @@
-import { menuItems, promotions, announcement } from '../js-modules/dataModule.js';
-import { formatDate } from '../js-modules/utilsModule.js';
+import { menuApi, promotionsApi, announcementApi, ApiError } from '../js/api/api.js';// Если папка api лежит прямо в client, а не в js, тогда оставь как было: '../api/api.js'
 
-export function renderMenuItems(category) {
+import { formatDate, getCategoryName } from '../js/Modules/utilsModule.js';// Если utilsModule лежит внутри папки Modules, то путь будет: '../js/Modules/utilsModule.js'
+
+import { showErrorModal } from './error.js';
+
+// Кэш в памяти — чтобы фильтр по категориям не дёргал сеть на каждый клик.
+let cachedMenuItems = [];
+
+function renderEmptyState(container, text) {
+    container.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; font-size: 18px; color: rgba(255, 255, 255, 0.7);">${text}</p>`;
+}
+
+export function renderMenuItems(category = 'all', items = cachedMenuItems) {
     const menuItemsContainer = document.getElementById('menuItems');
     if (!menuItemsContainer) return;
     menuItemsContainer.innerHTML = '';
 
     const filteredItems = category === 'all'
-        ? menuItems
-        : menuItems.filter(item => item.category === category);
+        ? items
+        : items.filter(item => item.category === category);
 
     if (filteredItems.length === 0) {
-        menuItemsContainer.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; font-size: 18px; color: rgba(255, 255, 255, 0.7);">Позиции в этой категории пока отсутствуют</p>';
+        renderEmptyState(menuItemsContainer, 'Позиции в этой категории пока отсутствуют');
         return;
     }
 
@@ -22,10 +32,11 @@ export function renderMenuItems(category) {
         menuItem.innerHTML = `
             <div class="menu-item-content">
                 <div class="menu-item-header">
-                    <div class="menu-item-name">${item.name}</div>
-                    <div class="menu-item-price">${item.price} ₽</div>
+                    <div class="menu-item-name">${escapeHtml(item.name)}</div>
+                    <div class="menu-item-price">${escapeHtml(item.price)} ₽</div>
                 </div>
-                <div class="menu-item-desc">${item.description}</div>
+                <div class="menu-item-desc">${escapeHtml(item.description)}</div>
+                <small class="menu-item-category">${escapeHtml(getCategoryName(item.category))}</small>
             </div>
         `;
         fragment.appendChild(menuItem);
@@ -33,13 +44,13 @@ export function renderMenuItems(category) {
     menuItemsContainer.appendChild(fragment);
 }
 
-export function renderPromotions() {
+export function renderPromotions(promotions) {
     const promotionCardsContainer = document.getElementById('promotionCards');
     if (!promotionCardsContainer) return;
     promotionCardsContainer.innerHTML = '';
 
-    if (promotions.length === 0) {
-        promotionCardsContainer.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: rgba(255, 255, 255, 0.7);">Акций пока нет</p>';
+    if (!promotions || promotions.length === 0) {
+        renderEmptyState(promotionCardsContainer, 'Акций пока нет');
         return;
     }
 
@@ -49,9 +60,9 @@ export function renderPromotions() {
         promoCard.className = 'promotion-card';
         promoCard.innerHTML = `
             <div class="promotion-content">
-                <div class="promotion-title">${promo.title}</div>
-                <div class="promotion-date"><i class="far fa-calendar-alt"></i> Действует до: ${formatDate(promo.date)}</div>
-                <p>${promo.description}</p>
+                <div class="promotion-title">${escapeHtml(promo.title)}</div>
+                <div class="promotion-date"><i class="far fa-calendar-alt"></i> Действует до: ${escapeHtml(formatDate(promo.endDate))}</div>
+                <p>${escapeHtml(promo.description)}</p>
             </div>
         `;
         fragment.appendChild(promoCard);
@@ -59,7 +70,7 @@ export function renderPromotions() {
     promotionCardsContainer.appendChild(fragment);
 }
 
-export function updateAnnouncementUI() {
+export function renderAnnouncement(announcement) {
     const el = document.getElementById('announcement');
     if (!el) return;
     if (!announcement) {
@@ -67,7 +78,7 @@ export function updateAnnouncementUI() {
         return;
     }
     el.style.display = '';
-    el.textContent = announcement;
+    el.textContent = announcement.text; // textContent — экранирование не нужно, XSS тут в принципе невозможен
 }
 
 export function initCategoryFilters() {
@@ -78,5 +89,52 @@ export function initCategoryFilters() {
             button.classList.add('active');
             renderMenuItems(button.getAttribute('data-category'));
         });
+
+        // Бонус: Enter/Space активирует категорию как клик
+        button.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                button.click();
+            }
+        });
     });
+}
+
+/**
+ * Грузит меню/акции/объявление с сервера и рендерит всё разом.
+ * Вызывается один раз при старте приложения.
+ */
+export async function loadAndRenderPublicData() {
+    try {
+        const [menuItems, promotions, announcement] = await Promise.all([
+            menuApi.getMenuItems(),
+            promotionsApi.getActivePromotions(),
+            announcementsApi.getCurrentAnnouncement()
+        ]);
+
+        cachedMenuItems = menuItems;
+        renderMenuItems('all', cachedMenuItems);
+        renderPromotions(promotions);
+        renderAnnouncement(announcement);
+    } catch (err) {
+        const message = err instanceof ApiError ? err.message : 'Не удалось загрузить данные с сервера.';
+        showErrorModal(message);
+        renderMenuItems('all', []);
+        renderPromotions([]);
+    }
+}
+
+export function getCachedMenuItems() {
+    return cachedMenuItems;
+}
+
+// Функция-мост для админки, которая умеет переключать категорию
+export function changeMenuCategoryElement(category) {
+    const targetButton = document.querySelector(`.category-btn[data-category="${category}"]`);
+    if (targetButton) {
+        targetButton.click(); // Имитируем клик по кнопке категории
+    } else {
+        // Если кнопки нет, просто перерендерим данные для этой категории
+        renderMenuItems(category);
+    }
 }
