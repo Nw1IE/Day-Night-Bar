@@ -1,15 +1,3 @@
-<<<<<<< Updated upstream:client/src/js-modules/adminModule.js
-import {
-    menuItems, promotions, announcement, announcementId, isAdminLoggedIn,
-    updateMenuItems, updatePromotions, updateAnnouncement, setAdminLoggedIn
-} from './dataModule.js';
-import { getCategoryName } from './utilsModule.js';
-import { formatDate } from './utilsModule.js';
-import { renderMenuItems, renderPromotions, updateAnnouncementUI } from '../components/mainPage.js';
-import { showErrorModal } from '../components/error.js';
-import { showSuccess } from '../components/success.js';
-import { API, ApiError } from '../api/api.js';
-=======
 import { menuApi, promotionsApi, announcementsApi, authApi, ApiError } from '../api/api.js'; 
 // Если папка api лежит в корне client, путь должен быть: '../../api/api.js'
 
@@ -43,7 +31,6 @@ function handleApiError(err, fallback) {
     const message = err instanceof ApiError ? err.message : fallback;
     showErrorModal(message);
 }
->>>>>>> Stashed changes:client/js/Modules/adminModule.js
 
 export function initAdmin() {
     const adminLogin = document.getElementById('adminLogin');
@@ -55,55 +42,7 @@ export function initAdmin() {
     const menuForm = document.getElementById('menuForm');
     const promoForm = document.getElementById('promoForm');
     const announcementForm = document.getElementById('announcementForm');
-<<<<<<< Updated upstream:client/src/js-modules/adminModule.js
-
-    function toggleAdminAccessButtons(disable) {
-        const loginButtons = [
-            document.getElementById('adminAccessBtn'),
-            document.getElementById('adminAccessBtnFooter')
-        ];
-
-        loginButtons.forEach(btn => {
-            if (btn) {
-                btn.style.opacity = disable ? '0.5' : '1';
-                btn.style.pointerEvents = disable ? 'none' : 'auto';
-                btn.title = disable ? 'Администратор уже вошел в систему' : 'Вход в панель управления';
-            }
-        });
-    }
-
-    if (isAdminLoggedIn) {
-        toggleAdminAccessButtons(true);
-        if (adminPanel) adminPanel.style.display = 'flex';
-    }
-
-    function handleApiError(error, fallbackMessage) {
-        if (error instanceof ApiError && error.status === 401) {
-            setAdminLoggedIn(false);
-            if (adminPanel) adminPanel.style.display = 'none';
-            toggleAdminAccessButtons(false);
-            showErrorModal('Сессия администратора истекла. Пожалуйста, войдите снова.');
-            return;
-        }
-        showErrorModal(error?.message || fallbackMessage);
-    }
-
-    const menuCharsRegex = /[^a-zA-Zа-яА-ЯёЁ0-9+(),%:.\s]/g;
-
-    function applyValidation(element, maxLength, regex = null) {
-        if (!element) return;
-        element.addEventListener('input', function () {
-            if (regex) {
-                this.value = this.value.replace(regex, '');
-            }
-            if (this.value.length > maxLength) {
-                this.value = this.value.substring(0, maxLength);
-            }
-        });
-    }
-=======
     const adminPasswordInput = document.getElementById('adminPassword');
->>>>>>> Stashed changes:client/js/Modules/adminModule.js
 
     const itemName = document.getElementById('itemName');
     const itemCategory = document.getElementById('itemCategory');
@@ -136,10 +75,6 @@ export function initAdmin() {
         const lastDayOfYear = `${currentYear}-12-31`;
         promoDateInput.setAttribute('min', today);
         promoDateInput.setAttribute('max', lastDayOfYear);
-<<<<<<< Updated upstream:client/src/js-modules/adminModule.js
-
-=======
->>>>>>> Stashed changes:client/js/Modules/adminModule.js
         promoDateInput.addEventListener('change', function () {
             if (this.value < today) this.value = today;
             else if (this.value > lastDayOfYear) this.value = lastDayOfYear;
@@ -159,31 +94,11 @@ export function initAdmin() {
             currentMenuItemsEl.innerHTML = '<p style="color: rgba(255, 255, 255, 0.7);">Меню пусто</p>';
             return;
         }
-<<<<<<< Updated upstream:client/src/js-modules/adminModule.js
-        adminLogin.style.display = 'flex';
-        document.getElementById('adminPassword').value = '';
-        document.getElementById('adminPassword').focus();
-    }
-
-    function renderCurrentMenuItems() {
-        currentMenuItems.innerHTML = '';
-        if (menuItems.length === 0) {
-            currentMenuItems.innerHTML = '<p style="color: rgba(255, 255, 255, 0.7);">Меню пусто</p>';
-            return;
-        }
-
-        const fragment = document.createDocumentFragment();
-        menuItems.forEach(item => {
-            const itemElement = document.createElement('div');
-            itemElement.className = 'item-list-item';
-            itemElement.innerHTML = `
-=======
 
         items.forEach(item => {
             const el = document.createElement('div');
             el.className = 'item-list-item';
             el.innerHTML = `
->>>>>>> Stashed changes:client/js/Modules/adminModule.js
                 <div class="item-list-info">
                     <h5>${escapeHtml(item.name)}</h5>
                     <p>${escapeHtml(item.description)}</p>
@@ -195,29 +110,10 @@ export function initAdmin() {
                     <button class="item-list-btn delete" data-id="${item.id}">Удалить</button>
                 </div>
             `;
-<<<<<<< Updated upstream:client/src/js-modules/adminModule.js
-            fragment.appendChild(itemElement);
-=======
             currentMenuItemsEl.appendChild(el);
->>>>>>> Stashed changes:client/js/Modules/adminModule.js
         });
         currentMenuItems.appendChild(fragment);
 
-<<<<<<< Updated upstream:client/src/js-modules/adminModule.js
-        currentMenuItems.querySelectorAll('.item-list-btn.delete').forEach(button => {
-            button.addEventListener('click', async function () {
-                if (!isAdminLoggedIn) return showErrorModal('Требуется авторизация.');
-                const id = parseInt(this.getAttribute('data-id'));
-                if (!confirm('Удалить эту позицию?')) return;
-                try {
-                    await API.deleteMenuItem(id);
-                    updateMenuItems(menuItems.filter(item => item.id !== id));
-                    renderCurrentMenuItems();
-                    renderMenuItems('all');
-                } 
-                catch (e) {
-                    handleApiError(e, 'Не удалось удалить позицию меню.');
-=======
         currentMenuItemsEl.querySelectorAll('.item-list-btn.delete').forEach(button => {
             button.addEventListener('click', async function () {
                 const id = parseInt(this.getAttribute('data-id'), 10);
@@ -228,28 +124,10 @@ export function initAdmin() {
                     showSuccess('Позиция удалена', 'Позиция была удалена из меню.');
                 } catch (err) {
                     handleApiError(err, 'Не удалось удалить позицию меню.');
->>>>>>> Stashed changes:client/js/Modules/adminModule.js
                 }
             });
         });
 
-<<<<<<< Updated upstream:client/src/js-modules/adminModule.js
-        currentMenuItems.querySelectorAll('.item-list-btn.edit').forEach(button => {
-            button.addEventListener('click', function () {
-                if (!isAdminLoggedIn) return showErrorModal('Требуется авторизация.');
-
-                const modalHeader = document.querySelector('#adminDashboardModal .modal-header');
-                if (modalHeader) modalHeader.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-                const id = parseInt(this.getAttribute('data-id'));
-                const item = menuItems.find(i => i.id === id);
-                if (!item) return;
-
-                document.getElementById('itemName').value = item.name;
-                document.getElementById('itemCategory').value = item.category;
-                document.getElementById('itemPrice').value = item.price;
-                document.getElementById('itemDescription').value = item.description;
-=======
         currentMenuItemsEl.querySelectorAll('.item-list-btn.edit').forEach(button => {
             button.addEventListener('click', function () {
                 const modalHeader = document.querySelector('#adminDashboardModal .modal-header');
@@ -263,7 +141,6 @@ export function initAdmin() {
                 itemCategory.value = item.category;
                 itemPrice.value = item.price;
                 itemDescription.value = item.description;
->>>>>>> Stashed changes:client/js/Modules/adminModule.js
 
                 const submitBtn = menuForm.querySelector('.btn');
                 submitBtn.textContent = 'Сохранить изменения';
@@ -274,25 +151,6 @@ export function initAdmin() {
                         return showErrorModal('Заполните обязательные поля корректно');
                     }
                     try {
-<<<<<<< Updated upstream:client/src/js-modules/adminModule.js
-                        await API.updateMenuItem(id, {
-                            name: itemName.value,
-                            category: document.getElementById('itemCategory').value,
-                            price: parseInt(itemPrice.value),
-                            description: itemDescription.value
-                        });
-                        item.name = itemName.value;
-                        item.category = document.getElementById('itemCategory').value;
-                        item.price = parseInt(itemPrice.value);
-                        item.description = itemDescription.value;
-
-                        menuForm.reset();
-                        submitBtn.textContent = 'Добавить в меню';
-                        menuForm.onsubmit = defaultMenuSubmit;
-
-                        renderCurrentMenuItems();
-                        renderMenuItems('all');
-=======
                         await menuApi.updateMenuItem(id, {
                             name: itemName.value,
                             category: itemCategory.value,
@@ -303,7 +161,6 @@ export function initAdmin() {
                         submitBtn.textContent = 'Добавить в меню';
                         menuForm.onsubmit = defaultMenuSubmit;
                         await refreshMenuData();
->>>>>>> Stashed changes:client/js/Modules/adminModule.js
                         showSuccess('Позиция обновлена', `Позиция "${item.name}" была успешно обновлена в меню.`);
                     } 
                     catch (err) {
@@ -319,28 +176,6 @@ export function initAdmin() {
         if (isFieldInvalid(itemName.value) || isFieldInvalid(itemPrice.value) || isFieldInvalid(itemDescription.value)) {
             return showErrorModal('Пожалуйста, заполните все поля меню');
         }
-<<<<<<< Updated upstream:client/src/js-modules/adminModule.js
-
-        try {
-            const created = await API.createMenuItem({
-                name: itemName.value,
-                category: document.getElementById('itemCategory').value,
-                price: parseInt(itemPrice.value),
-                description: itemDescription.value
-            });
-
-            updateMenuItems([...menuItems, {
-                id: created.id,
-                name: itemName.value,
-                category: document.getElementById('itemCategory').value,
-                price: parseInt(itemPrice.value),
-                description: itemDescription.value
-            }]);
-
-            menuForm.reset();
-            renderCurrentMenuItems();
-            renderMenuItems('all');
-=======
         try {
             await menuApi.createMenuItem({
                 name: itemName.value,
@@ -350,7 +185,6 @@ export function initAdmin() {
             });
             menuForm.reset();
             await refreshMenuData();
->>>>>>> Stashed changes:client/js/Modules/adminModule.js
             showSuccess('Позиция добавлена', `Позиция "${itemName.value}" была успешно добавлена в меню.`);
         } 
         catch (err) {
@@ -381,17 +215,6 @@ export function initAdmin() {
             return;
         }
 
-<<<<<<< Updated upstream:client/src/js-modules/adminModule.js
-    function renderCurrentPromotions() {
-        currentPromotions.innerHTML = '';
-        if (promotions.length === 0) {
-            currentPromotions.innerHTML = '<p style="color: rgba(255, 255, 255, 0.7);">Акции отсутствуют</p>';
-            return;
-        }
-
-        const fragment = document.createDocumentFragment();
-=======
->>>>>>> Stashed changes:client/js/Modules/adminModule.js
         promotions.forEach(promo => {
             const el = document.createElement('div');
             el.className = 'item-list-item';
@@ -405,29 +228,10 @@ export function initAdmin() {
                     <button class="item-list-btn delete" data-id="${promo.id}">Удалить</button>
                 </div>
             `;
-<<<<<<< Updated upstream:client/src/js-modules/adminModule.js
-            fragment.appendChild(el);
-=======
             currentPromotionsEl.appendChild(el);
->>>>>>> Stashed changes:client/js/Modules/adminModule.js
         });
         currentPromotions.appendChild(fragment);
 
-<<<<<<< Updated upstream:client/src/js-modules/adminModule.js
-        currentPromotions.querySelectorAll('.item-list-btn.delete').forEach(button => {
-            button.addEventListener('click', async function () {
-                if (!isAdminLoggedIn) return;
-                const id = parseInt(this.getAttribute('data-id'));
-                if (!confirm('Удалить эту акцию?')) return;
-                try {
-                    await API.deletePromotion(id);
-                    updatePromotions(promotions.filter(p => p.id !== id));
-                    renderCurrentPromotions();
-                    renderPromotions();
-                } 
-                catch (e) {
-                    handleApiError(e, 'Не удалось удалить акцию.');
-=======
         currentPromotionsEl.querySelectorAll('.item-list-btn.delete').forEach(button => {
             button.addEventListener('click', async function () {
                 const id = parseInt(this.getAttribute('data-id'), 10);
@@ -439,47 +243,11 @@ export function initAdmin() {
                     showSuccess('Акция удалена', 'Акция была удалена.');
                 } catch (err) {
                     handleApiError(err, 'Не удалось удалить акцию.');
->>>>>>> Stashed changes:client/js/Modules/adminModule.js
                 }
             });
         });
     }
 
-<<<<<<< Updated upstream:client/src/js-modules/adminModule.js
-    function renderCurrentAnnouncement() {
-        document.getElementById('currentAnnouncement').innerHTML = `
-            <div class="item-list-item">
-                <div class="item-list-info">
-                    <h5>Текущее объявление</h5><p>${announcement || 'Объявление не опубликовано'}</p>
-                </div>
-            </div>`;
-    }
-
-    const adminBtn = document.getElementById('adminAccessBtn');
-    if (adminBtn) {
-        adminBtn.addEventListener('click', () => { adminLogin.style.display = 'flex'; });
-    }
-
-    document.getElementById('loginBtn').addEventListener('click', async () => {
-        const passcode = document.getElementById('adminPassword').value;
-        try {
-            await API.login(passcode);
-            setAdminLoggedIn(true);
-            adminLogin.style.display = 'none';
-            adminPanel.style.display = 'flex';
-            toggleAdminAccessButtons(true);
-            showSuccess('Добро пожаловать, администратор!', 'Вы успешно вошли в админ-панель. Теперь вы можете управлять меню, акциями и объявлениями.');
-        } 
-        catch (err) {
-            document.getElementById('adminPassword').value = '';
-            document.getElementById('adminPassword').focus();
-            if (err instanceof ApiError && err.status === 403) {
-                showErrorModal('Доступ временно заблокирован. Попробуйте позже.');
-            } 
-            else {
-                showErrorModal('Неверный пароль!');
-            }
-=======
     if (promoForm) {
         promoForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -517,7 +285,7 @@ export function initAdmin() {
         currentAnnouncementId = announcement ? announcement.id : null;
         currentAnnouncementEl.innerHTML = announcement
             ? `<div class="item-list-item"><div class="item-list-info"><h5>Текущее объявление</h5><p>${escapeHtml(announcement.text)}</p></div>
-               <div class="item-list-actions"><button class="item-list-btn delete" id="deleteAnnouncementBtn">Удалить</button></div></div>`
+                <div class="item-list-actions"><button class="item-list-btn delete" id="deleteAnnouncementBtn">Удалить</button></div></div>`
             : '<p style="color: rgba(255, 255, 255, 0.7);">Активных объявлений нет</p>';
 
         const deleteBtn = document.getElementById('deleteAnnouncementBtn');
@@ -577,7 +345,6 @@ export function initAdmin() {
             adminPasswordInput.value = '';
             adminPasswordInput.focus();
             handleApiError(err, 'Неверный пароль или сервер недоступен.');
->>>>>>> Stashed changes:client/js/Modules/adminModule.js
         }
     }
 
@@ -595,13 +362,6 @@ export function initAdmin() {
     });
 
     document.getElementById('logoutBtn').addEventListener('click', async () => {
-<<<<<<< Updated upstream:client/src/js-modules/adminModule.js
-        try { await API.logout(); } catch { /* даже если запрос не прошёл, разлогиниваем локально */ }
-        setAdminLoggedIn(false);
-        adminPanel.style.display = 'none';
-        toggleAdminAccessButtons(false);
-        showSuccess('До свидания!', 'Вы успешно вышли из админ-панели. До новых встреч!');
-=======
         try {
             await authApi.logout();
         } finally {
@@ -609,7 +369,6 @@ export function initAdmin() {
             adminPanel.style.display = 'none';
             showSuccess('До свидания!', 'Вы успешно вышли из админ-панели.');
         }
->>>>>>> Stashed changes:client/js/Modules/adminModule.js
     });
 
     document.getElementById('closeDashboardModal').addEventListener('click', () => adminDashboardModal.style.display = 'none');
@@ -626,69 +385,7 @@ export function initAdmin() {
         });
     });
 
-<<<<<<< Updated upstream:client/src/js-modules/adminModule.js
-    promoForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        if (!isAdminLoggedIn) return showErrorModal('Требуется авторизация.');
-
-        if (isFieldInvalid(promoTitle.value) || isFieldInvalid(promoDescription.value) || isFieldInvalid(promoDateInput.value)) {
-            return showErrorModal('Пожалуйста, заполните все поля акции');
-        }
-
-        try {
-            const startDate = new Date().toISOString();
-            const endDate = new Date(`${promoDateInput.value}T23:59:59`).toISOString();
-            const created = await API.createPromotion({
-                title: promoTitle.value,
-                description: promoDescription.value,
-                startDate,
-                endDate
-            });
-
-            updatePromotions([...promotions, {
-                id: created.id,
-                title: promoTitle.value,
-                description: promoDescription.value,
-                date: promoDateInput.value
-            }]);
-
-            promoForm.reset();
-            renderCurrentPromotions();
-            renderPromotions();
-            showSuccess('Акция добавлена', 'Новая акция была успешно добавлена.');
-        } catch (err) {
-            handleApiError(err, 'Не удалось добавить акцию.');
-        }
-    });
-
-    if (announcementForm) {
-        announcementForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (!isAdminLoggedIn) return showErrorModal('Требуется авторизация.');
-
-            const text = announcementText.value;
-            if (isFieldInvalid(text)) return showErrorModal('Введите текст объявления');
-
-            try {
-                const result = announcementId
-                    ? await API.updateAnnouncement(announcementId, text)
-                    : await API.createAnnouncement(text);
-
-                updateAnnouncement(result.text, result.id);
-                updateAnnouncementUI();
-                announcementForm.reset();
-                renderCurrentAnnouncement();
-                showSuccess('Объявление опубликовано', 'Новое объявление было успешно опубликовано на сайте.');
-            } 
-            catch (err) {
-                handleApiError(err, 'Не удалось опубликовать объявление.');
-            }
-        });
-    }
-}
-=======
     if (isAdminUiUnlocked()) {
         adminPanel.style.display = 'flex';
     }
 }
->>>>>>> Stashed changes:client/js/Modules/adminModule.js

@@ -20,15 +20,15 @@ namespace server
 
             var builder = WebApplication.CreateBuilder(args);
 
-            var allowedOrigins = (Environment.GetEnvironmentVariable("CORS_ORIGINS")
-                ?? "http://127.0.0.1:5500,http://localhost:5173,http://127.0.0.1:5173")
-                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConsole();
+            builder.Logging.AddDebug();
 
             builder.Services.AddCors(options =>
             {
                 options.AddDefaultPolicy(policy =>
                 {
-                    policy.WithOrigins(allowedOrigins)
+                    policy.WithOrigins("http://127.0.0.1:5500")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
@@ -95,11 +95,32 @@ namespace server
             var app = builder.Build();
             app.UseCors();
 
+            app.Use(async (context, next) =>
+            {
+                var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+
+                var method = context.Request.Method;
+                var path = context.Request.Path;
+                var ip = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+                logger.LogInformation("--> Incoming Request: {Method} {Path} from {Ip}", method, path, ip);
+
+                var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+                await next(context);
+
+                stopwatch.Stop();
+                var statusCode = context.Response.StatusCode;
+
+                logger.LogInformation("<-- Outgoing Response: {Method} {Path} responded {StatusCode} in {Elapsed}ms",
+                    method, path, statusCode, stopwatch.ElapsedMilliseconds);
+            });
+
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
             }
 
+            app.UseMiddleware<ExceptHandlerMiddleware>();
             app.UseMiddleware<IpBanMiddleware>();
 
             app.UseRateLimiter();

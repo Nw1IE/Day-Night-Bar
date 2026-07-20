@@ -1,73 +1,106 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using server.Data;
 using server.Models;
 
 namespace server.Properties.Services
 {
-    public class AuthService(AppDbContext db)
+    public class AuthService(AppDbContext db, ILogger<AuthService> logger)
     {
         private const int MaxFailedAttempts = 5;
         private readonly TimeSpan BanDuration = TimeSpan.FromHours(24);
 
         public async Task<bool> IsIpBlockedAsync(string ip)
         {
-            var ban = await db.BannedIps
+            try
+            {
+                var ban = await db.BannedIps
                 .FirstOrDefaultAsync(b => b.IpAddress == ip && b.BannedUntil > DateTime.UtcNow);
-            return ban != null;
+                return ban != null;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Ошибка при проверке блокировки IP-адреса: {Ip}", ip);
+                throw;
+            }
         }
 
         public async Task RegisterFailedAttemptAsync(string ip)
         {
-            var attempt = await db.LoginAttempts.FirstOrDefaultAsync(a => a.IpAddress == ip);
-
-            if (attempt == null)
+            try
             {
-                attempt = new LoginAttempt
+                var attempt = await db.LoginAttempts.FirstOrDefaultAsync(a => a.IpAddress == ip);
+
+                if (attempt == null)
                 {
-                    IpAddress = ip,
-                    FailedCount = 1,
-                    LastAttempt = DateTime.UtcNow
-                };
-                db.LoginAttempts.Add(attempt);
-            }
-            else
-            {
-                attempt.FailedCount++;
-                attempt.LastAttempt = DateTime.UtcNow;
-            }
-
-            if (attempt.FailedCount >= MaxFailedAttempts)
-            {
-                var ban = new BannedIp
+                    attempt = new LoginAttempt
+                    {
+                        IpAddress = ip,
+                        FailedCount = 1,
+                        LastAttempt = DateTime.UtcNow
+                    };
+                    db.LoginAttempts.Add(attempt);
+                }
+                else
                 {
-                    IpAddress = ip,
-                    BannedUntil = DateTime.UtcNow.Add(BanDuration),
-                    Reason = "Превышено число попыток ввода пароля"
-                };
-                db.BannedIps.Add(ban);
+                    attempt.FailedCount++;
+                    attempt.LastAttempt = DateTime.UtcNow;
+                }
 
-                db.LoginAttempts.Remove(attempt);
+                if (attempt.FailedCount >= MaxFailedAttempts)
+                {
+                    var ban = new BannedIp
+                    {
+                        IpAddress = ip,
+                        BannedUntil = DateTime.UtcNow.Add(BanDuration),
+                        Reason = "Превышено число попыток ввода пароля"
+                    };
+                    db.BannedIps.Add(ban);
+
+                    db.LoginAttempts.Remove(attempt);
+                }
+
+                await db.SaveChangesAsync();
             }
-
-            await db.SaveChangesAsync();
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Ошибка при регистрации неудачной попытки входа для IP-адреса: {Ip}", ip);
+                throw;
+            }
         }
 
         public async Task ResetFailedAttemptsAsync(string ip)
         {
-            var attempt = await db.LoginAttempts.FirstOrDefaultAsync(a => a.IpAddress == ip);
-            if (attempt != null)
+            try
             {
-                db.LoginAttempts.Remove(attempt);
-                await db.SaveChangesAsync();
+                var attempt = await db.LoginAttempts.FirstOrDefaultAsync(a => a.IpAddress == ip);
+                if (attempt != null)
+                {
+                    db.LoginAttempts.Remove(attempt);
+                    await db.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Ошибка при сбросе неудачных попыток входа для IP-адреса: {Ip}", ip);
+                throw;
             }
         }
 
         public async Task<bool> VerifyAdminAsync(string passcode)
         {
-            var admin = await db.Admins.FirstOrDefaultAsync();
-            if (admin == null) return false;
+            try
+            {
+                var admin = await db.Admins.FirstOrDefaultAsync();
+                if (admin == null) return false;
 
-            return BCrypt.Net.BCrypt.Verify(passcode, admin.PasscodeHash);
+                return BCrypt.Net.BCrypt.Verify(passcode, admin.PasscodeHash);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Ошибка при проверке администратора");
+                throw;
+            }
         }
     }
 }
