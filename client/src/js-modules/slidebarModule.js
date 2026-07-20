@@ -58,7 +58,8 @@ export const initSlider = () => {
         
         if (direction === 'next') {
             position -= slideWidth;
-        } else {
+        } 
+        else {
             position += slideWidth;
         }
         

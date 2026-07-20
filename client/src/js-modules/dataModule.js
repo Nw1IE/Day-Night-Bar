@@ -6,7 +6,6 @@ export let menuItems = [
 export let promotions = [];
 export let announcement = '';
 export let announcementId = null;
-export const ADMIN_PASSWORD_HINT = null; // пароль больше не хранится на фронте, проверяется бэком
 
 export let isAdminLoggedIn = sessionStorage.getItem('isAdminLoggedIn') === 'true';
 

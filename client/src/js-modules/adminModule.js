@@ -144,7 +144,8 @@ export function initAdmin() {
                     updateMenuItems(menuItems.filter(item => item.id !== id));
                     renderCurrentMenuItems();
                     renderMenuItems('all');
-                } catch (e) {
+                } 
+                catch (e) {
                     handleApiError(e, 'Не удалось удалить позицию меню.');
                 }
             });
@@ -193,7 +194,8 @@ export function initAdmin() {
                         renderCurrentMenuItems();
                         renderMenuItems('all');
                         showSuccess('Позиция обновлена', `Позиция "${item.name}" была успешно обновлена в меню.`);
-                    } catch (err) {
+                    } 
+                    catch (err) {
                         handleApiError(err, 'Не удалось обновить позицию меню.');
                     }
                 };
@@ -229,7 +231,8 @@ export function initAdmin() {
             renderCurrentMenuItems();
             renderMenuItems('all');
             showSuccess('Позиция добавлена', `Позиция "${itemName.value}" была успешно добавлена в меню.`);
-        } catch (err) {
+        } 
+        catch (err) {
             handleApiError(err, 'Не удалось добавить позицию меню.');
         }
     };
@@ -270,7 +273,8 @@ export function initAdmin() {
                     updatePromotions(promotions.filter(p => p.id !== id));
                     renderCurrentPromotions();
                     renderPromotions();
-                } catch (e) {
+                } 
+                catch (e) {
                     handleApiError(e, 'Не удалось удалить акцию.');
                 }
             });
@@ -300,12 +304,14 @@ export function initAdmin() {
             adminPanel.style.display = 'flex';
             toggleAdminAccessButtons(true);
             showSuccess('Добро пожаловать, администратор!', 'Вы успешно вошли в админ-панель. Теперь вы можете управлять меню, акциями и объявлениями.');
-        } catch (err) {
+        } 
+        catch (err) {
             document.getElementById('adminPassword').value = '';
             document.getElementById('adminPassword').focus();
             if (err instanceof ApiError && err.status === 403) {
                 showErrorModal('Доступ временно заблокирован. Попробуйте позже.');
-            } else {
+            } 
+            else {
                 showErrorModal('Неверный пароль!');
             }
         }
@@ -393,7 +399,8 @@ export function initAdmin() {
                 announcementForm.reset();
                 renderCurrentAnnouncement();
                 showSuccess('Объявление опубликовано', 'Новое объявление было успешно опубликовано на сайте.');
-            } catch (err) {
+            } 
+            catch (err) {
                 handleApiError(err, 'Не удалось опубликовать объявление.');
             }
         });
