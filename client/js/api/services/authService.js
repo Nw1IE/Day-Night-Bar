@@ -7,9 +7,11 @@ export const authApi = {
             : credentials;
         return request('/auth/login', { 
             method: 'POST', 
+            headers: {
+                'X-Admin-Client-Key': adminClientKey || ''
+            },
             body: { Passcode: passcode }
         });
     },
     logout: () => request('/auth/logout', { method: 'POST' }),
-    check: () => request('/auth/check')
 };

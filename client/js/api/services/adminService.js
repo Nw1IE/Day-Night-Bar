@@ -7,7 +7,7 @@ export const AdminApi = {
         return list && list.length > 0 ? list[0] : null;
     },
     createAnnouncement: (text) => request('/announcements', { method: 'POST', body: { text } }),
-    updateAnnouncement: (id, text) => request(`/announcements/${id}`, { method: 'PUT', body: { text } }),
+    updateAnnouncement: (id, text) => request(`/announcements/${id}`, { method: 'PATCH', body: { text } }),
     deleteAnnouncement: (id) => request(`/announcements/${id}`, { method: 'DELETE' }),
 
     // menu

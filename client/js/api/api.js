@@ -9,9 +9,11 @@ export class ApiError extends Error {
     }
 }
 
-async function request(endpoint, options = {}) {
+export async function request(endpoint, options = {}) {
     const url = `${BASE_URL}${endpoint}`;
-    
+
+    options.credentials = options.credentials || 'include';
+
     if (options.body && typeof options.body === 'object') {
         options.body = JSON.stringify(options.body);
         options.headers = {
@@ -25,7 +27,7 @@ async function request(endpoint, options = {}) {
         const result = await response.json().catch(() => ({}));
 
         if (!response.ok) {
-            throw new ApiError(result.message || 'Ошибка сервера', response.status, result);
+            throw new ApiError(result.message || result.error || 'Ошибка сервера', response.status, result);
         }
         return result;
     } 
