@@ -5,9 +5,7 @@ import {
 import { formatDate, getCategoryName } from './utilsModule.js';
 import { renderMenuItems, renderPromotions, updateAnnouncementUI } from './renderModule.js';
 import { saveMenuToStorage, savePromosToStorage, saveAnnouncementToStorage } from './storageModule.js';
-import { showErrorModal } from './errorModule.js';
-import { showSuccess } from './successModule.js';
-
+import { showErrorModal } from '../../components/error.js';
 export function initAdmin() {
     const adminLogin = document.getElementById('adminLogin');
     const adminPanel = document.getElementById('adminPanel');
