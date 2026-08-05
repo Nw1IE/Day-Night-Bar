@@ -483,3 +483,26 @@
 .success-btn:hover { opacity: 0.9; }
 .booking-modal-close.error { background: #dc3545; }
 .booking-modal-close.error:hover { background: #bb2d3b; }
+
+
+#announcement-container, 
+#hero-container,
+.announcement-wrapper {
+    margin: 5px;
+    padding: 5px;
+}
+
+.announcement {
+    margin-bottom: 0;
+}
+
+.hero {
+    margin-top: 0;
+}
+
+#announcement-container,
+#hero-container,
+#slider-container {
+    margin: 0px;
+    padding: 0px;
+}

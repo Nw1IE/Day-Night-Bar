@@ -6,6 +6,8 @@ import { formatDate, getCategoryName } from './utilsModule.js';
 import { renderMenuItems, renderPromotions, updateAnnouncementUI } from './renderModule.js';
 import { saveMenuToStorage, savePromosToStorage, saveAnnouncementToStorage } from './storageModule.js';
 import { showErrorModal } from '../../components/error.js';
+import { showSuccess } from '../../components/success.js';
+
 export function initAdmin() {
     const adminLogin = document.getElementById('adminLogin');
     const adminPanel = document.getElementById('adminPanel');
@@ -14,6 +16,17 @@ export function initAdmin() {
     const currentPromotions = document.getElementById('currentPromotions');
     const menuForm = document.getElementById('menuForm');
     const promoForm = document.getElementById('promoForm');
+    const announcementForm = document.getElementById('announcementForm');
+
+    let currentEditingId = null;
+
+    function resetMenuForm() {
+        if (!menuForm) return;
+        menuForm.reset();
+        currentEditingId = null;
+        const submitBtn = menuForm.querySelector('.btn');
+        if (submitBtn) submitBtn.textContent = 'Добавить в меню';
+    }
 
     function toggleAdminAccessButtons(disable) {
         const loginButtons = [
@@ -29,11 +42,13 @@ export function initAdmin() {
             }
         });
     }
+
     if (isAdminLoggedIn) toggleAdminAccessButtons(true);
 
     const menuCharsRegex = /[^a-zA-Zа-яА-ЯёЁ0-9+(),%:.\s]/g;
 
     function applyValidation(element, maxLength, regex = null) {
+        if (!element) return;
         element.addEventListener('input', function() {
             if (regex) {
                 this.value = this.value.replace(regex, '');
@@ -67,8 +82,7 @@ export function initAdmin() {
         promoDateInput.addEventListener('change', function() {
             if (this.value < today) {
                 this.value = today;
-            } 
-            else if (this.value > lastDayOfYear) {
+            } else if (this.value > lastDayOfYear) {
                 this.value = lastDayOfYear;
             }
         });
@@ -82,17 +96,42 @@ export function initAdmin() {
     }
 
     function showAdminLogin() {
+        // Если уже в админке — НЕ показываем логин, а сразу открываем дашборд (или выдаем сообщение)
         if (isAdminLoggedIn) {
-            showErrorModal('Вы уже авторизованы как администратор!');
+            showErrorModal('Вы уже авторизованы в системе!');
+            if (adminDashboardModal && adminDashboardModal.style.display !== 'flex') {
+                adminDashboardModal.style.display = 'flex';
+                renderCurrentMenuItems();
+                renderCurrentPromotions();
+                renderCurrentAnnouncement();
+            }
             return;
         }
 
-        adminLogin.style.display = 'flex';
-        document.getElementById('adminPassword').value = '';
-        document.getElementById('adminPassword').focus();
+        // Защита от дублирования: если модалка входа уже открыта — ничего не делаем
+        if (adminLogin && adminLogin.style.display === 'flex') {
+            return;
+        }
+
+        if (adminLogin) {
+            adminLogin.style.display = 'flex';
+            const pwd = document.getElementById('adminPassword');
+            
+            if (pwd) {
+                pwd.value = '';
+                if (document.activeElement && typeof document.activeElement.blur === 'function') {
+                    document.activeElement.blur();
+                }
+                setTimeout(() => {
+                    pwd.focus();
+                    pwd.select();
+                }, 50);
+            }
+        }
     }
 
     function renderCurrentMenuItems() {
+        if (!currentMenuItems) return;
         currentMenuItems.innerHTML = '';
         if (menuItems.length === 0) {
             currentMenuItems.innerHTML = '<p style="color: rgba(255, 255, 255, 0.7);">Меню пусто</p>';
@@ -117,94 +156,103 @@ export function initAdmin() {
             currentMenuItems.appendChild(itemElement);
         });
 
-        document.querySelectorAll('.item-list-btn.delete').forEach(button => {
+        currentMenuItems.querySelectorAll('.item-list-btn.delete').forEach(button => {
             button.addEventListener('click', function() {
                 if (!isAdminLoggedIn) return showErrorModal('Требуется авторизация.');
-                const id = parseInt(this.getAttribute('data-id'));
+                const id = parseInt(this.getAttribute('data-id'), 10);
                 if (confirm('Удалить эту позицию?')) {
-                    updateMenuItems(menuItems.filter(item => item.id !== id));
-                    saveMenuToStorage(menuItems);
+                    const updated = menuItems.filter(item => item.id !== id);
+                    updateMenuItems(updated);
+                    saveMenuToStorage(updated);
                     renderCurrentMenuItems();
                     renderMenuItems('all');
                 }
             });
         });
 
-        document.querySelectorAll('.item-list-btn.edit').forEach(button => {
+        currentMenuItems.querySelectorAll('.item-list-btn.edit').forEach(button => {
             button.addEventListener('click', function() {
                 if (!isAdminLoggedIn) return showErrorModal('Требуется авторизация.');
 
                 const modalHeader = document.querySelector('#adminDashboardModal .modal-header');
                 if (modalHeader) {
-                    modalHeader.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+                    modalHeader.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
 
-                const id = parseInt(this.getAttribute('data-id'));
+                const id = parseInt(this.getAttribute('data-id'), 10);
                 const item = menuItems.find(i => i.id === id);
-                if (item) {
+                if (item && menuForm) {
+                    currentEditingId = id;
                     document.getElementById('itemName').value = item.name;
                     document.getElementById('itemCategory').value = item.category;
                     document.getElementById('itemPrice').value = item.price;
                     document.getElementById('itemDescription').value = item.description;
                     
                     const submitBtn = menuForm.querySelector('.btn');
-                    submitBtn.textContent = 'Сохранить изменения';
-                    
-                    menuForm.onsubmit = function(e) {
-                        e.preventDefault();
-                        if (isFieldInvalid(itemName.value) || isFieldInvalid(itemPrice.value)) {
-                            return showErrorModal('Заполните обязательные поля корректно');
-                        }
-                        item.name = document.getElementById('itemName').value;
-                        item.category = document.getElementById('itemCategory').value;
-                        item.price = parseInt(document.getElementById('itemPrice').value);
-                        item.description = document.getElementById('itemDescription').value;
-                        
-                        saveMenuToStorage(menuItems);
-                        menuForm.reset();
-                        submitBtn.textContent = 'Добавить в меню';
-                        menuForm.onsubmit = defaultMenuSubmit;
-                        
-                        renderCurrentMenuItems();
-                        renderMenuItems('all');
-                        showSuccess('Позиция обновлена', `Позиция "${item.name}" была успешно обновлена в меню.`);
-                    };
+                    if (submitBtn) submitBtn.textContent = 'Сохранить изменения';
                 }
             });
         });
     }
 
-    const defaultMenuSubmit = function(e) {
-        e.preventDefault();
-        if (!isAdminLoggedIn) return showErrorModal('Требуется авторизация.');
+    if (menuForm) {
+        menuForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (!isAdminLoggedIn) return showErrorModal('Требуется авторизация.');
 
-        if (isFieldInvalid(itemName.value) || isFieldInvalid(itemPrice.value) || isFieldInvalid(itemDescription.value)) {
-            return showErrorModal('Пожалуйста, заполните все поля меню');
-        }
+            const nameVal = document.getElementById('itemName').value;
+            const catVal = document.getElementById('itemCategory').value;
+            const priceVal = document.getElementById('itemPrice').value;
+            const descVal = document.getElementById('itemDescription').value;
 
-        const newItem = {
-            id: menuItems.length > 0 ? Math.max(...menuItems.map(i => i.id)) + 1 : 1,
-            name: document.getElementById('itemName').value,
-            category: document.getElementById('itemCategory').value,
-            price: parseInt(document.getElementById('itemPrice').value),
-            description: document.getElementById('itemDescription').value
-        };
+            if (isFieldInvalid(nameVal) || isFieldInvalid(priceVal) || isFieldInvalid(descVal)) {
+                return showErrorModal('Пожалуйста, заполните все поля меню');
+            }
 
-        menuItems.push(newItem);
-        saveMenuToStorage(menuItems);
-        menuForm.reset();
-        renderCurrentMenuItems();
-        renderMenuItems('all');
-        showSuccess('Позиция добавлена', `Позиция "${newItem.name}" была успешно добавлена в меню.`);
-    };
-    menuForm.onsubmit = defaultMenuSubmit;
+            if (currentEditingId !== null) {
+                const updatedList = menuItems.map(item => {
+                    if (item.id === currentEditingId) {
+                        return {
+                            ...item,
+                            name: nameVal,
+                            category: catVal,
+                            price: parseInt(priceVal, 10),
+                            description: descVal
+                        };
+                    }
+                    return item;
+                });
+                updateMenuItems(updatedList);
+                saveMenuToStorage(updatedList);
+                showSuccess('Позиция обновлена', `Позиция "${nameVal}" успешно изменена.`);
+            } else {
+                const newId = menuItems.length > 0 ? Math.max(...menuItems.map(i => i.id)) + 1 : 1;
+                const newItem = {
+                    id: newId,
+                    name: nameVal,
+                    category: catVal,
+                    price: parseInt(priceVal, 10),
+                    description: descVal
+                };
+                const updatedList = [...menuItems, newItem];
+                updateMenuItems(updatedList);
+                saveMenuToStorage(updatedList);
+                showSuccess('Позиция добавлена', `Позиция "${newItem.name}" добавлена в меню.`);
+            }
+
+            resetMenuForm();
+            renderCurrentMenuItems();
+            renderMenuItems('all');
+        });
+    }
 
     function renderCurrentPromotions() {
+        if (!currentPromotions) return;
         currentPromotions.innerHTML = '';
-        if (promotions.length === 0) return currentPromotions.innerHTML = '<p style="color: rgba(255, 255, 255, 0.7);">Акции отсутствуют</p>';
+        if (promotions.length === 0) {
+            currentPromotions.innerHTML = '<p style="color: rgba(255, 255, 255, 0.7);">Акции отсутствуют</p>';
+            return;
+        }
         
         promotions.forEach(promo => {
             const el = document.createElement('div');
@@ -222,13 +270,14 @@ export function initAdmin() {
             currentPromotions.appendChild(el);
         });
 
-        document.querySelectorAll('#currentPromotions .item-list-btn.delete').forEach(button => {
+        currentPromotions.querySelectorAll('.item-list-btn.delete').forEach(button => {
             button.addEventListener('click', function() {
                 if (!isAdminLoggedIn) return;
-                const id = parseInt(this.getAttribute('data-id'));
+                const id = parseInt(this.getAttribute('data-id'), 10);
                 if (confirm('Удалить эту акцию?')) {
-                    updatePromotions(promotions.filter(p => p.id !== id));
-                    savePromosToStorage(promotions);
+                    const updated = promotions.filter(p => p.id !== id);
+                    updatePromotions(updated);
+                    savePromosToStorage(updated);
                     renderCurrentPromotions();
                     renderPromotions();
                 }
@@ -237,103 +286,188 @@ export function initAdmin() {
     }
 
     function renderCurrentAnnouncement() {
-        document.getElementById('currentAnnouncement').innerHTML = `
-            <div class="item-list-item">
-                <div class="item-list-info">
-                    <h5>Текущее объявление</h5><p>${announcement}</p>
-                </div>
-            </div>`;
+        const announcementContainer = document.getElementById('currentAnnouncement');
+        if (announcementContainer) {
+            announcementContainer.innerHTML = `
+                <div class="item-list-item">
+                    <div class="item-list-info">
+                        <h5>Текущее объявление</h5>
+                        <p>${announcement}</p>
+                    </div>
+                </div>`;
+        }
     }
 
     const adminBtn = document.getElementById('adminAccessBtn');
-    if (adminBtn) {
-    adminBtn.addEventListener('click', () => {
-        document.getElementById('adminLogin').style.display = 'flex';
-    });
+    if (adminBtn) adminBtn.addEventListener('click', showAdminLogin);
+
+    const adminBtnFooter = document.getElementById('adminAccessBtnFooter');
+    if (adminBtnFooter) adminBtnFooter.addEventListener('click', showAdminLogin);
+
+    const pwdInput = document.getElementById('adminPassword');
+    if (pwdInput) {
+        pwdInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const loginBtn = document.getElementById('loginBtn');
+                if (loginBtn) loginBtn.click();
+            }
+        });
     }
     
-    document.getElementById('loginBtn').addEventListener('click', () => {
-        if (document.getElementById('adminPassword').value === ADMIN_PASSWORD) {
-            setAdminLoggedIn(true);
-            adminLogin.style.display = 'none';
-            adminPanel.style.display = 'flex';
+    const loginBtn = document.getElementById('loginBtn');
+    if (loginBtn) {
+        loginBtn.addEventListener('click', () => {
+            if (pwdInput && pwdInput.value === ADMIN_PASSWORD) {
+                setAdminLoggedIn(true);
+                if (adminLogin) adminLogin.style.display = 'none';
+                if (adminPanel) adminPanel.style.display = 'flex';
 
-            toggleAdminAccessButtons(true);
-            showSuccess('Добро пожаловать, администратор!', 'Вы успешно вошли в админ-панель. Теперь вы можете управлять меню, акциями и объявлениями.');
-        } 
-        else 
-        {
-            document.getElementById('adminPassword').value = '';
-            document.getElementById('adminPassword').focus();
-            showErrorModal('Неверный пароль!');
-        }
-    });
+                toggleAdminAccessButtons(true);
+                showSuccess('Добро пожаловать!', 'Вы успешно вошли в панель администратора.');
+            } else {
+                if (pwdInput) {
+                    pwdInput.value = '';
+                    pwdInput.focus();
+                }
+                showErrorModal('Неверный пароль!');
+            }
+        });
+    }
 
-    document.getElementById('adminDashboardBtn').addEventListener('click', () => {
-        if (!isAdminLoggedIn) return showAdminLogin();
-        adminDashboardModal.style.display = 'flex';
-        renderCurrentMenuItems();
-        renderCurrentPromotions();
-        renderCurrentAnnouncement();
-    });
+    const adminDashboardBtn = document.getElementById('adminDashboardBtn');
+    if (adminDashboardBtn) {
+        adminDashboardBtn.addEventListener('click', () => {
+            if (!isAdminLoggedIn) return showAdminLogin();
+            if (adminDashboardModal) adminDashboardModal.style.display = 'flex';
+            renderCurrentMenuItems();
+            renderCurrentPromotions();
+            renderCurrentAnnouncement();
+        });
+    }
 
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-        setAdminLoggedIn(false);
-        adminPanel.style.display = 'none';
-        toggleAdminAccessButtons(false);
-        showSuccess('До свидания!', 'Вы успешно вышли из админ-панели. До новых встреч!');
-    });
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            setAdminLoggedIn(false);
+            if (adminPanel) adminPanel.style.display = 'none';
+            toggleAdminAccessButtons(false);
+            resetMenuForm();
+            showSuccess('До свидания!', 'Вы успешно вышли из админ-панели.');
+        });
+    }
 
-    document.getElementById('closeDashboardModal').addEventListener('click', () => adminDashboardModal.style.display = 'none');
+    const closeDashboardBtn = document.getElementById('closeDashboardModal');
+    if (closeDashboardBtn) {
+        closeDashboardBtn.addEventListener('click', () => {
+            if (adminDashboardModal) adminDashboardModal.style.display = 'none';
+            resetMenuForm();
+        });
+    }
+
     window.addEventListener('click', (e) => {
-        if (e.target === adminDashboardModal) adminDashboardModal.style.display = 'none';
+        if (e.target === adminDashboardModal) {
+            adminDashboardModal.style.display = 'none';
+            resetMenuForm();
+        }
         if (e.target === adminLogin) adminLogin.style.display = 'none';
+    });
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            if (adminLogin && adminLogin.style.display === 'flex') {
+                adminLogin.style.display = 'none';
+            }
+            if (adminDashboardModal && adminDashboardModal.style.display === 'flex') {
+                adminDashboardModal.style.display = 'none';
+                resetMenuForm();
+            }
+        }
     });
 
     document.querySelectorAll('.admin-tab').forEach(tab => {
         tab.addEventListener('click', () => {
             document.querySelectorAll('.admin-tab, .admin-tab-content').forEach(el => el.classList.remove('active'));
             tab.classList.add('active');
-            document.getElementById(`${tab.getAttribute('data-tab')}-tab`).classList.add('active');
+            const targetTab = document.getElementById(`${tab.getAttribute('data-tab')}-tab`);
+            if (targetTab) targetTab.classList.add('active');
         });
     });
 
-    promoForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        if (!isAdminLoggedIn) return showErrorModal('Требуется авторизация.');
+    if (promoForm) {
+        promoForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (!isAdminLoggedIn) return showErrorModal('Требуется авторизация.');
 
-        if (isFieldInvalid(promoTitle.value) || isFieldInvalid(promoDescription.value) || isFieldInvalid(promoDateInput.value)) {
-            return showErrorModal('Пожалуйста, заполните все поля акции');
-        }
+            if (isFieldInvalid(promoTitle.value) || isFieldInvalid(promoDescription.value) || isFieldInvalid(promoDateInput.value)) {
+                return showErrorModal('Пожалуйста, заполните все поля акции');
+            }
 
-        promotions.push({
-            id: promotions.length > 0 ? Math.max(...promotions.map(p => p.id)) + 1 : 1,
-            title: promoTitle.value,
-            description: promoDescription.value,
-            date: promoDateInput.value
+            const newPromo = {
+                id: promotions.length > 0 ? Math.max(...promotions.map(p => p.id)) + 1 : 1,
+                title: promoTitle.value,
+                description: promoDescription.value,
+                date: promoDateInput.value
+            };
+
+            const updatedPromos = [...promotions, newPromo];
+            updatePromotions(updatedPromos);
+            savePromosToStorage(updatedPromos);
+            promoForm.reset();
+            renderCurrentPromotions();
+            renderPromotions();
+            showSuccess('Акция добавлена', 'Новая акция успешно добавлена.');
         });
+    }
 
-        savePromosToStorage(promotions);
-        promoForm.reset();
-        renderCurrentPromotions();
-        renderPromotions();
-        showSuccess('Акция добавлена', 'Новая акция была успешно добавлена.');
-    });
+    if (announcementForm) {
+        announcementForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (!isAdminLoggedIn) return showErrorModal('Требуется авторизация.');
 
-    announcementForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        if (!isAdminLoggedIn) return showErrorModal('Требуется авторизация.');
+            const text = announcementText ? announcementText.value : '';
+            if (isFieldInvalid(text)) {
+                return showErrorModal('Введите текст объявления');
+            }
 
-        const text = announcementText.value;
-        if (isFieldInvalid(text)) {
-            return showErrorModal('Введите текст объявления');
+            updateAnnouncement(text);
+            saveAnnouncementToStorage(text);
+            updateAnnouncementUI();
+            announcementForm.reset();
+            renderCurrentAnnouncement();
+            showSuccess('Объявление опубликовано', 'Новое объявление успешно опубликовано.');
+        });
+    }
+
+    // Вызов админ-панели по хоткею Ctrl + Shift + A
+document.addEventListener('keydown', (e) => {
+        const isHotkey = e.ctrlKey && (e.shiftKey || e.altKey) && (e.code === 'KeyA' || e.key === 'A' || e.key === 'a' || e.key === 'Ф' || e.key === 'ф');
+
+        if (isHotkey) {
+            e.preventDefault();
+
+            // Проверяем видимость панели управления
+            const isPanelVisible = adminPanel && getComputedStyle(adminPanel).display !== 'none';
+            const isDashboardOpen = adminDashboardModal && getComputedStyle(adminDashboardModal).display !== 'none';
+
+            if (isAdminLoggedIn || isPanelVisible) {
+                // Если дашборд уже открыт — ничего не делаем
+                if (isDashboardOpen) {
+                    return;
+                }
+
+                // Если авторизован, но дашборд закрыт — открываем его
+                if (adminDashboardModal) {
+                    adminDashboardModal.style.display = 'flex';
+                    renderCurrentMenuItems();
+                    renderCurrentPromotions();
+                    renderCurrentAnnouncement();
+                }
+                return;
+            }
+
+            // Если не авторизован — открываем окно входа
+            showAdminLogin();
         }
-
-        updateAnnouncement(text);
-        saveAnnouncementToStorage(text);
-        updateAnnouncementUI();
-        announcementForm.reset();
-        renderCurrentAnnouncement();
-        showSuccess('Объявление опубликовано', 'Новое объявление было успешно опубликовано на сайте.');
     });
 }
