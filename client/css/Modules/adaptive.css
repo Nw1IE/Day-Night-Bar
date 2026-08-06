@@ -1,251 +1,317 @@
-        @media (max-width: 992px) 
-        {
-            .hero h1 {
-                font-size: 46px;
-            }
-            
-            .section-title {
-                font-size: 36px;
-            }
-            
-            .menu-items, .promotion-cards {
-                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            }
-        }
+/* Полная блокировка горизонтального скролла */
+html, body {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    position: relative;
+    margin: 0;
+    padding: 0;
+}
 
-        @media (max-width: 768px) 
-        {
-            nav ul {
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                width: 100%;
-                background-color: rgba(18, 18, 18, 0.98);
-                flex-direction: column;
-                padding: 20px;
-                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-                backdrop-filter: blur(10px);
-                border-top: 1px solid rgba(201, 167, 105, 0.2);
-            }
+*, *:before, *:after {
+    box-sizing: border-box;
+}
 
-            nav ul.active 
-            {
-                display: flex;
-            }
+section, header, footer, main, .container {
+    max-width: 100% !important;
+}
 
-            nav ul li 
-            {
-                margin: 10px 0;
-            }
+/* Десктопы высокой четкости */
+@media (min-width: 1366px) {
+    .container {
+        max-width: 1320px !important;
+        margin: 0 auto;
+    }
 
-            .mobile-menu-btn
-            {
-                display: block;
-            }
+    #hero-container h1 {
+        font-size: 56px;
+    }
+}
 
-            .hero 
-            {
-                padding: 150px 0 80px;
-            }
-            
-            .hero h1 
-            {
-                font-size: 38px;
-            }
-            
-            .hero p 
-            {
-                font-size: 18px;
-            }
-            
-            .section-title 
-            {
-                font-size: 32px;
-            }
-            
-            .btn-outline 
-            {
-                margin-left: 0;
-                margin-top: 15px;
-            }
-            
-            .admin-panel 
-            {
-                top: auto;
-                bottom: 20px;
-                transform: none;
-                flex-direction: row;
-                border-radius: 8px;
-                right: 20px;
-                padding: 10px 15px;
-            }
-            
-            .modal-content 
-            {
-                padding: 25px;
-            }
-        }
+/* Блок для кнопки темы и бургера справа */
+.header-right {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin-left: auto !important;
+}
 
+/* Золотая кнопка смены темы */
+.Change {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: #c9a769 !important;
+    color: #121212 !important;
+    border: none !important;
+    border-radius: 50% !important;
+    width: 38px !important;
+    height: 38px !important;
+    font-size: 16px !important;
+    cursor: pointer !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
 
+/* Мобильные устройства и планшеты портретной ориентации */
+@media (max-width: 768px) {
+    header {
+        margin: 0 !important;
+        padding: 0 !important;
+        border-bottom: none !important;
+        background: transparent !important;
+    }
 
-    /* ПК и Большие экраны (от 1366px и выше) */
-        @media (min-width: 1366px) 
-        {
-            .container 
-            {
-            max-width: 1320px;
-            }
-    
-            .hero h1 
-            {
-            font-size: 64px;
-            }
-    
-            .menu-items, .promotion-cards 
-            {
-                grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-            }
-        }
+    .header-content, .container {
+        overflow: visible !important;
+        position: relative !important;
+    }
 
-   /* 2. Планшеты и небольшие ноутбуки (от 768px до 1365px) */
-            @media (min-width: 768px) and (max-width: 1365px) 
-            {
-                .menu-items, .promotion-cards 
-                {
-                    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-                }
-                
-                .hero 
-                {
-                    padding: 160px 0 100px;
-                }
-            }
+    .header-content {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        width: 100% !important;
+        padding: 14px 15px !important;
+        margin: 0 !important;
+        min-height: 64px !important;
+    }
 
-   /* 3. Мобильные устройства (до 767px, включая базу от 375px) */
-    @media (max-width: 767px) 
-    {
-        .menu-items, .promotion-cards 
-        {
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
-
-    .menu-item-img, .promotion-card-img 
-    {
-        height: 180px;
+    .logo {
+        font-size: 24px !important;
+        margin: 0 !important;
     }
     
-    .menu-item-header 
-    {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
+    .logo i {
+        font-size: 24px !important;
     }
 
-    .hero .btn, .hero .btn-outline 
-    {
-        display: block;
-        width: 100%;
-        margin-left: 0;
-        margin-bottom: 15px;
+    .mobile-menu-btn {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: none !important;
+        border: none !important;
+        cursor: pointer !important;
+        font-size: 22px !important;
+        color: #ffffff !important;
+        width: 38px !important;
+        height: 38px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        position: relative;
+        z-index: 10000;
+        transition: transform 0.3s ease;
     }
 
-    .form-group 
-    {
-        min-width: 100%;
-    }
-    
-    .form-row 
-    {
-        gap: 15px;
-        margin-bottom: 15px;
+    .mobile-menu-btn.active {
+        transform: rotate(90deg);
     }
 
-    .modal-content
-    {
-        width: 95%;
-        padding: 20px;
-        max-height: 90vh;
-    }
-    
-    .modal-title 
-    {
-        font-size: 22px;
+    .mobile-menu-btn * {
+        pointer-events: none;
     }
 
-    .admin-tabs 
-    {
-        flex-direction: column;
-        border-bottom: none;
-        gap: 5px;
-    }
-    
-    .admin-tab 
-    {
-        width: 100%;
-        text-align: left;
-        border: 1px solid #555;
-        border-radius: 4px;
-        padding: 12px 15px;
-    }
-    
-    .admin-tab.active:after 
-    {
+    #navMenu {
         display: none;
-    }
-    
-    .admin-tab.active 
-    {
-        background-color: rgba(201, 167, 105, 0.1);
-        border-color: var(--primary);
+        flex-direction: column !important;
+        position: absolute !important;
+        top: 100% !important;
+        left: 0 !important;
+        width: 100% !important;
+        background-color: rgba(18, 18, 18, 0.95) !important;
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        padding: 15px 0 20px !important;
+        border-bottom: 2px solid rgba(201, 167, 105, 0.3);
+        z-index: 999999 !important;
+        list-style: none !important;
+        margin: 0 !important;
+        animation: fadeInMenu 0.3s ease forwards;
     }
 
-    .item-list-item
-    {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-    }
-    
-    .item-list-actions 
-    {
+    #navMenu li {
+        margin: 0 !important;
         width: 100%;
-        justify-content: flex-end;
+        text-align: left !important;
     }
 
-    .announcement 
-    {
-        font-size: 15px;
-        padding: 15px;
-        margin-top: 80px !important;
+    #navMenu li a {
+        color: #ffffff !important;
+        text-decoration: none !important;
+        font-size: 16px !important;
+        font-weight: 500;
+        display: flex !important;
+        align-items: center;
+        gap: 15px;
+        padding: 12px 20px !important;
+        transition: background 0.2s ease, padding-left 0.2s ease, color 0.2s ease;
+        border-left: 4px solid transparent;
     }
 
-    .footer-content 
-    {
-        grid-template-columns: 1fr;
+    #navMenu li a i {
+        font-size: 18px;
+        width: 24px;
         text-align: center;
-        gap: 35px;
+        color: #c9a769;
     }
-    
-    .social-icons 
-    {
-        justify-content: center;
+
+    #navMenu li a:active,
+    #navMenu li a:hover {
+        background: rgba(201, 167, 105, 0.1);
+        padding-left: 26px !important;
+        border-left-color: #c9a769;
+    }
+
+    #hero-container {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        min-height: auto !important;
+        margin-top: 10px !important;
+    }
+
+    #hero-container h1 {
+        font-size: 26px;
+        word-wrap: break-word;
+        line-height: 1.15;
+        margin: 0 0 5px 0 !important;
+    }
+
+    #hero-container p {
+        font-size: 14px;
+        margin: 0 !important;
     }
 }
 
-
-   /* СКРЫТИЕ СКРОЛЛБАРОВ ДЛЯ ВСЕХ ЭЛЕМЕНТОВ */
-html, body, * {
-    -ms-overflow-style: none !important;
-    scrollbar-width: none !important;
+/* Десктопное отображение меню на больших экранах */
+@media (min-width: 769px) {
+    #navMenu {
+        display: flex !important;
+    }
 }
 
-html::-webkit-scrollbar, 
-body::-webkit-scrollbar, 
-*::-webkit-scrollbar {
-    display: none !important;
-    width: 0 !important;
-    height: 0 !important;
-    background: transparent !important;
+/* Адаптация выпадающего меню под светлую тему */
+body.light #navMenu,
+body.light-theme #navMenu,
+.light-theme #navMenu {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+body.light #navMenu li a,
+body.light-theme #navMenu li a,
+.light-theme #navMenu li a {
+    color: #222222 !important;
+}
+
+body.light #navMenu li a:hover,
+body.light-theme #navMenu li a:hover,
+.light-theme #navMenu li a:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* Плавная анимация появления */
+@keyframes fadeInMenu {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- КАРТОЧКИ И СЕТКИ (Адаптив под мобилки и ПК) --- */
+@media (max-width: 768px) {
+    .menu-items, 
+    .promotion-cards, 
+    .menu-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+        padding: 0 20px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .menu-item, 
+    .promotion-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 auto !important;
+        border-radius: 10px !important;
+        overflow: hidden !important;
+    }
+
+    .menu-item-img, 
+    .promotion-card-img, 
+    .menu-item img {
+        width: 100% !important;
+        height: 130px !important;
+        object-fit: cover !important;
+    }
+
+    .menu-item-content, 
+    .promotion-card-content {
+        padding: 10px 12px !important;
+        width: 100% !important;
+    }
+}
+
+@media (min-width: 769px) {
+    .menu-items, 
+    .promotion-cards, 
+    .menu-grid {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 320px)) !important;
+        justify-content: center !important;
+        gap: 25px !important;
+        width: 100% !important;
+        max-width: 1300px !important;
+        margin: 0 auto !important;
+    }
+
+    .menu-item, 
+    .promotion-card {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        background: #1a1a1a !important;
+        border-radius: 12px !important;
+        overflow: hidden !important;
+    }
+
+    .menu-item-img, 
+    .promotion-card-img, 
+    .menu-item img {
+        width: 100% !important;
+        height: 130px !important;
+        object-fit: cover !important;
+    }
+
+    .menu-item-content, 
+    .promotion-card-content {
+        display: flex !important;
+        flex-direction: column !important;
+        padding: 12px 15px !important;
+    }
+}
+
+/* Глобальный сброс фокусов и рамок при клике */
+*, *:focus, *:active, *:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+button:focus, 
+button:active, 
+.mobile-menu-btn:focus, 
+.mobile-menu-btn:active, 
+#ChangeButton:focus, 
+#ChangeButton:active,
+header nav a:focus,
+header nav a:active {
+    outline: none !important;
+    border-color: inherit !important;
+    box-shadow: none !important;
 }

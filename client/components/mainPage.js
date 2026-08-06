@@ -8,7 +8,7 @@ export function renderHero() {
                 <h1>День / Ночь</h1>
                 <p class="White">Элитный бар в центре города с авторскими коктейлями, изысканной кухней и неповторимой атмосферой. У нас вы найдете идеальное сочетание вкуса, стиля и комфорта для настоящих ценителей.</p>
                 <section class="hero-actions">
-                    <a href="#contacts" class="btn">Связаться с нами</a>
+                    <a href="#footer-container" class="btn">Связаться с нами</a>
                     <a href="#menu" class="btn btn-outline">Посмотреть меню</a>
                 </section>
             </section>

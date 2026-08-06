@@ -2,7 +2,7 @@
 <html lang="ru">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <title>День/Ночь</title>
         <link rel="stylesheet" href="./css/style.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -11,154 +11,14 @@
     </head>
 
     <body>
-        <div class="admin-login" id="adminLogin" style="display: none;">
-            <div class="login-form">
-                <h2><i class="fas fa-lock"></i> Вход для администратора</h2>
-                <input type="password" id="adminPassword" placeholder="Введите пароль администратора" autofocus>                <button class="btn" id="loginBtn">Войти</button>
-            </div>
-        </div>
-
-        <div class="admin-panel" id="adminPanel" style="display: none;">
-            <button class="admin-btn" id="adminDashboardBtn" title="Панель администратора"><i class="fas fa-edit"></i></button>
-            <button class="admin-btn" id="logoutBtn" title="Выйти"><i class="fas fa-sign-out-alt"></i></button>
-        </div>
-
-        <div class="modal" id="adminDashboardModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title"><i class="fas fa-tachometer-alt"></i> Панель администратора</h3>
-                    <button class="close-modal" id="closeDashboardModal">&times;</button>
-                </div>
-                
-                <div class="admin-tabs">
-                    <button class="admin-tab active" data-tab="menu">Управление меню</button>
-                    <button class="admin-tab" data-tab="promotions">Управление акциями</button>
-                    <button class="admin-tab" data-tab="announcements">Объявления</button>
-                </div>
-
-                <div class="admin-tab-content active" id="menu-tab">
-                    <h4>Добавить новую позицию в меню</h4>
-                    <form class="admin-form" id="menuForm">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="itemName">Название</label>
-                                <input type="text" id="itemName" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="itemCategory">Категория</label>
-                                <select id="itemCategory" required>
-                                    <option value="cocktails">Коктейли</option>
-                                    <option value="wine">Вино</option>
-                                    <option value="beer">Пиво</option>
-                                    <option value="snacks">Закуски</option>
-                                    <option value="main">Основные блюда</option>
-                                    <option value="desserts">Десерты</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="itemPrice">Цена (руб.)</label>
-                                <input type="number" id="itemPrice" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="itemDescription">Описание</label>
-                                <textarea id="itemDescription" rows="3" required></textarea>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn">Добавить в меню</button>
-                    </form>
-                    
-                    <div class="item-list">
-                        <h4>Текущее меню</h4>
-                        <div id="currentMenuItems">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="admin-tab-content" id="promotions-tab">
-                    <h4>Добавить новую акцию</h4>
-                    <form class="admin-form" id="promoForm">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="promoTitle">Название акции</label>
-                                <input type="text" id="promoTitle" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="promoDate">Дата окончания</label>
-                                <input type="date" id="promoDate" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="promoDescription">Описание акции</label>
-                            <textarea id="promoDescription" rows="4" required></textarea>
-                        </div>
-                        <button type="submit" class="btn">Добавить акцию</button>
-                    </form>
-                    
-                    <div class="item-list">
-                        <h4>Текущие акции</h4>
-                        <div id="currentPromotions">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="admin-tab-content" id="announcements-tab">
-                    <h4>Создать новое объявление</h4>
-                    <form class="admin-form" id="announcementForm">
-                        <div class="form-group">
-                            <label for="announcementText">Текст объявления</label>
-                            <textarea id="announcementText" rows="3" required placeholder="Введите текст объявления..."></textarea>
-                        </div>
-                        <button type="submit" class="btn">Опубликовать объявление</button>
-                    </form>
-                    
-                    <div class="item-list">
-                        <h4>Текущее объявление</h4>
-                        <div id="currentAnnouncement">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <header id="header-container"></header>
-
         <main>
             <section id="announcement-container"></section>
             <section id="hero-container"></section>
+            <section id="slider-container"></section>
+            <section id="menu-container"></section>
+            <section id="promotions-container"></section>
         </main>
-
-        <section id="slider-container"></section>
-
-        <section id="menu">
-            <div class="container">
-                <h2 class="section-title">Наше меню</h2>
-                
-                <div class="menu-categories">
-                    <button class="category-btn active" data-category="all">Все</button>
-                    <button class="category-btn" data-category="cocktails">Коктейли</button>
-                    <button class="category-btn" data-category="wine">Вино</button>
-                    <button class="category-btn" data-category="beer">Пиво</button>
-                    <button class="category-btn" data-category="snacks">Закуски</button>
-                    <button class="category-btn" data-category="main">Основные блюда</button>
-                    <button class="category-btn" data-category="desserts">Десерты</button>
-                </div>
-                
-                <div class="menu-items" id="menuItems">
-                </div>
-            </div>
-        </section>
-
-        <section class="promotions" id="promotions">
-            <div class="container">
-                <h2 class="section-title">Акции и события</h2>
-                
-                <div class="promotion-cards" id="promotionCards">
-                </div>
-            </div>
-        </section>
-
         <footer id="footer-container"></footer>
     </body>
 </html>

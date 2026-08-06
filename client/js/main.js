@@ -1,28 +1,51 @@
-import { renderMenuItems, renderPromotions, updateAnnouncementUI } from './Modules/renderModule.js';
+import { menuItems as initialData, promotions} from './Modules/dataModule.js';
+import { renderPromotions, updateAnnouncementUI } from './Modules/renderModule.js';
 import { initPublicEvents } from './Modules/publicModule.js';
-import { initErrorModal, showErrorModal } from '../components/error.js';
+import { initErrorModal } from '../components/error.js';
 import { initAdmin } from './Modules/adminModule.js';
-import { initSlider } from './Modules/slidebarModule.js';
 import { initPersistentData } from './Modules/storageModule.js';
 import { renderHeader } from '../components/header.js';
 import { renderFooter } from '../components/footer.js';
 import { renderAnnouncement } from '../components/announcement.js';
 import { renderHero } from '../components/mainPage.js';
 import { renderSlider } from '../components/slider.js';
-
+import { renderMenu, renderMenuItems } from '../components/menu.js';
+import { renderPromotionsSection, renderPromotionCards } from '../components/promotions.js';
+import { initAdminModal } from '../components/admins.js';
+import { createDeleteModalMarkup } from '../components/delete.js';
 document.addEventListener('DOMContentLoaded', function() {
     initErrorModal();
-    
-    // Рендерим компоненты строго по одному разу в нужном порядке
+    initPersistentData();
+    initAdminModal();
+
+    renderPromotionsSection();
+    renderPromotionCards(promotions);
     renderHeader();
     renderAnnouncement();
     renderHero();
     renderSlider();
+    renderMenu();
     renderFooter();
-  
 
-    initPersistentData();
-    initSlider();
+
+document.addEventListener('click', (e) => {
+    // Проверяй по своему селектору кнопки удаления в админке
+    if (e.target.classList.contains('delete-item-btn') || e.target.classList.contains('delete-promo-btn')) {
+        const itemId = e.target.dataset.id; // или ID из дата-атрибута
+
+        // Вызываем нашу красивую модалку, передавая логику удаления внутрь
+        openDeleteModal(() => {
+            console.log('Удаляем элемент из админки с ID:', itemId);
+            
+            // Сюда пиши свой fetch-запрос на удаление (например, DELETE /api/menu/:id)
+        });
+    }
+});
+
+    const localData = JSON.parse(localStorage.getItem('menuItems'));
+    const dataToRender = (Array.isArray(localData) && localData.length > 0) ? localData : initialData;
+
+    renderMenuItems(dataToRender);
 
     const today = new Date().toISOString().split('T')[0];
     const promoDateInput = document.getElementById('promoDate');
@@ -30,7 +53,6 @@ document.addEventListener('DOMContentLoaded', function() {
         promoDateInput.min = today;
     }
 
-    renderMenuItems('all');
     renderPromotions();
     updateAnnouncementUI();
 
@@ -49,6 +71,5 @@ document.addEventListener('DOMContentLoaded', function() {
     if (localStorage.getItem('theme') === 'light') {
         document.body.classList.add('light-theme');
     }
-
-    initSlider();
 });
+

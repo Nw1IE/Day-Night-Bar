@@ -7,6 +7,8 @@ import { renderMenuItems, renderPromotions, updateAnnouncementUI } from './rende
 import { saveMenuToStorage, savePromosToStorage, saveAnnouncementToStorage } from './storageModule.js';
 import { showErrorModal } from '../../components/error.js';
 import { showSuccess } from '../../components/success.js';
+import { initAdminModal } from '../../components/admins.js';
+import { openDeleteModal } from '../../components/delete.js';
 
 export function initAdmin() {
     const adminLogin = document.getElementById('adminLogin');
@@ -96,7 +98,6 @@ export function initAdmin() {
     }
 
     function showAdminLogin() {
-        // Если уже в админке — НЕ показываем логин, а сразу открываем дашборд (или выдаем сообщение)
         if (isAdminLoggedIn) {
             showErrorModal('Вы уже авторизованы в системе!');
             if (adminDashboardModal && adminDashboardModal.style.display !== 'flex') {
@@ -108,7 +109,6 @@ export function initAdmin() {
             return;
         }
 
-        // Защита от дублирования: если модалка входа уже открыта — ничего не делаем
         if (adminLogin && adminLogin.style.display === 'flex') {
             return;
         }
@@ -160,13 +160,14 @@ export function initAdmin() {
             button.addEventListener('click', function() {
                 if (!isAdminLoggedIn) return showErrorModal('Требуется авторизация.');
                 const id = parseInt(this.getAttribute('data-id'), 10);
-                if (confirm('Удалить эту позицию?')) {
+                
+                openDeleteModal(() => {
                     const updated = menuItems.filter(item => item.id !== id);
                     updateMenuItems(updated);
                     saveMenuToStorage(updated);
                     renderCurrentMenuItems();
                     renderMenuItems('all');
-                }
+                });
             });
         });
 
@@ -187,6 +188,7 @@ export function initAdmin() {
                     document.getElementById('itemCategory').value = item.category;
                     document.getElementById('itemPrice').value = item.price;
                     document.getElementById('itemDescription').value = item.description;
+                    document.getElementById('itemImage').value = item.image || ''; 
                     
                     const submitBtn = menuForm.querySelector('.btn');
                     if (submitBtn) submitBtn.textContent = 'Сохранить изменения';
@@ -204,6 +206,7 @@ export function initAdmin() {
             const catVal = document.getElementById('itemCategory').value;
             const priceVal = document.getElementById('itemPrice').value;
             const descVal = document.getElementById('itemDescription').value;
+            const imageVal = document.getElementById('itemImage').value || './images/placeholder.jpg'; 
 
             if (isFieldInvalid(nameVal) || isFieldInvalid(priceVal) || isFieldInvalid(descVal)) {
                 return showErrorModal('Пожалуйста, заполните все поля меню');
@@ -217,7 +220,8 @@ export function initAdmin() {
                             name: nameVal,
                             category: catVal,
                             price: parseInt(priceVal, 10),
-                            description: descVal
+                            description: descVal,
+                            image: imageVal
                         };
                     }
                     return item;
@@ -232,7 +236,8 @@ export function initAdmin() {
                     name: nameVal,
                     category: catVal,
                     price: parseInt(priceVal, 10),
-                    description: descVal
+                    description: descVal,
+                    image: imageVal
                 };
                 const updatedList = [...menuItems, newItem];
                 updateMenuItems(updatedList);
@@ -274,13 +279,14 @@ export function initAdmin() {
             button.addEventListener('click', function() {
                 if (!isAdminLoggedIn) return;
                 const id = parseInt(this.getAttribute('data-id'), 10);
-                if (confirm('Удалить эту акцию?')) {
+                
+                openDeleteModal(() => {
                     const updated = promotions.filter(p => p.id !== id);
                     updatePromotions(updated);
                     savePromosToStorage(updated);
                     renderCurrentPromotions();
                     renderPromotions();
-                }
+                });
             });
         });
     }
@@ -383,7 +389,30 @@ export function initAdmin() {
                 resetMenuForm();
             }
         }
-    });
+
+        // Абсолютно надежный перехват Enter для модалки удаления
+        if (e.key === 'Enter') {
+            const allElements = document.querySelectorAll('div, section');
+            for (const el of allElements) {
+                const style = getComputedStyle(el);
+                // Проверяем, что элемент видим и похож на модальное окно
+                if ((style.display === 'flex' || style.display === 'block') && style.visibility !== 'hidden') {
+                    // Проверяем текст внутри элемента, чтобы точно убедиться, что это модалка удаления
+                    if (el.textContent.includes('Удалить позицию?')) {
+                        const buttons = el.querySelectorAll('button, .btn');
+                        for (const btn of buttons) {
+                            if (btn.textContent.trim() === 'Удалить') {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                btn.click();
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }, true);
 
     document.querySelectorAll('.admin-tab').forEach(tab => {
         tab.addEventListener('click', () => {
@@ -439,24 +468,20 @@ export function initAdmin() {
         });
     }
 
-    // Вызов админ-панели по хоткею Ctrl + Shift + A
-document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', (e) => {
         const isHotkey = e.ctrlKey && (e.shiftKey || e.altKey) && (e.code === 'KeyA' || e.key === 'A' || e.key === 'a' || e.key === 'Ф' || e.key === 'ф');
 
         if (isHotkey) {
             e.preventDefault();
 
-            // Проверяем видимость панели управления
             const isPanelVisible = adminPanel && getComputedStyle(adminPanel).display !== 'none';
             const isDashboardOpen = adminDashboardModal && getComputedStyle(adminDashboardModal).display !== 'none';
 
             if (isAdminLoggedIn || isPanelVisible) {
-                // Если дашборд уже открыт — ничего не делаем
                 if (isDashboardOpen) {
                     return;
                 }
 
-                // Если авторизован, но дашборд закрыт — открываем его
                 if (adminDashboardModal) {
                     adminDashboardModal.style.display = 'flex';
                     renderCurrentMenuItems();
@@ -466,7 +491,6 @@ document.addEventListener('keydown', (e) => {
                 return;
             }
 
-            // Если не авторизован — открываем окно входа
             showAdminLogin();
         }
     });

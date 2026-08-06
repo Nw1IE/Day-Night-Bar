@@ -1,8 +1,11 @@
 import { menuItems, promotions, announcement } from './dataModule.js';
 import { formatDate } from './utilsModule.js';
+import { openDishModal } from '../../components/menu.js';
 
-export function renderMenuItems(category) {
+export function renderMenuItems(category = 'all') {
     const menuItemsContainer = document.getElementById('menuItems');
+    if (!menuItemsContainer) return;
+
     menuItemsContainer.innerHTML = '';
     
     const filteredItems = category === 'all' 
@@ -15,39 +18,51 @@ export function renderMenuItems(category) {
     }
     
     filteredItems.forEach(item => {
-        const menuItem = document.createElement('div');
+        const menuItem = document.createElement('article');
         menuItem.className = 'menu-item';
+        menuItem.style.cursor = 'pointer';
+        
+        // ВАЖНО: Заменили <header> на безопасный <div>, чтобы стили шапки сайта не ломали карточку
         menuItem.innerHTML = `
+            <img src="${item.image || './images/placeholder.jpg'}" alt="${item.name}" class="menu-item-thumb">
             <div class="menu-item-content">
                 <div class="menu-item-header">
-                    <div class="menu-item-name">${item.name}</div>
-                    <div class="menu-item-price">${item.price} ₽</div>
+                    <h3 class="menu-item-name">${item.name}</h3>
+                    <span class="menu-item-price">${item.price} ₽</span>
                 </div>
-                <div class="menu-item-desc">${item.description}</div>
+                <p class="menu-item-desc">${item.description}</p>
             </div>
         `;
+
+        menuItem.addEventListener('click', () => {
+            openDishModal(item);
+        });
+
         menuItemsContainer.appendChild(menuItem);
     });
 }
 
 export function renderPromotions() {
     const promotionCardsContainer = document.getElementById('promotionCards');
+    if (!promotionCardsContainer) return;
+    
     promotionCardsContainer.innerHTML = '';
     
     promotions.forEach(promo => {
-        const promoCard = document.createElement('div');
+        const promoCard = document.createElement('article');
         promoCard.className = 'promotion-card';
         promoCard.innerHTML = `
-            <div class="promotion-content">
-                <div class="promotion-title">${promo.title}</div>
-                <div class="promotion-date"><i class="far fa-calendar-alt"></i> Действует до: ${formatDate(promo.date)}</div>
+            <section class="promotion-content">
+                <h3 class="promotion-title">${promo.title}</h3>
+                <time class="promotion-date"><i class="far fa-calendar-alt"></i> Действует до: ${formatDate(promo.date)}</time>
                 <p>${promo.description}</p>
-            </div>
+            </section>
         `;
         promotionCardsContainer.appendChild(promoCard);
     });
 }
 
 export function updateAnnouncementUI() {
-    document.getElementById('announcement').textContent = announcement;
+    const el = document.getElementById('announcement');
+    if (el) el.textContent = announcement;
 }
