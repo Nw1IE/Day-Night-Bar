@@ -459,3 +459,27 @@ body.light-theme .item-list-info p {
 body.light-theme .admin-tab {
     color: #333333;
 }
+
+
+/* Исправление модальных окон на мобилках без блокировки кликов */
+@media (max-width: 768px) {
+    #adminLogin {
+        display: none; /* по умолчанию скрыто */
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+    }
+
+    #adminLogin .modal-content, 
+    #adminLogin .admin-modal-content {
+        width: 90% !important;
+        max-width: 350px !important;
+        height: auto !important;
+        max-height: 80vh !important;
+        border-radius: 12px !important;
+        margin: auto !important;
+        padding: 20px !important;
+        box-sizing: border-box;
+    }
+}
+

@@ -63,4 +63,44 @@ function initHeaderEvents() {
             }
         });
     }
+
+// --- СЕКРЕТНЫЙ ЗАМОК ДЛЯ АДМИНКИ (ТОЛЬКО ДЛЯ МОБИЛОК) ---
+    const logoCocktailIcon = document.querySelector('.logo i.fa-cocktail');
+    if (logoCocktailIcon) {
+        let clickCount = 0;
+        let timer = null;
+
+        logoCocktailIcon.addEventListener('click', (e) => {
+            // Если экран шире 768px (это ПК), вообще не перехватываем клик — пусть работает как обычная ссылка
+            if (window.innerWidth > 768) return;
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            clickCount++;
+            clearTimeout(timer);
+
+            // Ровно 6 быстрых тапов для мобилок
+            if (clickCount >= 6) {
+                clickCount = 0;
+                
+                const adminLoginModal = document.getElementById('adminLogin');
+                const adminPanel = document.getElementById('adminPanel');
+                
+                const isAlreadyLoggedIn = adminPanel && getComputedStyle(adminPanel).display !== 'none';
+
+                if (isAlreadyLoggedIn) {
+                    adminPanel.style.setProperty('display', 'flex', 'important');
+                } else if (adminLoginModal) {
+                    adminLoginModal.style.setProperty('display', 'flex', 'important');
+                    const pwd = document.getElementById('adminPassword');
+                    if (pwd) pwd.focus();
+                }
+            } else {
+                timer = setTimeout(() => {
+                    clickCount = 0;
+                }, 1500);
+            }
+        });
+    }
 }

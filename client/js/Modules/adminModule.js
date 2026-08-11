@@ -26,6 +26,18 @@ export function initAdmin() {
         if (!menuForm) return;
         menuForm.reset();
         currentEditingId = null;
+
+        const fileNameDisplay = document.getElementById('fileName');
+        const label = document.querySelector('label[for="itemImageFile"]');
+        if (fileNameDisplay) {
+            fileNameDisplay.textContent = 'Файл не выбран';
+            fileNameDisplay.style.color = '#888';
+        }
+        if (label) {
+            label.style.borderColor = '#d4af37';
+            label.style.color = '#d4af37';
+        }
+
         const submitBtn = menuForm.querySelector('.btn');
         if (submitBtn) submitBtn.textContent = 'Добавить в меню';
     }
@@ -188,7 +200,26 @@ export function initAdmin() {
                     document.getElementById('itemCategory').value = item.category;
                     document.getElementById('itemPrice').value = item.price;
                     document.getElementById('itemDescription').value = item.description;
-                    document.getElementById('itemImage').value = item.image || ''; 
+                    
+                    const imageInput = document.getElementById('itemImageFile');
+                    if (imageInput) imageInput.value = '';
+                    
+                    const fileNameDisplay = document.getElementById('fileName');
+                    const label = document.querySelector('label[for="itemImageFile"]');
+                    
+                    if (fileNameDisplay) {
+                        if (item.image) {
+                            fileNameDisplay.textContent = 'Картинка загружена (оставьте пустой, чтобы не менять)';
+                            fileNameDisplay.style.color = '#d4af37';
+                        } else {
+                            fileNameDisplay.textContent = 'Файл не выбран';
+                            fileNameDisplay.style.color = '#888';
+                        }
+                    }
+                    if (label) {
+                        label.style.borderColor = '#d4af37';
+                        label.style.color = '#d4af37';
+                    }
                     
                     const submitBtn = menuForm.querySelector('.btn');
                     if (submitBtn) submitBtn.textContent = 'Сохранить изменения';
@@ -206,48 +237,69 @@ export function initAdmin() {
             const catVal = document.getElementById('itemCategory').value;
             const priceVal = document.getElementById('itemPrice').value;
             const descVal = document.getElementById('itemDescription').value;
-            const imageVal = document.getElementById('itemImage').value || './images/placeholder.jpg'; 
+            const imageInput = document.getElementById('itemImageFile');
+            const file = imageInput ? imageInput.files[0] : null;
 
             if (isFieldInvalid(nameVal) || isFieldInvalid(priceVal) || isFieldInvalid(descVal)) {
                 return showErrorModal('Пожалуйста, заполните все поля меню');
             }
 
-            if (currentEditingId !== null) {
-                const updatedList = menuItems.map(item => {
-                    if (item.id === currentEditingId) {
-                        return {
-                            ...item,
-                            name: nameVal,
-                            category: catVal,
-                            price: parseInt(priceVal, 10),
-                            description: descVal,
-                            image: imageVal
-                        };
+            const saveMenuData = (imageUrl) => {
+                if (currentEditingId !== null) {
+                    const updatedList = menuItems.map(item => {
+                        if (item.id === currentEditingId) {
+                            return {
+                                ...item,
+                                name: nameVal,
+                                category: catVal,
+                                price: parseInt(priceVal, 10),
+                                description: descVal,
+                                image: imageUrl || item.image
+                            };
+                        }
+                        return item;
+                    });
+                    updateMenuItems(updatedList);
+                    saveMenuToStorage(updatedList);
+                    showSuccess('Позиция обновлена', `Позиция "${nameVal}" успешно изменена.`);
+                } else {
+                    if (!imageUrl) {
+                        alert('Пожалуйста, выберите изображение!');
+                        return;
                     }
-                    return item;
-                });
-                updateMenuItems(updatedList);
-                saveMenuToStorage(updatedList);
-                showSuccess('Позиция обновлена', `Позиция "${nameVal}" успешно изменена.`);
-            } else {
-                const newId = menuItems.length > 0 ? Math.max(...menuItems.map(i => i.id)) + 1 : 1;
-                const newItem = {
-                    id: newId,
-                    name: nameVal,
-                    category: catVal,
-                    price: parseInt(priceVal, 10),
-                    description: descVal,
-                    image: imageVal
-                };
-                const updatedList = [...menuItems, newItem];
-                updateMenuItems(updatedList);
-                saveMenuToStorage(updatedList);
-                showSuccess('Позиция добавлена', `Позиция "${newItem.name}" добавлена в меню.`);
-            }
+                    const newId = menuItems.length > 0 ? Math.max(...menuItems.map(i => i.id)) + 1 : 1;
+                    const newItem = {
+                        id: newId,
+                        name: nameVal,
+                        category: catVal,
+                        price: parseInt(priceVal, 10),
+                        description: descVal,
+                        image: imageUrl
+                    };
+                    const updatedList = [...menuItems, newItem];
+                    updateMenuItems(updatedList);
+                    saveMenuToStorage(updatedList);
+                    showSuccess('Позиция добавлена', `Позиция "${newItem.name}" добавлена в меню.`);
+                }
 
-            resetMenuForm();
-            renderCurrentMenuItems();
-            renderMenuItems('all');
+                resetMenuForm();
+                renderCurrentMenuItems();
+                renderMenuItems('all');
+            };
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    saveMenuData(event.target.result);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                if (currentEditingId === null) {
+                    alert('Пожалуйста, выберите изображение!');
+                    return;
+                }
+                saveMenuData(null);
+            }
         });
     }
 
@@ -390,14 +442,11 @@ export function initAdmin() {
             }
         }
 
-        // Абсолютно надежный перехват Enter для модалки удаления
         if (e.key === 'Enter') {
             const allElements = document.querySelectorAll('div, section');
             for (const el of allElements) {
                 const style = getComputedStyle(el);
-                // Проверяем, что элемент видим и похож на модальное окно
                 if ((style.display === 'flex' || style.display === 'block') && style.visibility !== 'hidden') {
-                    // Проверяем текст внутри элемента, чтобы точно убедиться, что это модалка удаления
                     if (el.textContent.includes('Удалить позицию?')) {
                         const buttons = el.querySelectorAll('button, .btn');
                         for (const btn of buttons) {
@@ -495,3 +544,71 @@ export function initAdmin() {
         }
     });
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.innerWidth > 768) return;
+
+    const dayNightBtn = document.querySelector('.day-night') || 
+                        document.querySelector('.badge') || 
+                        document.querySelector('header .badge') ||
+                        document.querySelector('[class*="day"]');
+
+    if (!dayNightBtn) return;
+
+    let clickCount = 0;
+    let timer = null;
+
+    dayNightBtn.addEventListener('pointerup', (e) => {
+        clickCount++;
+        clearTimeout(timer);
+
+        if (clickCount >= 4) {
+            e.preventDefault();
+            e.stopPropagation();
+            clickCount = 0;
+
+            const adminLoginModal = document.getElementById('adminLogin');
+            if (adminLoginModal) {
+                adminLoginModal.style.setProperty('display', 'flex', 'important');
+                const pwd = document.getElementById('adminPassword');
+                if (pwd) pwd.focus();
+            }
+        } else {
+            timer = setTimeout(() => {
+                clickCount = 0;
+            }, 1000);
+        }
+    });
+});
+
+// Универсальное автоматическое отслеживание выбора файла для любой формы/модалки админки
+document.addEventListener('change', function(e) {
+    if (e.target && e.target.type === 'file') {
+        const fileInput = e.target;
+        
+        // Ищем контейнер инпута (например, .form-group или родительский элемент), чтобы привязать текст строго к этой форме
+        const container = fileInput.closest('.form-group') || fileInput.parentElement;
+        const fileNameDisplay = container ? (container.querySelector('#fileName') || container.querySelector('.file-name-display')) : document.getElementById('fileName');
+        const label = container ? container.querySelector('label[for="' + fileInput.id + '"]') : document.querySelector('label[for="' + fileInput.id + '"]');
+
+        if (fileInput.files && fileInput.files.length > 0) {
+            if (fileNameDisplay) {
+                fileNameDisplay.textContent = fileInput.files[0].name;
+                fileNameDisplay.style.color = '#4CAF50'; // Зеленый цвет при успехе
+            }
+            if (label) {
+                label.style.borderColor = '#4CAF50';
+                label.style.color = '#4CAF50';
+            }
+        } else {
+            if (fileNameDisplay) {
+                fileNameDisplay.textContent = 'Файл не выбран';
+                fileNameDisplay.style.color = '#888';
+            }
+            if (label) {
+                label.style.borderColor = '#d4af37';
+                label.style.color = '#d4af37';
+            }
+        }
+    }
+});
