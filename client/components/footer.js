@@ -54,10 +54,6 @@ export function renderFooter() {
                         <p style="margin-bottom: 12px;"><a href="#promotions" style="font-size: 1.2rem;"><i class="fas fa-chevron-right"></i> Акции</a></p>
                     </div>
                 </div>
-                
-                <div class="copyright">
-                    &copy; 2026 День / Ночь. Все права защищены.
-                </div>
             </div>
         </section>
     `;

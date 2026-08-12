@@ -212,3 +212,176 @@ body.light-theme header nav ul li a {
     box-shadow: none !important;
     background-color: transparent !important;
 }
+
+/* Базовые стили (темная тема) */
+.promotion-card, .clickable-promo-card {
+    background: #1a1a1a !important;
+    color: #ffffff !important;
+    border: 1px solid #d4af37 !important;
+    border-radius: 12px;
+    padding: 20px;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+.promotion-card *, .clickable-promo-card * {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+.promotion-title {
+    color: #ffffff !important;
+}
+
+.promotion-desc, .promo-card-date {
+    color: #b0b0b0 !important;
+}
+
+.promo-modal-overlay { 
+    position: fixed !important; top: 0 !important; left: 0 !important; 
+    width: 100vw !important; height: 100vh !important; 
+    background: rgba(0, 0, 0, 0.85) !important; z-index: 999999 !important; 
+    display: none !important; align-items: center !important; justify-content: center !important; padding: 20px !important; 
+}
+
+.promo-modal-content { 
+    background: #1a1a1a !important; 
+    border: 1px solid #d4af37 !important; 
+    border-radius: 12px !important; 
+    max-width: 600px !important; width: 100% !important; 
+    max-height: 90vh !important; overflow-y: auto !important; 
+    padding: 25px !important; 
+    color: #fff !important; 
+    position: relative !important; 
+    box-shadow: 0 15px 35px rgba(0,0,0,0.7) !important;
+}
+
+#promoModalTitle { color: #ffffff !important; }
+#promoModalDate { color: #aaa !important; }
+#promoModalDesc { color: #ffffff !important; }
+
+.promo-modal-close { 
+    position: absolute !important; top: 15px !important; right: 15px !important; 
+    background: rgba(0,0,0,0.6) !important; border: none !important; color: #fff !important; 
+    font-size: 24px !important; width: 35px !important; height: 35px !important; 
+    border-radius: 50% !important; cursor: pointer !important; display: flex !important; 
+    align-items: center !important; justify-content: center !important;
+}
+.promo-modal-close:hover { background: #d4af37 !important; color: #000 !important; }
+
+
+/* ========================================== */
+/* СВЕТЛАЯ ТЕМА (когда у body класс light)    */
+/* ========================================== */
+body.light-theme .promotion-card, 
+body.light-theme .clickable-promo-card,
+body.light-theme [data-theme="light"] .promotion-card,
+[data-theme="light"] .promotion-card {
+    background: #ffffff !important;
+    color: #222222 !important;
+    border-color: #d4af37 !important;
+}
+
+body.light-theme .promotion-title,
+[data-theme="light"] .promotion-title {
+    color: #222222 !important;
+}
+
+body.light-theme .promotion-desc, 
+body.light-theme .promo-card-date,
+[data-theme="light"] .promotion-desc, 
+[data-theme="light"] .promo-card-date {
+    color: #666666 !important;
+}
+
+body.light-theme .promo-modal-overlay,
+[data-theme="light"] .promo-modal-overlay {
+    background: rgba(0, 0, 0, 0.4) !important;
+}
+
+body.light-theme .promo-modal-content,
+[data-theme="light"] .promo-modal-content {
+    background: #ffffff !important;
+    color: #222222 !important;
+    border-color: #d4af37 !important;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15) !important;
+}
+
+body.light-theme #promoModalTitle,
+[data-theme="light"] #promoModalTitle {
+    color: #222222 !important;
+}
+
+body.light-theme #promoModalDate,
+[data-theme="light"] #promoModalDate {
+    color: #666666 !important;
+}
+
+body.light-theme #promoModalDesc,
+[data-theme="light"] #promoModalDesc {
+    color: #222222 !important;
+}
+
+body.light-theme .promo-modal-close,
+[data-theme="light"] .promo-modal-close {
+    background: #f0f0f0 !important;
+    color: #222222 !important;
+}
+
+body.light-theme .promo-modal-close:hover,
+[data-theme="light"] .promo-modal-close:hover {
+    background: #d4af37 !important;
+    color: #000 !important;
+}
+
+/* Поля ввода в светлой теме */
+body.light-theme input, 
+body.light-theme textarea, 
+body.light-theme select,
+[data-theme="light"] input, 
+[data-theme="light"] textarea, 
+[data-theme="light"] select {
+    background-color: #ffffff !important;
+    color: #222222 !important;
+    border-color: #cccccc !important;
+}
+
+/* Цвет текста подсказок (placeholder) в светлой теме */
+body.light-theme input::placeholder, 
+body.light-theme textarea::placeholder,
+[data-theme="light"] input::placeholder, 
+[data-theme="light"] textarea::placeholder {
+    color: #888888 !important;
+}
+
+/* Универсальный сброс для элементов загрузки файла в светлой теме */
+body.light-theme input[type="file"],
+body.light-theme input[type="file"]::-webkit-file-upload-button,
+body.light-theme .file-upload,
+body.light-theme .file-input-wrapper,
+body.light-theme [class*="file"],
+[data-theme="light"] input[type="file"],
+[data-theme="light"] input[type="file"]::-webkit-file-upload-button,
+[data-theme="light"] .file-upload,
+[data-theme="light"] .file-input-wrapper,
+[data-theme="light"] [class*="file"] {
+    background-color: #f8f9fa !important;
+    color: #222222 !important;
+    border-color: #ced4da !important;
+}
+
+/* Если это кастомная кнопка или лейбл загрузки */
+body.light-theme label:has(input[type="file"]),
+body.light-theme .upload-btn,
+[data-theme="light"] label:has(input[type="file"]),
+[data-theme="light"] .upload-btn {
+    background: #ffffff !important;
+    color: #222222 !important;
+    border: 1px solid #cccccc !important;
+}
+
+body.light-theme label:has(input[type="file"]) *,
+[data-theme="light"] label:has(input[type="file"]) * {
+    color: #222222 !important;
+}
+

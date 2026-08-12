@@ -1,114 +1,178 @@
 let cachedPromos = [];
+const promosMap = new Map();
 
 export function renderPromotionsSection(promos = []) {
-    if (promos.length > 0) {
-        cachedPromos = promos;
+    cachedPromos = promos || [];
+    promosMap.clear();
+    
+    const container = document.getElementById('promotions-container');
+    if (!container) {
+        console.error('❌ ОШИБКА: Контейнер #promotions-container не найден!');
+        return;
     }
 
-    const container = document.getElementById('promotions-container');
-    if (!container) return;
+    injectStylesIfNeeded();
+    ensureModalExistsInDOM();
+
+    if (cachedPromos.length === 0) {
+        container.innerHTML = `
+            <section class="promotions" id="promotions">
+                <div class="container">
+                    <h2 class="section-title">Акции и события</h2>
+                    <div class="promotion-cards" id="promotionCards">
+                        <p class="empty-msg">Актуальных акций пока нет</p>
+                    </div>
+                </div>
+            </section>
+        `;
+        return;
+    }
 
     container.innerHTML = `
         <section class="promotions" id="promotions">
             <div class="container">
                 <h2 class="section-title">Акции и события</h2>
                 <div class="promotion-cards" id="promotionCards">
-                    ${cachedPromos.length === 0 
-                        ? `<p class="empty-msg">Актуальных акций пока нет</p>` 
-                        : cachedPromos.map((promo, index) => `
-                            <article class="promotion-card clickable-promo-card" data-index="${index}">
-                                <img src="${promo.image || './images/placeholder.jpg'}" alt="${promo.title || ''}" class="promotion-card-img">
+                    ${cachedPromos.map((promo, index) => {
+                        const promoId = String(promo.id !== undefined ? promo.id : index);
+                        promosMap.set(promoId, promo);
+
+                        return `
+                            <article class="promotion-card clickable-promo-card" data-promo-id="${promoId}">
                                 <div class="promotion-content">
                                     <h3 class="promotion-title">${promo.title || ''}</h3>
                                     <p class="promotion-desc">${promo.description || ''}</p>
                                     ${promo.date ? `<p class="promo-card-date"><i class="far fa-calendar-alt"></i> Действует до: ${promo.date}</p>` : ''}
-                                    <button class="promo-details-btn" data-index="${index}">Подробнее</button>
+                                    <button class="promo-details-btn">Подробнее</button>
                                 </div>
                             </article>
-                          `).join('')}
+                        `;
+                    }).join('')}
                 </div>
             </div>
         </section>
     `;
-
-    // Инициализируем модалку и глобальный клик один раз
-    ensurePromoModalAndGlobalEvents();
 }
 
 export function renderPromotionCards(promos) {
     renderPromotionsSection(promos);
 }
 
-function ensurePromoModalAndGlobalEvents() {
-    // 1. Создаем модалку, если её еще нет в DOM
-    if (!document.getElementById('promoModalOverlay')) {
-        const modalHTML = `
-            <div class="promo-modal-overlay" id="promoModalOverlay" style="display: none;">
-                <div class="promo-modal-content">
-                    <button class="promo-modal-close" id="promoModalClose">&times;</button>
-                    <img src="" alt="" id="promoModalImg" class="promo-modal-img">
-                    <div class="promo-modal-text-wrap">
-                        <h3 id="promoModalTitle"></h3>
-                        <p class="promo-modal-date" id="promoModalDate"></p>
-                        <p id="promoModalDesc" class="promo-modal-desc"></p>
-                    </div>
-                </div>
-            </div>
-        `;
-        document.body.insertAdjacentHTML('beforeend', modalHTML);
+document.addEventListener('click', (e) => {
+    const card = e.target.closest('.promotion-card') || e.target.closest('.clickable-promo-card');
+    if (!card) return;
 
-        const overlay = document.getElementById('promoModalOverlay');
-        const closeBtn = document.getElementById('promoModalClose');
+    let promo = null;
+    const promoId = card.getAttribute('data-promo-id');
 
-        const closeModal = () => {
-            overlay.style.display = 'none';
-            document.body.style.overflow = '';
-        };
+    if (promoId && promosMap.has(promoId)) {
+        promo = promosMap.get(promoId);
+    } 
 
-        closeBtn.addEventListener('click', closeModal);
-        overlay.addEventListener('click', (e) => {
-            if (e.target === overlay) closeModal();
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && overlay.style.display === 'flex') {
-                closeModal();
-            }
-        });
+    if (!promo && cachedPromos.length > 0) {
+        const allCards = Array.from(document.querySelectorAll('.promotion-card, .clickable-promo-card'));
+        const index = allCards.indexOf(card);
+        if (index !== -1 && cachedPromos[index]) {
+            promo = cachedPromos[index];
+        }
     }
 
-    // 2. Делегирование событий на контейнере карточек (работает всегда!)
-    const cardsContainer = document.getElementById('promotionCards');
-    if (!cardsContainer) return;
+    if (!promo) {
+        const titleEl = card.querySelector('h1, h2, h3, h4, .promotion-title, [class*="title"]');
+        const descEl = card.querySelector('p, .promotion-desc, [class*="desc"], [class*="text"]');
+        const dateEl = card.querySelector('[class*="date"], time');
 
-    // Убираем старый обработчик, чтобы не плодить дубли
-    cardsContainer.onclick = null;
+        promo = {
+            title: titleEl ? titleEl.textContent.trim() : 'Акция',
+            description: descEl ? descEl.textContent.trim() : '',
+            fullDescription: descEl ? descEl.textContent.trim() : '',
+            date: dateEl ? dateEl.textContent.replace('Действует до:', '').trim() : ''
+        };
+    }
 
-    cardsContainer.onclick = (e) => {
-        const card = e.target.closest('.clickable-promo-card');
-        if (!card) return;
+    openPromoModal(promo);
+});
 
-        const index = card.getAttribute('data-index');
-        const promo = cachedPromos[index];
-        if (!promo) return;
+function openPromoModal(promo) {
+    const overlay = document.getElementById('promoModalOverlay');
+    const modalTitle = document.getElementById('promoModalTitle');
+    const modalDate = document.getElementById('promoModalDate');
+    const modalDesc = document.getElementById('promoModalDesc');
 
-        const overlay = document.getElementById('promoModalOverlay');
-        const modalImg = document.getElementById('promoModalImg');
-        const modalTitle = document.getElementById('promoModalTitle');
-        const modalDate = document.getElementById('promoModalDate');
-        const modalDesc = document.getElementById('promoModalDesc');
+    if (!overlay) return;
+    
+    if (modalTitle) modalTitle.textContent = promo.title || '';
+    
+    if (modalDate) {
+        const rawDate = promo.date || '';
+        const cleanDate = rawDate.replace(/Действует до:\s*/gi, '').trim();
+        modalDate.textContent = cleanDate ? `Действует до: ${cleanDate}` : '';
+        modalDate.style.display = cleanDate ? 'block' : 'none';
+    }
 
-        if (modalImg) {
-            modalImg.src = promo.image || './images/placeholder.jpg';
-            modalImg.alt = promo.title || '';
+    if (modalDesc) modalDesc.textContent = promo.fullDescription || promo.description || '';
+
+    overlay.style.cssText = 'position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; background: rgba(0, 0, 0, 0.85) !important; z-index: 999999 !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 20px !important;';
+    document.body.style.overflow = 'hidden';
+}
+
+function injectStylesIfNeeded() {
+    if (document.getElementById('promo-modal-injected-styles')) return;
+    const style = document.createElement('style');
+    style.id = 'promo-modal-injected-styles';
+    style.textContent = `
+        .promotion-card, .clickable-promo-card, .clickable-promo-card * {
+            pointer-events: auto !important;
+            cursor: pointer !important;
         }
-        if (modalTitle) modalTitle.textContent = promo.title || '';
-        if (modalDate) modalDate.textContent = promo.date ? `Действует до: ${promo.date}` : '';
-        if (modalDesc) modalDesc.textContent = promo.fullDescription || promo.description || '';
-
-        if (overlay) {
-            overlay.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
+        .promo-modal-overlay { 
+            position: fixed !important; top: 0 !important; left: 0 !important; 
+            width: 100vw !important; height: 100vh !important; 
+            background: rgba(0, 0, 0, 0.85) !important; z-index: 999999 !important; 
+            display: none !important; align-items: center !important; justify-content: center !important; padding: 20px !important; 
         }
+        .promo-modal-content { 
+            background: #1a1a1a !important; border: 1px solid #d4af37 !important; 
+            border-radius: 12px !important; max-width: 600px !important; width: 100% !important; 
+            max-height: 90vh !important; overflow-y: auto !important; padding: 25px !important; 
+            color: #fff !important; position: relative !important; box-shadow: 0 15px 35px rgba(0,0,0,0.7) !important;
+        }
+        .promo-modal-close { 
+            position: absolute !important; top: 15px !important; right: 15px !important; 
+            background: rgba(0,0,0,0.6) !important; border: none !important; color: #fff !important; 
+            font-size: 24px !important; width: 35px !important; height: 35px !important; 
+            border-radius: 50% !important; cursor: pointer !important; display: flex !important; 
+            align-items: center !important; justify-content: center !important;
+        }
+        .promo-modal-close:hover { background: #d4af37 !important; color: #000 !important; }
+    `;
+    document.head.appendChild(style);
+}
+
+function ensureModalExistsInDOM() {
+    if (document.getElementById('promoModalOverlay')) return;
+    
+    const modalHTML = `
+        <div class="promo-modal-overlay" id="promoModalOverlay">
+            <div class="promo-modal-content">
+                <button class="promo-modal-close" id="promoModalCloseBtn">&times;</button>
+                <h3 id="promoModalTitle" style="margin-top: 0; margin-bottom: 10px;"></h3>
+                <p id="promoModalDate" style="color: #aaa; font-size: 14px; margin-bottom: 15px;"></p>
+                <p id="promoModalDesc" style="line-height: 1.6;"></p>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+    const overlay = document.getElementById('promoModalOverlay');
+    const closeBtn = document.getElementById('promoModalCloseBtn');
+
+    const closeModal = () => {
+        overlay.style.setProperty('display', 'none', 'important');
+        document.body.style.overflow = '';
     };
+
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (overlay) overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 }

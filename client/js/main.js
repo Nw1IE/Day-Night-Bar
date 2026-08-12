@@ -72,4 +72,3 @@ document.addEventListener('click', (e) => {
         document.body.classList.add('light-theme');
     }
 });
-

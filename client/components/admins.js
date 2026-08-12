@@ -54,10 +54,21 @@ export function initAdminModal() {
                                 <label for="itemPrice">Цена (руб.)</label>
                                 <input type="number" id="itemPrice" required>
                             </div>
-                            <div class="form-group">
-                                <label for="itemImage">Ссылка на фото (URL или файл)</label>
-                                <input type="text" id="itemImage" placeholder="https://site.com/photo.jpg">
-                            </div>
+<div class="form-group file-upload-wrapper">
+    <label>Фотография блюда</label>
+    <div class="file-input-container">
+        <!-- Input ДОЛЖЕН быть скрыт, но существовать -->
+        <input type="file" id="itemImageFile" accept="image/*" class="file-input-hidden">
+        
+        <!-- Кнопка -->
+        <label for="itemImageFile" class="file-custom-btn">
+            <i class="fas fa-cloud-upload-alt"></i> Выберите файл
+        </label>
+        
+        <!-- Текст, который мы будем менять -->
+        <span class="file-name-display" id="fileName">Файл не выбран</span>
+    </div>
+</div>
                             <div class="form-group">
                                 <label for="itemDescription">Описание</label>
                                 <textarea id="itemDescription" rows="3" required></textarea>
