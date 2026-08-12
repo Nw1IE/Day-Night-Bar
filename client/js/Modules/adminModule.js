@@ -1,14 +1,9 @@
-import { 
-    menuItems, promotions, announcement, ADMIN_PASSWORD, isAdminLoggedIn, 
-    updateMenuItems, updatePromotions, updateAnnouncement, setAdminLoggedIn 
-} from './dataModule.js';
 import { formatDate, getCategoryName } from './utilsModule.js';
 import { renderMenuItems, renderPromotions, updateAnnouncementUI } from './renderModule.js';
-import { saveMenuToStorage, savePromosToStorage, saveAnnouncementToStorage } from './storageModule.js';
 import { showErrorModal } from '../../components/error.js';
 import { showSuccess } from '../../components/success.js';
-import { initAdminModal } from '../../components/admins.js';
 import { openDeleteModal } from '../../components/delete.js';
+import { request } from '../api/api.js';
 
 export function initAdmin() {
     const adminLogin = document.getElementById('adminLogin');
@@ -21,6 +16,32 @@ export function initAdmin() {
     const announcementForm = document.getElementById('announcementForm');
 
     let currentEditingId = null;
+    let isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
+    
+    let menuItems = [];
+    let promotions = [];
+    let announcement = '';
+
+    function checkAuthStatus() {
+        isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
+        toggleAdminAccessButtons(isAdminLoggedIn);
+    }
+
+async function loadAdminData() {
+    try {
+        const [menuRes, promoRes, annRes] = await Promise.all([
+            request('/menu'),
+            request('/promotions/all'),
+            request('/announcements/current')
+        ]);
+
+        menuItems = menuRes;
+        promotions = promoRes;
+        announcement = annRes.text || '';
+    } catch (e) {
+        console.warn('Админ-данные недоступны (требуется вход)', e);
+    }
+}
 
     function resetMenuForm() {
         if (!menuForm) return;
@@ -42,22 +63,21 @@ export function initAdmin() {
         if (submitBtn) submitBtn.textContent = 'Добавить в меню';
     }
 
-    function toggleAdminAccessButtons(disable) {
-        const loginButtons = [
-            document.getElementById('adminAccessBtn'),
-            document.getElementById('adminAccessBtnFooter')
-        ];
-        
-        loginButtons.forEach(btn => {
-            if (btn) {
-                btn.style.opacity = disable ? '0.5' : '1';
-                btn.style.pointerEvents = disable ? 'none' : 'auto';
-                btn.title = disable ? 'Администратор уже вошел в систему' : 'Вход в панель управления';
-            }
-        });
+function toggleAdminAccessButtons(isLoggedIn) {
+    const floatingAdminPanel = document.getElementById('adminPanel') || document.querySelector('.admin-floating-panel');
+    
+    if (floatingAdminPanel) {
+        if (isLoggedIn) {
+            floatingAdminPanel.style.display = 'flex';
+            floatingAdminPanel.style.opacity = '1';
+            floatingAdminPanel.style.pointerEvents = 'auto';
+        } else {
+            floatingAdminPanel.style.display = 'none'; // Вот этого у тебя не было!
+        }
     }
+}
 
-    if (isAdminLoggedIn) toggleAdminAccessButtons(true);
+    checkAuthStatus();
 
     const menuCharsRegex = /[^a-zA-Zа-яА-ЯёЁ0-9+(),%:.\s]/g;
 
@@ -109,11 +129,14 @@ export function initAdmin() {
         return !value || value.trim().length === 0;
     }
 
-    function showAdminLogin() {
+    async function showAdminLogin() {
+        checkAuthStatus();
+        
         if (isAdminLoggedIn) {
-            showErrorModal('Вы уже авторизованы в системе!');
-            if (adminDashboardModal && adminDashboardModal.style.display !== 'flex') {
+            // Если уже вошли, сразу открываем админ-панель!
+            if (adminDashboardModal) {
                 adminDashboardModal.style.display = 'flex';
+                await loadAdminData();
                 renderCurrentMenuItems();
                 renderCurrentPromotions();
                 renderCurrentAnnouncement();
@@ -121,9 +144,7 @@ export function initAdmin() {
             return;
         }
 
-        if (adminLogin && adminLogin.style.display === 'flex') {
-            return;
-        }
+        if (adminLogin && adminLogin.style.display === 'flex') return;
 
         if (adminLogin) {
             adminLogin.style.display = 'flex';
@@ -173,12 +194,16 @@ export function initAdmin() {
                 if (!isAdminLoggedIn) return showErrorModal('Требуется авторизация.');
                 const id = parseInt(this.getAttribute('data-id'), 10);
                 
-                openDeleteModal(() => {
-                    const updated = menuItems.filter(item => item.id !== id);
-                    updateMenuItems(updated);
-                    saveMenuToStorage(updated);
-                    renderCurrentMenuItems();
-                    renderMenuItems('all');
+                openDeleteModal(async () => {
+                    try {
+                        await request(`/menu/${id}`, { method: 'DELETE' });
+                        
+                        menuItems = menuItems.filter(item => item.id !== id);
+                        renderCurrentMenuItems();
+                        renderMenuItems('all');
+                    } catch (err) {
+                        showErrorModal('Не удалось удалить позицию с сервера.');
+                    }
                 });
             });
         });
@@ -201,26 +226,6 @@ export function initAdmin() {
                     document.getElementById('itemPrice').value = item.price;
                     document.getElementById('itemDescription').value = item.description;
                     
-                    const imageInput = document.getElementById('itemImageFile');
-                    if (imageInput) imageInput.value = '';
-                    
-                    const fileNameDisplay = document.getElementById('fileName');
-                    const label = document.querySelector('label[for="itemImageFile"]');
-                    
-                    if (fileNameDisplay) {
-                        if (item.image) {
-                            fileNameDisplay.textContent = 'Картинка загружена (оставьте пустой, чтобы не менять)';
-                            fileNameDisplay.style.color = '#d4af37';
-                        } else {
-                            fileNameDisplay.textContent = 'Файл не выбран';
-                            fileNameDisplay.style.color = '#888';
-                        }
-                    }
-                    if (label) {
-                        label.style.borderColor = '#d4af37';
-                        label.style.color = '#d4af37';
-                    }
-                    
                     const submitBtn = menuForm.querySelector('.btn');
                     if (submitBtn) submitBtn.textContent = 'Сохранить изменения';
                 }
@@ -229,76 +234,50 @@ export function initAdmin() {
     }
 
     if (menuForm) {
-        menuForm.addEventListener('submit', (e) => {
+        menuForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!isAdminLoggedIn) return showErrorModal('Требуется авторизация.');
 
+            const editingId = currentEditingId;
             const nameVal = document.getElementById('itemName').value;
             const catVal = document.getElementById('itemCategory').value;
             const priceVal = document.getElementById('itemPrice').value;
             const descVal = document.getElementById('itemDescription').value;
-            const imageInput = document.getElementById('itemImageFile');
-            const file = imageInput ? imageInput.files[0] : null;
 
             if (isFieldInvalid(nameVal) || isFieldInvalid(priceVal) || isFieldInvalid(descVal)) {
                 return showErrorModal('Пожалуйста, заполните все поля меню');
             }
 
-            const saveMenuData = (imageUrl) => {
-                if (currentEditingId !== null) {
-                    const updatedList = menuItems.map(item => {
-                        if (item.id === currentEditingId) {
-                            return {
-                                ...item,
-                                name: nameVal,
-                                category: catVal,
-                                price: parseInt(priceVal, 10),
-                                description: descVal,
-                                image: imageUrl || item.image
-                            };
-                        }
-                        return item;
+            try {
+                const payload = {
+                    name: nameVal,
+                    category: parseInt(catVal, 10),
+                    description: descVal,
+                    price: parseFloat(priceVal)
+                };
+
+                let savedItem;
+                if (editingId !== null) {
+                    savedItem = await request(`/menu/${editingId}`, {
+                        method: 'PUT',
+                        body: payload
                     });
-                    updateMenuItems(updatedList);
-                    saveMenuToStorage(updatedList);
+                    menuItems = menuItems.map(item => item.id === editingId ? savedItem : item);
                     showSuccess('Позиция обновлена', `Позиция "${nameVal}" успешно изменена.`);
                 } else {
-                    if (!imageUrl) {
-                        alert('Пожалуйста, выберите изображение!');
-                        return;
-                    }
-                    const newId = menuItems.length > 0 ? Math.max(...menuItems.map(i => i.id)) + 1 : 1;
-                    const newItem = {
-                        id: newId,
-                        name: nameVal,
-                        category: catVal,
-                        price: parseInt(priceVal, 10),
-                        description: descVal,
-                        image: imageUrl
-                    };
-                    const updatedList = [...menuItems, newItem];
-                    updateMenuItems(updatedList);
-                    saveMenuToStorage(updatedList);
-                    showSuccess('Позиция добавлена', `Позиция "${newItem.name}" добавлена в меню.`);
+                    savedItem = await request('/menu', {
+                        method: 'POST',
+                        body: payload
+                    });
+                    menuItems.push(savedItem);
+                    showSuccess('Позиция добавлена', `Позиция "${savedItem.name}" добавлена в меню.`);
                 }
 
                 resetMenuForm();
                 renderCurrentMenuItems();
                 renderMenuItems('all');
-            };
-
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    saveMenuData(event.target.result);
-                };
-                reader.readAsDataURL(file);
-            } else {
-                if (currentEditingId === null) {
-                    alert('Пожалуйста, выберите изображение!');
-                    return;
-                }
-                saveMenuData(null);
+            } catch (err) {
+                showErrorModal('Не удалось отправить данные на сервер.');
             }
         });
     }
@@ -318,7 +297,7 @@ export function initAdmin() {
                 <div class="item-list-info">
                     <h5>${promo.title}</h5>
                     <p>${promo.description}</p>
-                    <small>Действует до: ${formatDate(promo.date)}</small>
+                    <small>Действует до: ${formatDate(promo.endDate)}</small>
                 </div>
                 <div class="item-list-actions">
                     <button class="item-list-btn delete" data-id="${promo.id}">Удалить</button>
@@ -332,12 +311,16 @@ export function initAdmin() {
                 if (!isAdminLoggedIn) return;
                 const id = parseInt(this.getAttribute('data-id'), 10);
                 
-                openDeleteModal(() => {
-                    const updated = promotions.filter(p => p.id !== id);
-                    updatePromotions(updated);
-                    savePromosToStorage(updated);
-                    renderCurrentPromotions();
-                    renderPromotions();
+                openDeleteModal(async () => {
+                    try {
+                        await request(`/promotions/${id}`, { method: 'DELETE' });
+
+                        promotions = promotions.filter(p => p.id !== id);
+                        renderCurrentPromotions();
+                        renderPromotions();
+                    } catch (err) {
+                        showErrorModal('Не удалось удалить акцию.');
+                    }
                 });
             });
         });
@@ -350,7 +333,7 @@ export function initAdmin() {
                 <div class="item-list-item">
                     <div class="item-list-info">
                         <h5>Текущее объявление</h5>
-                        <p>${announcement}</p>
+                        <p>${announcement || 'Нет активных объявлений'}</p>
                     </div>
                 </div>`;
         }
@@ -374,30 +357,57 @@ export function initAdmin() {
     }
     
     const loginBtn = document.getElementById('loginBtn');
-    if (loginBtn) {
-        loginBtn.addEventListener('click', () => {
-            if (pwdInput && pwdInput.value === ADMIN_PASSWORD) {
-                setAdminLoggedIn(true);
-                if (adminLogin) adminLogin.style.display = 'none';
-                if (adminPanel) adminPanel.style.display = 'flex';
+if (loginBtn) {
+    loginBtn.addEventListener('click', async () => {
+        // Берем реальное значение из инпута
+        const passcodeVal = pwdInput ? pwdInput.value : '';
+        if (isFieldInvalid(passcodeVal)) {
+            return showErrorModal('Введите пароль!');
+        }
 
-                toggleAdminAccessButtons(true);
-                showSuccess('Добро пожаловать!', 'Вы успешно вошли в панель администратора.');
-            } else {
-                if (pwdInput) {
-                    pwdInput.value = '';
-                    pwdInput.focus();
-                }
-                showErrorModal('Неверный пароль!');
+        try {
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Admin-Client-Key': 'FallbackKeyMakeSureItsLongEnough123!' 
+                },
+                // Если твой DTO в ASP.NET ждет int, используй parseInt(passcodeVal, 10).
+                // Если ждет string (что правильнее) — просто передавай passcodeVal.
+                body: JSON.stringify({ passcode: passcodeVal }) 
+            });
+
+            if (!response.ok) {
+                // Если сервер ответил ошибкой (401, 500 и т.д.), мы принудительно прыгаем в catch
+                throw new Error('Сервер не пустил: ' + response.status);
             }
-        });
-    }
+
+            // Сюда код дойдет ТОЛЬКО если сервер ответил 200 OK
+            isAdminLoggedIn = true;
+            localStorage.setItem('isAdminLoggedIn', 'true');
+            if (adminLogin) adminLogin.style.display = 'none';
+            if (adminPanel) adminPanel.style.display = 'flex';
+
+            toggleAdminAccessButtons(true);
+            showSuccess('Добро пожаловать!', 'Вы успешно вошли в панель администратора.');
+        } catch (err) {
+            console.error('Ошибка входа:', err);
+            if (pwdInput) {
+                pwdInput.value = '';
+                pwdInput.focus();
+            }
+            showErrorModal('Неверный пароль или ошибка сервера!');
+        }
+    });
+}
 
     const adminDashboardBtn = document.getElementById('adminDashboardBtn');
     if (adminDashboardBtn) {
-        adminDashboardBtn.addEventListener('click', () => {
+        adminDashboardBtn.addEventListener('click', async () => {
+            checkAuthStatus();
             if (!isAdminLoggedIn) return showAdminLogin();
             if (adminDashboardModal) adminDashboardModal.style.display = 'flex';
+            await loadAdminData();
             renderCurrentMenuItems();
             renderCurrentPromotions();
             renderCurrentAnnouncement();
@@ -406,8 +416,14 @@ export function initAdmin() {
 
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
-            setAdminLoggedIn(false);
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                await request('/auth/logout', { method: 'POST' });
+            } catch (e) {
+                console.error(e);
+            }
+            isAdminLoggedIn = false;
+            localStorage.removeItem('isAdminLoggedIn');
             if (adminPanel) adminPanel.style.display = 'none';
             toggleAdminAccessButtons(false);
             resetMenuForm();
@@ -441,27 +457,7 @@ export function initAdmin() {
                 resetMenuForm();
             }
         }
-
-        if (e.key === 'Enter') {
-            const allElements = document.querySelectorAll('div, section');
-            for (const el of allElements) {
-                const style = getComputedStyle(el);
-                if ((style.display === 'flex' || style.display === 'block') && style.visibility !== 'hidden') {
-                    if (el.textContent.includes('Удалить позицию?')) {
-                        const buttons = el.querySelectorAll('button, .btn');
-                        for (const btn of buttons) {
-                            if (btn.textContent.trim() === 'Удалить') {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                btn.click();
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }, true);
+    });
 
     document.querySelectorAll('.admin-tab').forEach(tab => {
         tab.addEventListener('click', () => {
@@ -473,7 +469,7 @@ export function initAdmin() {
     });
 
     if (promoForm) {
-        promoForm.addEventListener('submit', (e) => {
+        promoForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!isAdminLoggedIn) return showErrorModal('Требуется авторизация.');
 
@@ -481,25 +477,30 @@ export function initAdmin() {
                 return showErrorModal('Пожалуйста, заполните все поля акции');
             }
 
-            const newPromo = {
-                id: promotions.length > 0 ? Math.max(...promotions.map(p => p.id)) + 1 : 1,
-                title: promoTitle.value,
-                description: promoDescription.value,
-                date: promoDateInput.value
-            };
+            try {
+                const newPromo = await request('/promotions', {
+                    method: 'POST',
+                    body: {
+                        title: promoTitle.value,
+                        description: promoDescription.value,
+                        startDate: new Date().toISOString(),
+                        endDate: new Date(promoDateInput.value).toISOString()
+                    }
+                });
 
-            const updatedPromos = [...promotions, newPromo];
-            updatePromotions(updatedPromos);
-            savePromosToStorage(updatedPromos);
-            promoForm.reset();
-            renderCurrentPromotions();
-            renderPromotions();
-            showSuccess('Акция добавлена', 'Новая акция успешно добавлена.');
+                promotions.push(newPromo);
+                promoForm.reset();
+                renderCurrentPromotions();
+                renderPromotions();
+                showSuccess('Акция добавлена', 'Новая акция успешно добавлена.');
+            } catch (err) {
+                showErrorModal('Не удалось добавить акцию на сервер.');
+            }
         });
     }
 
     if (announcementForm) {
-        announcementForm.addEventListener('submit', (e) => {
+        announcementForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!isAdminLoggedIn) return showErrorModal('Требуется авторизация.');
 
@@ -508,107 +509,48 @@ export function initAdmin() {
                 return showErrorModal('Введите текст объявления');
             }
 
-            updateAnnouncement(text);
-            saveAnnouncementToStorage(text);
-            updateAnnouncementUI();
-            announcementForm.reset();
-            renderCurrentAnnouncement();
-            showSuccess('Объявление опубликовано', 'Новое объявление успешно опубликовано.');
+            try {
+                const updatedAnn = await request('/announcements', {
+                    method: 'POST',
+                    body: { text }
+                });
+
+                announcement = updatedAnn.text || text;
+                updateAnnouncementUI();
+                announcementForm.reset();
+                renderCurrentAnnouncement();
+                showSuccess('Объявление опубликовано', 'Новое объявление успешно опубликовано.');
+            } catch (err) {
+                showErrorModal('Не удалось опубликовать объявление.');
+            }
         });
     }
 
-    document.addEventListener('keydown', (e) => {
-        const isHotkey = e.ctrlKey && (e.shiftKey || e.altKey) && (e.code === 'KeyA' || e.key === 'A' || e.key === 'a' || e.key === 'Ф' || e.key === 'ф');
+document.addEventListener('keydown', async (e) => {
+    const isHotkey = e.ctrlKey && (e.shiftKey || e.altKey) && (e.code === 'KeyA' || e.key === 'A' || e.key === 'a' || e.key === 'Ф' || e.key === 'ф');
 
-        if (isHotkey) {
-            e.preventDefault();
+    if (isHotkey) {
+        e.preventDefault();
 
-            const isPanelVisible = adminPanel && getComputedStyle(adminPanel).display !== 'none';
-            const isDashboardOpen = adminDashboardModal && getComputedStyle(adminDashboardModal).display !== 'none';
+        const isDashboardOpen = adminDashboardModal && getComputedStyle(adminDashboardModal).display !== 'none';
 
-            if (isAdminLoggedIn || isPanelVisible) {
-                if (isDashboardOpen) {
-                    return;
-                }
+        checkAuthStatus();
 
-                if (adminDashboardModal) {
-                    adminDashboardModal.style.display = 'flex';
-                    renderCurrentMenuItems();
-                    renderCurrentPromotions();
-                    renderCurrentAnnouncement();
-                }
-                return;
+        // Оставляем только проверку на isAdminLoggedIn
+        if (isAdminLoggedIn) { 
+            if (isDashboardOpen) return;
+
+            if (adminDashboardModal) {
+                adminDashboardModal.style.display = 'flex';
+                await loadAdminData();
+                renderCurrentMenuItems();
+                renderCurrentPromotions();
+                renderCurrentAnnouncement();
             }
-
-            showAdminLogin();
+            return;
         }
-    });
-}
 
-document.addEventListener('DOMContentLoaded', () => {
-    if (window.innerWidth > 768) return;
-
-    const dayNightBtn = document.querySelector('.day-night') || 
-                        document.querySelector('.badge') || 
-                        document.querySelector('header .badge') ||
-                        document.querySelector('[class*="day"]');
-
-    if (!dayNightBtn) return;
-
-    let clickCount = 0;
-    let timer = null;
-
-    dayNightBtn.addEventListener('pointerup', (e) => {
-        clickCount++;
-        clearTimeout(timer);
-
-        if (clickCount >= 4) {
-            e.preventDefault();
-            e.stopPropagation();
-            clickCount = 0;
-
-            const adminLoginModal = document.getElementById('adminLogin');
-            if (adminLoginModal) {
-                adminLoginModal.style.setProperty('display', 'flex', 'important');
-                const pwd = document.getElementById('adminPassword');
-                if (pwd) pwd.focus();
-            }
-        } else {
-            timer = setTimeout(() => {
-                clickCount = 0;
-            }, 1000);
-        }
-    });
-});
-
-// Универсальное автоматическое отслеживание выбора файла для любой формы/модалки админки
-document.addEventListener('change', function(e) {
-    if (e.target && e.target.type === 'file') {
-        const fileInput = e.target;
-        
-        // Ищем контейнер инпута (например, .form-group или родительский элемент), чтобы привязать текст строго к этой форме
-        const container = fileInput.closest('.form-group') || fileInput.parentElement;
-        const fileNameDisplay = container ? (container.querySelector('#fileName') || container.querySelector('.file-name-display')) : document.getElementById('fileName');
-        const label = container ? container.querySelector('label[for="' + fileInput.id + '"]') : document.querySelector('label[for="' + fileInput.id + '"]');
-
-        if (fileInput.files && fileInput.files.length > 0) {
-            if (fileNameDisplay) {
-                fileNameDisplay.textContent = fileInput.files[0].name;
-                fileNameDisplay.style.color = '#4CAF50'; // Зеленый цвет при успехе
-            }
-            if (label) {
-                label.style.borderColor = '#4CAF50';
-                label.style.color = '#4CAF50';
-            }
-        } else {
-            if (fileNameDisplay) {
-                fileNameDisplay.textContent = 'Файл не выбран';
-                fileNameDisplay.style.color = '#888';
-            }
-            if (label) {
-                label.style.borderColor = '#d4af37';
-                label.style.color = '#d4af37';
-            }
-        }
+        showAdminLogin();
     }
 });
+}
