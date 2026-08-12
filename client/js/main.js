@@ -29,15 +29,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 document.addEventListener('click', (e) => {
-    // Проверяй по своему селектору кнопки удаления в админке
     if (e.target.classList.contains('delete-item-btn') || e.target.classList.contains('delete-promo-btn')) {
-        const itemId = e.target.dataset.id; // или ID из дата-атрибута
+        const itemId = e.target.dataset.id;
 
-        // Вызываем нашу красивую модалку, передавая логику удаления внутрь
         openDeleteModal(() => {
             console.log('Удаляем элемент из админки с ID:', itemId);
-            
-            // Сюда пиши свой fetch-запрос на удаление (например, DELETE /api/menu/:id)
+
         });
     }
 });

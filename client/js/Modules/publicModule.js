@@ -10,7 +10,6 @@ export function initPublicEvents() {
     const dateInput = document.getElementById('date');
     const commentsInput = document.getElementById('comments');
 
-    // --- Валидаторы полей (если они есть на странице) ---
     nameInput?.addEventListener('input', function() {
         this.value = this.value.replace(/[^а-яА-ЯёЁ\s]/g, '');
         if (this.value.length > 20) {
@@ -27,7 +26,8 @@ export function initPublicEvents() {
         if (['7', '8', '9'].indexOf(inputDigits[0]) > -1) {
             if (inputDigits[0] === '9') inputDigits = '7' + inputDigits;
             else inputDigits = '7' + inputDigits.substring(1);
-        } else {
+        } 
+        else {
             inputDigits = '7' + inputDigits;
         }
         inputDigits = inputDigits.substring(0, 11);
@@ -45,7 +45,6 @@ export function initPublicEvents() {
         this.value = this.value.replace(/[^а-яА-ЯёЁ0-9+() \n]/g, '');
     });
 
-    // --- Навигация и переключение категорий меню ---
     mobileMenuBtn?.addEventListener('click', () => navMenu?.classList.toggle('active'));
     
     document.querySelectorAll('nav ul li a').forEach(link => {
@@ -60,7 +59,6 @@ export function initPublicEvents() {
         });
     });
 
-    // --- Плавная прокрутка ---
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();

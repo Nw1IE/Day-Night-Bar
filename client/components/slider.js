@@ -143,7 +143,6 @@ export function initInfiniteSlider() {
         };
     }
 
-    // --- ЛОГИКА СВАЙПОВ (Pointer Events для пальца и мыши) ---
     let isDragging = false;
     let startX = 0;
     let currentTranslate = 0;
@@ -161,7 +160,6 @@ export function initInfiniteSlider() {
         const { slideWidth, gap } = getSlideDimensions();
         prevTranslate = -currentIndex * (slideWidth + gap);
 
-        // Захватываем указатель, чтобы свайп работал даже за пределами элемента
         sliderTrack.setPointerCapture(e.pointerId);
     });
 
@@ -185,13 +183,14 @@ export function initInfiniteSlider() {
 
         const movedBy = currentTranslate - prevTranslate;
 
-        // Если сдвинули больше чем на 50 пикселей в сторону — переключаем слайд
         if (movedBy < -50) {
             nextSlide();
-        } else if (movedBy > 50) {
+        } 
+        else if (movedBy > 50) {
             prevSlide();
-        } else {
-            updatePosition(true); // Возвращаем назад, если сдвиг маленький
+        } 
+        else {
+            updatePosition(true);
         }
 
         resetAutoSlide(sliderContainer);
@@ -205,7 +204,6 @@ export function initInfiniteSlider() {
         resetAutoSlide(sliderContainer);
     });
 
-    // Управление стрелками клавиатуры
     if (keydownHandler) {
         window.removeEventListener('keydown', keydownHandler);
     }
@@ -219,7 +217,8 @@ export function initInfiniteSlider() {
             if (isTransitioning) return;
             nextSlide();
             resetAutoSlide(sliderContainer);
-        } else if (e.key === 'ArrowLeft') {
+        } 
+        else if (e.key === 'ArrowLeft') {
             if (isTransitioning) return;
             prevSlide();
             resetAutoSlide(sliderContainer);

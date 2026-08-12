@@ -21,8 +21,7 @@ export function renderMenuItems(category = 'all') {
         const menuItem = document.createElement('article');
         menuItem.className = 'menu-item';
         menuItem.style.cursor = 'pointer';
-        
-        // ВАЖНО: Заменили <header> на безопасный <div>, чтобы стили шапки сайта не ломали карточку
+
         menuItem.innerHTML = `
             <img src="${item.image || './images/placeholder.jpg'}" alt="${item.name}" class="menu-item-thumb">
             <div class="menu-item-content">

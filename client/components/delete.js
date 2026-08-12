@@ -17,7 +17,6 @@ export function createDeleteModalMarkup() {
 }
 
 export function openDeleteModal(onConfirm) {
-    // Если модалки еще нет в DOM, добавляем её перед открытием
     if (!document.getElementById('deleteConfirmModal')) {
         document.body.insertAdjacentHTML('beforeend', createDeleteModalMarkup());
     }
@@ -26,16 +25,13 @@ export function openDeleteModal(onConfirm) {
     const confirmBtn = document.getElementById('confirmDeleteBtn');
     const cancelBtn = document.getElementById('cancelDeleteBtn');
 
-    // Показываем
     modal.classList.add('active');
 
-    // Клонируем кнопки, чтобы старые обработчики кликов не накапливались
     const newConfirm = confirmBtn.cloneNode(true);
     const newCancel = cancelBtn.cloneNode(true);
     confirmBtn.replaceWith(newConfirm);
     cancelBtn.replaceWith(newCancel);
 
-    // Подтверждение удаления
     document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
         modal.classList.remove('active');
         if (typeof onConfirm === 'function') {
@@ -43,12 +39,10 @@ export function openDeleteModal(onConfirm) {
         }
     });
 
-    // Отмена
     document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
         modal.classList.remove('active');
     });
 
-    // Клик по фону (затемнению)
     modal.onclick = (e) => {
         if (e.target === modal) {
             modal.classList.remove('active');

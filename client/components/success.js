@@ -79,8 +79,6 @@ export function showSuccess(title, message) {
     closeBtn.onclick = closeModal;
     modal.onclick = (e) => { if (e.target === modal) closeModal(); };
 
-    // Задержка перед навешиванием слушателя keydown,
-    // чтобы событие Enter от сабмита формы не захлопывало модалку мгновенно
     setTimeout(() => {
         closeBtn.focus();
         window.addEventListener('keydown', handleKeyDown);

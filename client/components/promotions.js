@@ -7,7 +7,7 @@ export function renderPromotionsSection(promos = []) {
     
     const container = document.getElementById('promotions-container');
     if (!container) {
-        console.error('❌ ОШИБКА: Контейнер #promotions-container не найден!');
+        console.error('ОШИБКА: #promotions-container не найден!');
         return;
     }
 
