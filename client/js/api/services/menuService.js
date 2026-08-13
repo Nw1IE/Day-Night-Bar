@@ -1,4 +1,4 @@
-import { BASE_URL } from "../api.js"
+import { request } from "../api.js";
 
 export const menuApi = {
     getAll: () => request('/menu'),
@@ -7,3 +7,8 @@ export const menuApi = {
     update: (id, data) => request(`/menu/${id}`, { method: 'PUT', body: data }),
     delete: (id) => request(`/menu/${id}`, { method: 'DELETE' }),
 };
+
+// Функция-обертка, чтобы renderModule.js мог использовать её напрямую
+export async function getMenuItems() {
+    return await menuApi.getAll();
+}

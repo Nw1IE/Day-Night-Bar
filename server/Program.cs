@@ -74,7 +74,7 @@ namespace server
                 options.OnRejected = async (context, token) =>
                 {
                     context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
-                    await context.HttpContext.Response.WriteAsJsonAsync(new { error = "Слишком много запросов. Подождите минуту." });
+                    await context.HttpContext.Response.WriteAsJsonAsync(new { error = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ." });
                 };
 
                 options.AddFixedWindowLimiter("auth-limit", opt =>

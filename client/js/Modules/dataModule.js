@@ -1,4 +1,4 @@
-export let menuItems = [
+/*export let menuItems = [
     { id: 1, name: "Мохито классический", category: "cocktails", price: 550, description: "Классический коктейль с белым ромом, свежей мятой, лаймом и содовой" },
     { id: 2, name: "Негрони", category: "cocktails", price: 650, description: "Итальянский коктейль с джином, красным вермутом и кампари" },
     { id: 3, name: "Маргарита", category: "cocktails", price: 600, description: "Коктейль с текилой, лаймовым соком и апельсиновым ликером, солью по краю бокала" },
@@ -28,3 +28,4 @@ export const updateMenuItems = (newItems) => { menuItems = newItems; };
 export const updatePromotions = (newPromos) => { promotions = newPromos; };
 export const updateAnnouncement = (newText) => { announcement = newText; };
 export const setAdminLoggedIn = (status) => { isAdminLoggedIn = status; };
+*/

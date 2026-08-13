@@ -1,14 +1,14 @@
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vite'
 
 export default defineConfig({
-    root: '.',
-    server: {
-        port: 5173,
-        open: true
-    },
-    build: {
-        outDir: 'dist',
-        assetsDir: 'assets',
-        sourcemap: false
+  server: {
+    port: 5173,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5101', // порт твоего бэкенда
+        changeOrigin: true,
+        secure: false
+      }
     }
-});
+  }
+})
