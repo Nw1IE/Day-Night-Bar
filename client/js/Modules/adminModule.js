@@ -4,6 +4,7 @@ import { showErrorModal } from '../../components/error.js';
 import { showSuccess } from '../../components/success.js';
 import { openDeleteModal } from '../../components/delete.js';
 import { request } from '../api/api.js';
+import { authApi } from '../api/services/authService.js';
 
 export function initAdmin() {
     const adminLogin = document.getElementById('adminLogin');
@@ -38,7 +39,8 @@ async function loadAdminData() {
         menuItems = menuRes;
         promotions = promoRes;
         announcement = annRes.text || '';
-    } catch (e) {
+    } 
+    catch (e) {
         console.warn('Админ-данные недоступны (требуется вход)', e);
     }
 }
@@ -71,8 +73,9 @@ function toggleAdminAccessButtons(isLoggedIn) {
             floatingAdminPanel.style.display = 'flex';
             floatingAdminPanel.style.opacity = '1';
             floatingAdminPanel.style.pointerEvents = 'auto';
-        } else {
-            floatingAdminPanel.style.display = 'none'; // Вот этого у тебя не было!
+        } 
+        else {
+            floatingAdminPanel.style.display = 'none';
         }
     }
 }
@@ -116,7 +119,8 @@ function toggleAdminAccessButtons(isLoggedIn) {
         promoDateInput.addEventListener('change', function() {
             if (this.value < today) {
                 this.value = today;
-            } else if (this.value > lastDayOfYear) {
+            } 
+            else if (this.value > lastDayOfYear) {
                 this.value = lastDayOfYear;
             }
         });
@@ -133,7 +137,6 @@ function toggleAdminAccessButtons(isLoggedIn) {
         checkAuthStatus();
         
         if (isAdminLoggedIn) {
-            // Если уже вошли, сразу открываем админ-панель!
             if (adminDashboardModal) {
                 adminDashboardModal.style.display = 'flex';
                 await loadAdminData();
@@ -201,7 +204,8 @@ function toggleAdminAccessButtons(isLoggedIn) {
                         menuItems = menuItems.filter(item => item.id !== id);
                         renderCurrentMenuItems();
                         renderMenuItems('all');
-                    } catch (err) {
+                    } 
+                    catch (err) {
                         showErrorModal('Не удалось удалить позицию с сервера.');
                     }
                 });
@@ -264,7 +268,8 @@ function toggleAdminAccessButtons(isLoggedIn) {
                     });
                     menuItems = menuItems.map(item => item.id === editingId ? savedItem : item);
                     showSuccess('Позиция обновлена', `Позиция "${nameVal}" успешно изменена.`);
-                } else {
+                } 
+                else {
                     savedItem = await request('/menu', {
                         method: 'POST',
                         body: payload
@@ -357,49 +362,38 @@ function toggleAdminAccessButtons(isLoggedIn) {
     }
     
     const loginBtn = document.getElementById('loginBtn');
-if (loginBtn) {
-    loginBtn.addEventListener('click', async () => {
-        // Берем реальное значение из инпута
-        const passcodeVal = pwdInput ? pwdInput.value : '';
-        if (isFieldInvalid(passcodeVal)) {
-            return showErrorModal('Введите пароль!');
-        }
-
-        try {
-            const response = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Admin-Client-Key': 'FallbackKeyMakeSureItsLongEnough123!' 
-                },
-                // Если твой DTO в ASP.NET ждет int, используй parseInt(passcodeVal, 10).
-                // Если ждет string (что правильнее) — просто передавай passcodeVal.
-                body: JSON.stringify({ passcode: passcodeVal }) 
-            });
-
-            if (!response.ok) {
-                // Если сервер ответил ошибкой (401, 500 и т.д.), мы принудительно прыгаем в catch
-                throw new Error('Сервер не пустил: ' + response.status);
+    if (loginBtn) {
+        loginBtn.addEventListener('click', async () => {
+            const passcodeVal = pwdInput ? pwdInput.value : '';
+            if (isFieldInvalid(passcodeVal)) {
+                return showErrorModal('Введите пароль!');
             }
 
-            // Сюда код дойдет ТОЛЬКО если сервер ответил 200 OK
-            isAdminLoggedIn = true;
-            localStorage.setItem('isAdminLoggedIn', 'true');
-            if (adminLogin) adminLogin.style.display = 'none';
-            if (adminPanel) adminPanel.style.display = 'flex';
+            try {
+                const response = await authApi.login();
 
-            toggleAdminAccessButtons(true);
-            showSuccess('Добро пожаловать!', 'Вы успешно вошли в панель администратора.');
-        } catch (err) {
-            console.error('Ошибка входа:', err);
-            if (pwdInput) {
-                pwdInput.value = '';
-                pwdInput.focus();
+                if (!response.ok) {
+                    throw new Error('Сервер не пустил: ' + response.status);
+                }
+
+                isAdminLoggedIn = true;
+                localStorage.setItem('isAdminLoggedIn', 'true');
+                if (adminLogin) adminLogin.style.display = 'none';
+                if (adminPanel) adminPanel.style.display = 'flex';
+
+                toggleAdminAccessButtons(true);
+                showSuccess('Добро пожаловать!', 'Вы успешно вошли в панель администратора.');
+            } 
+            catch (err) {
+                console.error('Ошибка входа:', err);
+                if (pwdInput) {
+                    pwdInput.value = '';
+                    pwdInput.focus();
+                }
+                showErrorModal('Неверный пароль или ошибка сервера!');
             }
-            showErrorModal('Неверный пароль или ошибка сервера!');
-        }
-    });
-}
+        });
+    }
 
     const adminDashboardBtn = document.getElementById('adminDashboardBtn');
     if (adminDashboardBtn) {
@@ -419,7 +413,8 @@ if (loginBtn) {
         logoutBtn.addEventListener('click', async () => {
             try {
                 await request('/auth/logout', { method: 'POST' });
-            } catch (e) {
+            }
+            catch (e) {
                 console.error(e);
             }
             isAdminLoggedIn = false;
@@ -520,7 +515,8 @@ if (loginBtn) {
                 announcementForm.reset();
                 renderCurrentAnnouncement();
                 showSuccess('Объявление опубликовано', 'Новое объявление успешно опубликовано.');
-            } catch (err) {
+            } 
+            catch (err) {
                 showErrorModal('Не удалось опубликовать объявление.');
             }
         });
@@ -536,7 +532,6 @@ document.addEventListener('keydown', async (e) => {
 
         checkAuthStatus();
 
-        // Оставляем только проверку на isAdminLoggedIn
         if (isAdminLoggedIn) { 
             if (isDashboardOpen) return;
 
