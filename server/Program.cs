@@ -28,7 +28,7 @@ namespace server
             {
                 options.AddDefaultPolicy(policy =>
                 {
-                    policy.WithOrigins("http://127.0.0.1:5500")
+                    policy.WithOrigins("http://localhost:5173")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
@@ -74,7 +74,7 @@ namespace server
                 options.OnRejected = async (context, token) =>
                 {
                     context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
-                    await context.HttpContext.Response.WriteAsJsonAsync(new { error = "Слишком много запросов. Подождите минуту." });
+                    await context.HttpContext.Response.WriteAsJsonAsync(new { error = "Too many requests. Wait a minute" });
                 };
 
                 options.AddFixedWindowLimiter("auth-limit", opt =>
@@ -94,6 +94,9 @@ namespace server
 
             var app = builder.Build();
             app.UseCors();
+
+            app.UseMiddleware<ExceptHandlerMiddleware>();
+            app.UseMiddleware<IpBanMiddleware>();
 
             app.Use(async (context, next) =>
             {
@@ -119,9 +122,6 @@ namespace server
             {
                 app.MapOpenApi();
             }
-
-            app.UseMiddleware<ExceptHandlerMiddleware>();
-            app.UseMiddleware<IpBanMiddleware>();
 
             app.UseRateLimiter();
 

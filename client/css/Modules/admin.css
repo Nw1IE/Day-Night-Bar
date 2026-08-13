@@ -428,3 +428,58 @@
             color: rgba(255, 255, 255, 0.5);
             font-size: 15px;
         }
+        /* Поддержка светлой темы для модальных окон управления */
+body.light-theme .login-form,
+body.light-theme .modal-content {
+    background-color: #ffffff;
+    color: #222222;
+    border-color: var(--primary);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+body.light-theme .login-form input {
+    background-color: rgba(0, 0, 0, 0.03);
+    border-color: #ccc;
+    color: #222222;
+}
+
+body.light-theme .item-list-item {
+    background-color: rgba(0, 0, 0, 0.02);
+    border-color: #ddd;
+}
+
+body.light-theme .item-list-item:hover {
+    background-color: rgba(201, 167, 105, 0.1);
+}
+
+body.light-theme .item-list-info p {
+    color: rgba(0, 0, 0, 0.7);
+}
+
+body.light-theme .admin-tab {
+    color: #333333;
+}
+
+
+/* Исправление модальных окон на мобилках без блокировки кликов */
+@media (max-width: 768px) {
+    #adminLogin {
+        display: none; /* по умолчанию скрыто */
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+    }
+
+    #adminLogin .modal-content, 
+    #adminLogin .admin-modal-content {
+        width: 90% !important;
+        max-width: 350px !important;
+        height: auto !important;
+        max-height: 80vh !important;
+        border-radius: 12px !important;
+        margin: auto !important;
+        padding: 20px !important;
+        box-sizing: border-box;
+    }
+}
+

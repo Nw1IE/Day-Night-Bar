@@ -1,4 +1,4 @@
-import { BASE_URL } from "../api.js"
+import { request } from "../api.js";
 
 export const menuApi = {
     getAll: () => request('/menu'),

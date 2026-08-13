@@ -1,4 +1,4 @@
-export const BASE_URL = '/api'; 
+export const BASE_URL = 'http://localhost:5101/api'; 
 
 export class ApiError extends Error {
     constructor(message, status, data = null) {
@@ -14,12 +14,14 @@ export async function request(endpoint, options = {}) {
 
     options.credentials = options.credentials || 'include';
 
+    options.headers = {
+        'Content-Type': 'application/json',
+        'X-Admin-Client-Key': 'FallbackKeyMakeSureItsLongEnough123!',
+        ...options.headers
+    };
+
     if (options.body && typeof options.body === 'object') {
         options.body = JSON.stringify(options.body);
-        options.headers = {
-            'Content-Type': 'application/json',
-            ...options.headers
-        };
     }
 
     try {
