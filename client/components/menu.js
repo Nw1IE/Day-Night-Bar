@@ -9,12 +9,12 @@ export function renderMenu() {
                 
                 <nav class="menu-categories" aria-label="Категории меню">
                     <button class="category-btn active" data-category="all">Все</button>
-                    <button class="category-btn" data-category="cocktails">Коктейли</button>
-                    <button class="category-btn" data-category="wine">Вино</button>
-                    <button class="category-btn" data-category="beer">Пиво</button>
-                    <button class="category-btn" data-category="snacks">Закуски</button>
-                    <button class="category-btn" data-category="main">Основные блюда</button>
-                    <button class="category-btn" data-category="desserts">Десерты</button>
+                    <button class="category-btn" data-category="Коктейли">Коктейли</button>
+                    <button class="category-btn" data-category="Вино">Вино</button>
+                    <button class="category-btn" data-category="Пиво">Пиво</button>
+                    <button class="category-btn" data-category="Закуски">Закуски</button>
+                    <button class="category-btn" data-category="Основные_блюда">Основные блюда</button>
+                    <button class="category-btn" data-category="Десерты">Десерты</button>
                 </nav>
                 
                 <section class="menu-items" id="menuItems"></section>
@@ -88,11 +88,11 @@ export function renderMenuItems(items) {
 
     itemsContainer.innerHTML = items.map(item => `
         <article class="menu-item" 
-                 data-category="${item.category}"
-                 data-name="${encodeURIComponent(item.name || '')}"
-                 data-price="${item.price || ''}"
-                 data-desc="${encodeURIComponent(item.description || '')}"
-                 data-img="${item.image || './images/placeholder.jpg'}">
+                data-category="${item.category}"
+                data-name="${encodeURIComponent(item.name || '')}"
+                data-price="${item.price || ''}"
+                data-desc="${encodeURIComponent(item.description || '')}"
+                data-img="${item.image || './images/placeholder.jpg'}">
             
             <img src="${item.image || './images/placeholder.jpg'}" alt="${item.name || ''}" class="menu-item-thumb">
             

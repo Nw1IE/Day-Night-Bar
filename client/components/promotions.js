@@ -42,7 +42,7 @@ export function renderPromotionsSection(promos = []) {
                                 <div class="promotion-content">
                                     <h3 class="promotion-title">${promo.title || ''}</h3>
                                     <p class="promotion-desc">${promo.description || ''}</p>
-                                    ${promo.date ? `<p class="promo-card-date"><i class="far fa-calendar-alt"></i> Действует до: ${promo.date}</p>` : ''}
+                                    ${promo.endDate ? `<p class="promo-card-date"><i class="far fa-calendar-alt"></i> Действует до: ${promo.endDate}</p>` : ''}
                                     <button class="promo-details-btn">Подробнее</button>
                                 </div>
                             </article>

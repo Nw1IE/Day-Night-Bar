@@ -13,9 +13,12 @@ export async function renderMenuItems(category = 'all') {
     try {
         const menuItems = await menuApi.getAll();
         
-        const filteredItems = category === 'all' 
-            ? menuItems 
-            : menuItems.filter(item => item.category.toLowerCase() === category.toLowerCase());
+        const normalize = (str) => (str || '').replace(/[_|-]/g, ' ').trim().toLowerCase();
+        const targetCategory = normalize(category);
+
+        const filteredItems = (targetCategory === 'all' || targetCategory === '') 
+        ? menuItems 
+        : menuItems.filter(item => normalize(item.category) === targetCategory);
         
         if (filteredItems.length === 0) {
             menuItemsContainer.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; font-size: 18px; color: rgba(255, 255, 255, 0.7);">Позиции в этой категории пока отсутствуют</p>';
@@ -65,7 +68,7 @@ export async function renderPromotions() {
             promoCard.innerHTML = `
                 <section class="promotion-content">
                     <h3 class="promotion-title">${promo.title}</h3>
-                    <time class="promotion-date"><i class="far fa-calendar-alt"></i> Действует до: ${formatDate(promo.date)}</time>
+                    <time class="promotion-date"><i class="far fa-calendar-alt"></i> Действует до: ${formatDate(promo.endDate)}</time>
                     <p>${promo.description}</p>
                 </section>
             `;

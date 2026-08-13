@@ -95,6 +95,9 @@ namespace server
             var app = builder.Build();
             app.UseCors();
 
+            app.UseMiddleware<ExceptHandlerMiddleware>();
+            app.UseMiddleware<IpBanMiddleware>();
+
             app.Use(async (context, next) =>
             {
                 var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
@@ -119,9 +122,6 @@ namespace server
             {
                 app.MapOpenApi();
             }
-
-            app.UseMiddleware<ExceptHandlerMiddleware>();
-            app.UseMiddleware<IpBanMiddleware>();
 
             app.UseRateLimiter();
 
