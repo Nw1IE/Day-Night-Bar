@@ -4,11 +4,6 @@ const STORAGE_KEYS = {
     ANNOUNCEMENT: 'bar_data_announcement'
 };
 
-export const initPersistentData = () => {
-    // Данные теперь подтягиваются с бэкенда через слой API, 
-    // поэтому локальная инициализация из старых моков больше не требуется.
-};
-
 export const saveMenuToStorage = (menuItems) => {
     localStorage.setItem(STORAGE_KEYS.MENU, JSON.stringify(menuItems));
 };

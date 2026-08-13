@@ -1,4 +1,4 @@
-import { getMenuItems } from '../api/services/menuService.js';
+import { menuApi } from '../api/services/menuService.js';
 import { promotionsApi } from '../api/services/promotionService.js';
 import { announcementsApi, getAnnouncement } from '../api/services/announcementService.js';
 import { formatDate } from './utilsModule.js';
@@ -11,11 +11,11 @@ export async function renderMenuItems(category = 'all') {
     menuItemsContainer.innerHTML = '';
     
     try {
-        const menuItems = await getMenuItems();
+        const menuItems = await menuApi.getAll();
         
         const filteredItems = category === 'all' 
             ? menuItems 
-            : menuItems.filter(item => item.category === category);
+            : menuItems.filter(item => item.category.toLowerCase() === category.toLowerCase());
         
         if (filteredItems.length === 0) {
             menuItemsContainer.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; font-size: 18px; color: rgba(255, 255, 255, 0.7);">Позиции в этой категории пока отсутствуют</p>';

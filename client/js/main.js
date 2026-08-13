@@ -2,7 +2,6 @@ import { renderPromotions, updateAnnouncementUI } from './Modules/renderModule.j
 import { initPublicEvents } from './Modules/publicModule.js';
 import { initErrorModal } from '../components/error.js';
 import { initAdmin } from './Modules/adminModule.js';
-import { initPersistentData } from './Modules/storageModule.js';
 import { renderHeader } from '../components/header.js';
 import { renderFooter } from '../components/footer.js';
 import { renderAnnouncement } from '../components/announcement.js';
@@ -15,7 +14,6 @@ import { createDeleteModalMarkup } from '../components/delete.js';
 
 document.addEventListener('DOMContentLoaded', async function() {
     initErrorModal();
-    initPersistentData();
     initAdminModal();
 
     renderPromotionsSection();

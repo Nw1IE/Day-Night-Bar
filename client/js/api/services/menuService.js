@@ -7,8 +7,3 @@ export const menuApi = {
     update: (id, data) => request(`/menu/${id}`, { method: 'PUT', body: data }),
     delete: (id) => request(`/menu/${id}`, { method: 'DELETE' }),
 };
-
-// Функция-обертка, чтобы renderModule.js мог использовать её напрямую
-export async function getMenuItems() {
-    return await menuApi.getAll();
-}
