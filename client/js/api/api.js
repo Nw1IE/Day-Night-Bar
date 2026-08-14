@@ -1,5 +1,7 @@
 export const BASE_URL = 'http://localhost:5101/api'; 
 
+export const IMAGES_URL = `http://localhost:5101/imgs`;
+
 export class ApiError extends Error {
     constructor(message, status, data = null) {
         super(message);

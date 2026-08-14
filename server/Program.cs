@@ -95,6 +95,8 @@ namespace server
             var app = builder.Build();
             app.UseCors();
 
+            app.UseStaticFiles();
+
             app.UseMiddleware<ExceptHandlerMiddleware>();
             app.UseMiddleware<IpBanMiddleware>();
 

@@ -1,3 +1,5 @@
+import { imageApi } from "../js/api/services/imageService.js";
+
 export function renderFooter() {
     const footerContainer = document.getElementById('footer-container');
     if (!footerContainer) return;
@@ -10,9 +12,9 @@ export function renderFooter() {
                         <h3>День / Ночь</h3>
                         <p style="font-size: 1.2rem; line-height: 1.5; margin-bottom: 20px;">Элитный бар в центре города с авторскими коктейлями и изысканной кухней. Место, где рождаются впечатления.</p>
                         <div class="social-icons">
-                            <a href="https://max.ru/join/60fU0xcnTe71N0qXPIUnQasK6-zqJxQw1x2peKOTLOM" target="_blank" rel="noopener"><img src="./images/Max.jpg" height="45" width="45" alt="Max"></a>
-                            <a href="https://t.me/+7Oql1LJggm8yZmZi" target="_blank" rel="noopener"><img src="./images/telegram.jpg" height="45" width="45" alt="Telegram"></a>
-                            <a href="https://vk.com/club228933906" target="_blank" rel="noopener"><img src="./images/vk.jpg" height="50" width="50" alt="VK"></a>
+                            <a href="https://max.ru/join/60fU0xcnTe71N0qXPIUnQasK6-zqJxQw1x2peKOTLOM" target="_blank" rel="noopener"><img src="${imageApi.getImageUrl('Max.jpg')}" height="45" width="45" alt="Max"></a>
+                            <a href="https://t.me/+7Oql1LJggm8yZmZi" target="_blank" rel="noopener"><img src="${imageApi.getImageUrl('telegram.jpg')}" height="45" width="45" alt="Telegram"></a>
+                            <a href="https://vk.com/club228933906" target="_blank" rel="noopener"><img src="${imageApi.getImageUrl('vk.jpg')}" height="50" width="50" alt="VK"></a>
                         </div>
                     </div>
                     

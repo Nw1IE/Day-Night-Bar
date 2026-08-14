@@ -1,3 +1,5 @@
+import {imageApi} from "../js/api/services/imageService.js";
+
 let currentIndex = 1;
 let totalSlides = 0;
 let autoSlideInterval = null;
@@ -23,35 +25,35 @@ export function renderSlider() {
                 <section class="slider-container" style="overflow: hidden; width: 100%; touch-action: pan-y;">
                     <section class="slider-track" id="sliderTrack" style="display: flex; cursor: grab; user-select: none;">
                         <article class="slide">
-                            <img src="./images/1.jpg" width="300" height="400" alt="Мартини" fetchpriority="high" decoding="async" draggable="false">
+                            <img src="${imageApi.getImageUrl('1.jpg')}" width="300" height="400" alt="Мартини" fetchpriority="high" decoding="async" draggable="false">
                             <section class="slide-info"><h3>Мартини</h3></section>
                         </article>
                         <article class="slide">
-                            <img src="./images/2.jpg" width="300" height="400" alt="Апероль Спритц" fetchpriority="high" decoding="async" draggable="false">
+                            <img src="${imageApi.getImageUrl('2.jpg')}" width="300" height="400" alt="Апероль Спритц" fetchpriority="high" decoding="async" draggable="false">
                             <section class="slide-info"><h3>Апероль Спритц</h3></section>
                         </article>
                         <article class="slide">
-                            <img src="./images/3.jpg" width="300" height="400" alt="Виски" decoding="async" draggable="false">
+                            <img src="${imageApi.getImageUrl('3.jpg')}" width="300" height="400" alt="Виски" decoding="async" draggable="false">
                             <section class="slide-info"><h3>Виски</h3></section>
                         </article>
                         <article class="slide">
-                            <img src="./images/4.jpg" width="300" height="400" alt="Уиски Сауэр" decoding="async" draggable="false">
+                            <img src="${imageApi.getImageUrl('4.jpg')}" width="300" height="400" alt="Уиски Сауэр" decoding="async" draggable="false">
                             <section class="slide-info"><h3>Уиски Сауэр</h3></section>
                         </article>
                         <article class="slide">
-                            <img src="./images/5.jpg" width="300" height="400" alt="Космополитен" decoding="async" draggable="false">
+                            <img src="${imageApi.getImageUrl('5.jpg')}" width="300" height="400" alt="Космополитен" decoding="async" draggable="false">
                             <section class="slide-info"><h3>Космополитен</h3></section>
                         </article>
                         <article class="slide">
-                            <img src="./images/6.jpg" width="300" height="400" alt="Экзотический Мартини" decoding="async" draggable="false">
+                            <img src="${imageApi.getImageUrl('6.jpg')}" width="300" height="400" alt="Экзотический Мартини" decoding="async" draggable="false">
                             <section class="slide-info"><h3>Экзотический Мартини</h3></section>
                         </article>
                         <article class="slide">
-                            <img src="./images/7.jpg" width="300" height="400" alt="Космополитен" decoding="async" draggable="false">
+                            <img src="${imageApi.getImageUrl('7.jpg')}" width="300" height="400" alt="Космополитен" decoding="async" draggable="false">
                             <section class="slide-info"><h3>Космополитен</h3></section>
                         </article>
                         <article class="slide">
-                            <img src="./images/8.jpg" width="300" height="400" alt="Яблочный Мартини" decoding="async" draggable="false">
+                            <img src="${imageApi.getImageUrl('8.jpg')}" width="300" height="400" alt="Яблочный Мартини" decoding="async" draggable="false">
                             <section class="slide-info"><h3>Яблочный Мартини</h3></section>
                         </article>
                     </section>
