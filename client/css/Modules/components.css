@@ -274,7 +274,7 @@ nav ul li a:hover:after {
 
 #hero-container {
     background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.8)),
-                url('/images/1.jpg') center/cover no-repeat;
+                url('/images/bg.jpg') center/cover no-repeat;
     color: var(--light);
     min-height: 550px;
     padding: 120px 20px 80px;

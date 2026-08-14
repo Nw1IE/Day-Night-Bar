@@ -69,7 +69,7 @@ export function renderSlider() {
 function preloadRemainingImages() {
     for (let i = 3; i <= 8; i++) {
         const img = new Image();
-        img.src = `./images/${i}.jpg`;
+        img.src = `${imageApi.getImageUrl(`${i}.jpg`)}`;
     }
 }
 
