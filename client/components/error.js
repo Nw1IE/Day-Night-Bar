@@ -37,8 +37,7 @@ styleElement.textContent = `
     }
     body.light-theme .error-modal-text {
         color: #555555;
-    }
-`;
+    }`;
 document.head.appendChild(styleElement);
 
 export function showErrorModal(message) {
@@ -75,8 +74,6 @@ export function showErrorModal(message) {
     closeBtn.onclick = closeModal;
     modal.onclick = (e) => { if (e.target === modal) closeModal(); };
 
-    // Подписываемся на события клавиатуры с небольшой задержкой (150ms),
-    // чтобы событие Enter от сабмита формы не закрывало окно мгновенно
     setTimeout(() => {
         closeBtn.focus();
         window.addEventListener('keydown', handleKeyDown);

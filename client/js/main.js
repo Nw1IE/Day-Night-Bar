@@ -24,7 +24,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     renderMenu();
     renderFooter();
 
-    // Загружаем данные через прокси Vite (без CORS ошибок)
     try {
         const [menuRes, promoRes] = await Promise.all([
             fetch('/api/menu'),
