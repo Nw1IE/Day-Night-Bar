@@ -370,11 +370,7 @@ function toggleAdminAccessButtons(isLoggedIn) {
             }
 
             try {
-                const response = await authApi.login();
-
-                if (!response.ok) {
-                    throw new Error('Сервер не пустил: ' + response.status);
-                }
+                const response = await authApi.login(passcodeVal);
 
                 isAdminLoggedIn = true;
                 localStorage.setItem('isAdminLoggedIn', 'true');
@@ -390,7 +386,7 @@ function toggleAdminAccessButtons(isLoggedIn) {
                     pwdInput.value = '';
                     pwdInput.focus();
                 }
-                showErrorModal('Неверный пароль или ошибка сервера!');
+                showErrorModal(err.message || 'Неверный пароль или ошибка сервера!');
             }
         });
     }
