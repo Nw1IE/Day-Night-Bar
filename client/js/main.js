@@ -1,4 +1,4 @@
-import { renderPromotions, updateAnnouncementUI } from './Modules/renderModule.js';
+import { updateAnnouncementUI } from './Modules/renderModule.js';
 import { initPublicEvents } from './Modules/publicModule.js';
 import { initErrorModal } from '../components/error.js';
 import { initAdmin } from './Modules/adminModule.js';
@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     initErrorModal();
     initAdminModal();
 
+    // 1. Сначала рисуем каркас страницы
     renderPromotionsSection();
     renderHeader();
     renderAnnouncement();
@@ -24,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     renderMenu();
     renderFooter();
 
-    // Загружаем данные через прокси Vite (без CORS ошибок)
+    // 2. Загружаем данные с сервера один раз
     try {
         const [menuRes, promoRes] = await Promise.all([
             fetch('/api/menu'),
@@ -49,6 +50,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         renderPromotionCards([]);
     }
 
+    // 3. Убираем дублирующий вызов renderPromotions(), так как акции уже загружены выше через renderPromotionCards!
+    updateAnnouncementUI();
+
+    initPublicEvents();
+    initAdmin();
+
     document.addEventListener('click', (e) => {
         if (e.target.classList.contains('delete-item-btn') || e.target.classList.contains('delete-promo-btn')) {
             const itemId = e.target.dataset.id;
@@ -64,12 +71,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (promoDateInput) {
         promoDateInput.min = today;
     }
-
-    renderPromotions();
-    updateAnnouncementUI();
-
-    initPublicEvents();
-    initAdmin();
 
     const themeBtn = document.getElementById('ChangeButton');
     if (themeBtn) {

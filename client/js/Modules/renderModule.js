@@ -2,8 +2,7 @@ import { menuApi } from '../api/services/menuService.js';
 import { promotionsApi } from '../api/services/promotionService.js';
 import { announcementsApi, getAnnouncement } from '../api/services/announcementService.js';
 import { formatDate } from './utilsModule.js';
-import { openDishModal } from '../../components/menu.js';
-
+import { renderMenu } from '../../components/menu.js'; 
 export async function renderMenuItems(category = 'all') {
     const menuItemsContainer = document.getElementById('menuItems');
     if (!menuItemsContainer) return;
@@ -25,13 +24,11 @@ export async function renderMenuItems(category = 'all') {
             return;
         }
         
-        filteredItems.forEach(item => {
+filteredItems.forEach(item => {
             const menuItem = document.createElement('article');
             menuItem.className = 'menu-item';
-            menuItem.style.cursor = 'pointer';
             
             menuItem.innerHTML = `
-                <img src="${item.image || './images/placeholder.jpg'}" alt="${item.name}" class="menu-item-thumb">
                 <section class="menu-item-content">
                     <section class="menu-item-header">
                         <h3 class="menu-item-name">${item.name}</h3>
@@ -41,10 +38,7 @@ export async function renderMenuItems(category = 'all') {
                 </section>
             `;
 
-            menuItem.addEventListener('click', () => {
-                openDishModal(item);
-            });
-
+            // Убрали обработчик клика (addEventListener) и вызов openDishModal
             menuItemsContainer.appendChild(menuItem);
         });
     } 
@@ -55,21 +49,22 @@ export async function renderMenuItems(category = 'all') {
 }
 
 export async function renderPromotions() {
-    const promotionCardsContainer = document.getElementById('promotionCards');
+    const promotionCardsContainer = document.getElementById('promotionCards') || document.getElementById('promotions-container');
     if (!promotionCardsContainer) return;
     
-    promotionCardsContainer.innerHTML = '';
-    
     try {
-        const promotions = await promotionsApi.getAll();        
+        const promotions = await promotionsApi.getAll();
+        // Передаем данные в логику из promtiom.js или отрисовываем корректно
+        promotionCardsContainer.innerHTML = '';
+        
         promotions.forEach(promo => {
             const promoCard = document.createElement('article');
             promoCard.className = 'promotion-card';
             promoCard.innerHTML = `
                 <section class="promotion-content">
-                    <h3 class="promotion-title">${promo.title}</h3>
-                    <time class="promotion-date"><i class="far fa-calendar-alt"></i> Действует до: ${formatDate(promo.endDate)}</time>
-                    <p>${promo.description}</p>
+                    <h3 class="promotion-title">${promo.title || ''}</h3>
+                    ${promo.endDate ? `<time class="promotion-date"><i class="far fa-calendar-alt"></i> Действует до: ${formatDate(promo.endDate)}</time>` : ''}
+                    <p class="promotion-desc">${promo.description || ''}</p>
                 </section>
             `;
             promotionCardsContainer.appendChild(promoCard);

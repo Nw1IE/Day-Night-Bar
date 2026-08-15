@@ -1,4 +1,4 @@
-let currentIndex = 1;
+let currentIndex = 0; 
 let totalSlides = 0;
 let autoSlideInterval = null;
 let isTransitioning = false;
@@ -61,7 +61,7 @@ export function renderSlider() {
     `;
 
     preloadRemainingImages();
-    initInfiniteSlider();
+    initSlider(); 
 }
 
 function preloadRemainingImages() {
@@ -75,14 +75,14 @@ function getSlideDimensions() {
     const sliderTrack = document.getElementById('sliderTrack');
     const slides = sliderTrack ? sliderTrack.querySelectorAll('.slide') : [];
     if (!slides.length) return { slideWidth: 300, gap: 20 };
-    const targetSlide = slides[currentIndex] || slides[0];
+    const targetSlide = slides[0];
     const slideWidth = targetSlide.getBoundingClientRect().width;
     const computedStyle = window.getComputedStyle(sliderTrack);
     const gap = parseFloat(computedStyle.gap) || parseFloat(computedStyle.columnGap) || 0;
     return { slideWidth, gap };
 }
 
-export function initInfiniteSlider() {
+export function initSlider() {
     const sliderTrack = document.getElementById('sliderTrack');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
@@ -92,40 +92,8 @@ export function initInfiniteSlider() {
     if (!slides.length || !sliderTrack) return;
 
     totalSlides = slides.length;
-
-    sliderTrack.querySelectorAll('#first-clone, #last-clone').forEach(el => el.remove());
-
-    const firstClone = slides[0].cloneNode(true);
-    const lastClone = slides[totalSlides - 1].cloneNode(true);
-
-    firstClone.id = 'first-clone';
-    lastClone.id = 'last-clone';
-
-    sliderTrack.appendChild(firstClone);
-    sliderTrack.insertBefore(lastClone, slides[0]);
-
-    currentIndex = 1;
+    currentIndex = 0; 
     updatePosition(false);
-
-    sliderTrack.addEventListener('transitionend', (e) => {
-        if (e.target !== sliderTrack || e.propertyName !== 'transform') return;
-
-        clearTimeout(transitionSafetyTimer);
-        isTransitioning = false;
-        const currentSlides = sliderTrack.querySelectorAll('.slide');
-
-        if (!currentSlides.length || !currentSlides[currentIndex]) return;
-
-        if (currentSlides[currentIndex].id === 'first-clone') {
-            currentIndex = 1;
-            updatePosition(false);
-        }
-
-        if (currentSlides[currentIndex].id === 'last-clone') {
-            currentIndex = totalSlides;
-            updatePosition(false);
-        }
-    });
 
     if (nextBtn) {
         nextBtn.onclick = () => {
@@ -160,7 +128,9 @@ export function initInfiniteSlider() {
         const { slideWidth, gap } = getSlideDimensions();
         prevTranslate = -currentIndex * (slideWidth + gap);
 
-        sliderTrack.setPointerCapture(e.pointerId);
+        try {
+            sliderTrack.setPointerCapture(e.pointerId);
+        } catch (err) {}
     });
 
     sliderTrack.addEventListener('pointermove', (e) => {
@@ -182,24 +152,26 @@ export function initInfiniteSlider() {
         } catch (err) {}
 
         const movedBy = currentTranslate - prevTranslate;
+        const { slideWidth, gap } = getSlideDimensions();
+        const threshold = (slideWidth + gap) / 4; 
 
-        if (movedBy < -50) {
-            nextSlide();
-        } 
-        else if (movedBy > 50) {
-            prevSlide();
-        } 
-        else {
-            updatePosition(true);
+        if (movedBy < -threshold && currentIndex < getMaxIndex()) {
+            currentIndex++;
+        } else if (movedBy > threshold && currentIndex > 0) {
+            currentIndex--;
         }
 
+        updatePosition(true);
         resetAutoSlide(sliderContainer);
     });
 
-    sliderTrack.addEventListener('pointercancel', () => {
+    sliderTrack.addEventListener('pointercancel', (e) => {
         if (!isDragging) return;
         isDragging = false;
         sliderTrack.style.cursor = 'grab';
+        try {
+            sliderTrack.releasePointerCapture(e.pointerId);
+        } catch (err) {}
         updatePosition(true);
         resetAutoSlide(sliderContainer);
     });
@@ -230,15 +202,37 @@ export function initInfiniteSlider() {
     startAutoSlide(sliderContainer);
 }
 
+// Вычисляем максимальный индекс так, чтобы последний слайд ровно доходил до правого края контейнера
+function getMaxIndex() {
+    const sliderViewport = document.querySelector('.slider-container');
+    if (!sliderViewport) return totalSlides - 1;
+    const { slideWidth, gap } = getSlideDimensions();
+    const visibleWidth = sliderViewport.clientWidth;
+    
+    let maxVisibleCount = 0;
+    let accumulatedWidth = 0;
+    
+    while (maxVisibleCount < totalSlides) {
+        accumulatedWidth += slideWidth;
+        if (accumulatedWidth > visibleWidth) break;
+        maxVisibleCount++;
+        accumulatedWidth += gap;
+    }
+    
+    return Math.max(0, totalSlides - Math.max(1, maxVisibleCount));
+}
+
 function updatePosition(withAnimation = true) {
     const sliderTrack = document.getElementById('sliderTrack');
     const slides = sliderTrack ? sliderTrack.querySelectorAll('.slide') : [];
     if (!sliderTrack || !slides.length) return;
 
-    const targetSlide = slides[currentIndex];
-    if (!targetSlide) return;
-
     const { slideWidth, gap } = getSlideDimensions();
+    const maxIdx = getMaxIndex();
+    
+    if (currentIndex > maxIdx) currentIndex = maxIdx;
+    if (currentIndex < 0) currentIndex = 0;
+
     const offset = currentIndex * (slideWidth + gap);
 
     sliderTrack.style.transition = withAnimation ? 'transform 0.4s ease-in-out' : 'none';
@@ -254,14 +248,15 @@ function beginTransition() {
 }
 
 function nextSlide() {
-    if (isTransitioning) return;
+    const maxIdx = getMaxIndex();
+    if (isTransitioning || currentIndex >= maxIdx) return;
     beginTransition();
     currentIndex++;
     updatePosition(true);
 }
 
 function prevSlide() {
-    if (isTransitioning) return;
+    if (isTransitioning || currentIndex <= 0) return;
     beginTransition();
     currentIndex--;
     updatePosition(true);
@@ -271,7 +266,14 @@ function startAutoSlide(sliderContainer) {
     clearInterval(autoSlideInterval);
     autoSlideInterval = setInterval(() => {
         if (sliderContainer && sliderContainer.matches(':hover')) return;
-        nextSlide();
+        
+        const maxIdx = getMaxIndex();
+        if (currentIndex < maxIdx) {
+            nextSlide();
+        } else {
+            currentIndex = 0; 
+            updatePosition(true);
+        }
     }, 3000);
 }
 

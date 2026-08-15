@@ -14,7 +14,6 @@ export async function request(endpoint, options = {}) {
 
     options.credentials = options.credentials || 'include';
 
-    // Автоматически добавляем заголовок с ключом и Content-Type ко всем запросам
     options.headers = {
         'Content-Type': 'application/json',
         'X-Admin-Client-Key': 'FallbackKeyMakeSureItsLongEnough123!',
