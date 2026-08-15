@@ -96,11 +96,24 @@ export function initAdmin() {
         });
     }
 
+    function applyPriceValidation(element, maxLength) {
+        if (!element) return;
+        element.addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '');
+            this.value = this.value.replace(/^0+/, '');
+            
+            if (this.value.length > maxLength) {
+                this.value = this.value.substring(0, maxLength);
+            }
+        });
+    }
+
     const itemName = document.getElementById('itemName');
     const itemDescription = document.getElementById('itemDescription');
     const itemPrice = document.getElementById('itemPrice');
     applyValidation(itemName, 50, menuCharsRegex);
     applyValidation(itemDescription, 200, menuCharsRegex);
+    applyPriceValidation(itemPrice, 6);
 
     const promoTitle = document.getElementById('promoTitle');
     const promoDescription = document.getElementById('promoDescription');
@@ -109,16 +122,18 @@ export function initAdmin() {
     applyValidation(promoDescription, 500);
 
     if (promoDateInput) {
-        const today = new Date().toISOString().split('T')[0];
+        const tomorrowDate = new Date();
+        tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+        const tomorrow = tomorrowDate.toISOString().split('T')[0];
         const currentYear = new Date().getFullYear();
         const lastDayOfYear = `${currentYear}-12-31`;
 
-        promoDateInput.setAttribute('min', today);
+        promoDateInput.setAttribute('min', tomorrow);
         promoDateInput.setAttribute('max', lastDayOfYear);
         
         promoDateInput.addEventListener('change', function() {
-            if (this.value < today) {
-                this.value = today;
+            if (this.value < tomorrow) {
+                this.value = tomorrow;
             } 
             else if (this.value > lastDayOfYear) {
                 this.value = lastDayOfYear;
