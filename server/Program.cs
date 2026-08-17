@@ -8,12 +8,14 @@ using server.Middlewares;
 using server.Models;
 using server.Properties.Services;
 using System.Text;
+using System.Text.Json.Serialization;
 
 
 namespace server
 {
     public class Program
     {
+
         public static void Main(string[] args)
         {
             DotNetEnv.Env.Load();
@@ -89,14 +91,26 @@ namespace server
             builder.Services.AddScoped<AnnouncementService>();
             builder.Services.AddScoped<PromotionService>();
             builder.Services.AddScoped<AuthService>();
-            builder.Services.AddControllers();
+            builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
+{
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
+
+// Поддержка строк вместо чисел для Enum в контроллерах
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
             builder.Services.AddOpenApi();
 
             var app = builder.Build();
             app.UseCors();
 
+            app.UseStaticFiles();
+
             app.UseMiddleware<ExceptHandlerMiddleware>();
-            app.UseMiddleware<IpBanMiddleware>();
+           // app.UseMiddleware<IpBanMiddleware>();
 
             app.Use(async (context, next) =>
             {

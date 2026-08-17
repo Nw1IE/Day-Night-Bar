@@ -11,6 +11,7 @@ import { renderMenu, renderMenuItems } from '../components/menu.js';
 import { renderPromotionsSection, renderPromotionCards } from '../components/promotions.js';
 import { initAdminModal } from '../components/admins.js';
 import { createDeleteModalMarkup } from '../components/delete.js';
+import { request } from '../js/api/api.js';
 
 document.addEventListener('DOMContentLoaded', async function() {
     initErrorModal();
@@ -26,23 +27,20 @@ document.addEventListener('DOMContentLoaded', async function() {
     renderFooter();
 
     // 2. Загружаем данные с сервера один раз
+// 2. Загружаем данные с сервера один раз через единую функцию request
     try {
-        const [menuRes, promoRes] = await Promise.all([
-            fetch('/api/menu'),
-            fetch('/api/promotions')
+        const [serverMenu, serverPromotions] = await Promise.all([
+            request('/menu'),
+            request('/promotions')
         ]);
 
-        if (menuRes.ok) {
-            const serverMenu = await menuRes.json();
-            const localData = JSON.parse(localStorage.getItem('menuItems'));
-            const dataToRender = (Array.isArray(localData) && localData.length > 0) ? localData : serverMenu;
-            renderMenuItems(dataToRender);
-        }
+        // Меню
+        const localData = JSON.parse(localStorage.getItem('menuItems'));
+        const dataToRender = (Array.isArray(localData) && localData.length > 0) ? localData : serverMenu;
+        renderMenuItems(dataToRender);
 
-        if (promoRes.ok) {
-            const serverPromotions = await promoRes.json();
-            renderPromotionCards(serverPromotions);
-        }
+        // Акции
+        renderPromotionCards(serverPromotions);
     } 
     catch (e) {
         console.error('Ошибка при загрузке данных с сервера:', e);

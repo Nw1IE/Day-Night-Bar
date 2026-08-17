@@ -39,14 +39,14 @@ export function initAdminModal() {
                             </div>
                             <div class="form-group">
                                 <label for="itemCategory">Категория</label>
-                                <select id="itemCategory" required>
-                                    <option value="cocktails">Коктейли</option>
-                                    <option value="wine">Вино</option>
-                                    <option value="beer">Пиво</option>
-                                    <option value="snacks">Закуски</option>
-                                    <option value="main">Основные блюда</option>
-                                    <option value="desserts">Десерты</option>
-                                </select>
+                                    <select id="itemCategory" required>
+                                        <option value="Коктейли">Коктейли</option>
+                                        <option value="Вино">Вино</option>
+                                        <option value="Пиво">Пиво</option>
+                                        <option value="Закуски">Закуски</option>
+                                        <option value="Основные_блюда">Основные блюда</option>
+                                        <option value="Десерты">Десерты</option>
+                                    </select>
                             </div>
                         </div>
                         <div class="form-row">

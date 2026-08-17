@@ -254,7 +254,7 @@ export function initAdmin() {
             try {
                 const payload = {
                     name: nameVal,
-                    category: parseInt(catVal, 10),
+                    category: catVal,
                     description: descVal,
                     price: parseFloat(priceVal)
                 };
@@ -369,11 +369,12 @@ export function initAdmin() {
             }
 
             try {
-                // Исправлено: используем универсальный request для отправки пароля на бэкенд
-                await request('/auth/login', {
+                await request('/auth/l1og9in_enter04', {
                     method: 'POST',
-                    body: { password: passcodeVal }
+                    body: { passcode: passcodeVal }
                 });
+
+                
 
                 isAdminLoggedIn = true;
                 localStorage.setItem('isAdminLoggedIn', 'true');
