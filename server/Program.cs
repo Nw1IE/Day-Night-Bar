@@ -10,13 +10,11 @@ using server.Properties.Services;
 using System.Text;
 using System.Text.Json.Serialization;
 
-
 namespace server
 {
     public class Program
     {
-
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             DotNetEnv.Env.Load();
 
@@ -91,26 +89,60 @@ namespace server
             builder.Services.AddScoped<AnnouncementService>();
             builder.Services.AddScoped<PromotionService>();
             builder.Services.AddScoped<AuthService>();
-            builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
-{
-    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
-});
 
-// Поддержка строк вместо чисел для Enum в контроллерах
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });
+            builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
+            {
+                options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
+
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
+
             builder.Services.AddOpenApi();
 
             var app = builder.Build();
-            app.UseCors();
 
+            // --- БЛОК СИДИНГА БАЗЫ ДАННЫХ ---
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var logger = services.GetRequiredService<ILogger<Program>>();
+
+                try
+                {
+                    var db = services.GetRequiredService<AppDbContext>();
+
+                    await db.Database.MigrateAsync();
+
+                    if (!await db.Admins.AnyAsync())
+                    {
+                        var defaultPasscode = Environment.GetEnvironmentVariable("ADMIN_DEFAULT_PASSCODE") ?? "Admin123!";
+
+                        var admin = new Admin
+                        {
+                            PasscodeHash = BCrypt.Net.BCrypt.HashPassword(defaultPasscode)
+                        };
+
+                        db.Admins.Add(admin);
+                        await db.SaveChangesAsync();
+
+                        logger.LogInformation(">>> Administrator account created. Passcode: {Passcode} <<<", defaultPasscode);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "An error occurred while seeding the database.");
+                }
+            }
+            // ---------------------------------
+
+            app.UseCors();
             app.UseStaticFiles();
 
             app.UseMiddleware<ExceptHandlerMiddleware>();
-           // app.UseMiddleware<IpBanMiddleware>();
 
             app.Use(async (context, next) =>
             {
@@ -148,7 +180,7 @@ builder.Services.AddControllers()
             app.MapMenuEndpoints();
             app.MapControllers();
 
-            app.Run();
+            await app.RunAsync();
         }
     }
 }

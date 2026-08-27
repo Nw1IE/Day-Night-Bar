@@ -12,12 +12,10 @@ import { renderPromotionsSection, renderPromotionCards } from '../components/pro
 import { initAdminModal } from '../components/admins.js';
 import { createDeleteModalMarkup } from '../components/delete.js';
 import { request } from '../js/api/api.js';
-
 document.addEventListener('DOMContentLoaded', async function() {
     initErrorModal();
     initAdminModal();
 
-    // 1. Сначала рисуем каркас страницы
     renderPromotionsSection();
     renderHeader();
     renderAnnouncement();
@@ -26,8 +24,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     renderMenu();
     renderFooter();
 
-    // 2. Загружаем данные с сервера один раз
-// 2. Загружаем данные с сервера один раз через единую функцию request
     try {
         const [serverMenu, serverPromotions] = await Promise.all([
             request('/menu'),
@@ -48,7 +44,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         renderPromotionCards([]);
     }
 
-    // 3. Убираем дублирующий вызов renderPromotions(), так как акции уже загружены выше через renderPromotionCards!
     updateAnnouncementUI();
 
     initPublicEvents();

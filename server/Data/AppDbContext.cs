@@ -63,9 +63,9 @@ namespace server.Data
 
                 entity.HasData(
                     new Announcement { Id = 1, Text = "Добро пожаловать в наш бар! Сегодня живая музыка с 20:00.", 
-                        UpdatedAt = new DateTime(2026, 7, 17, 12, 0, 0, DateTimeKind.Utc) },
+                        UpdatedAt = new DateTime(2025, 1, 1, 12, 0, 0, DateTimeKind.Utc) },
                     new Announcement { Id = 2, Text = "График работы в праздничные дни изменен. Ждем вас до 04:00!", 
-                        UpdatedAt = new DateTime(2026, 9, 17, 12, 0, 0, DateTimeKind.Utc) }
+                        UpdatedAt = new DateTime(2025, 1, 2, 12, 0, 0, DateTimeKind.Utc) }
                 );
             });
 
@@ -81,16 +81,16 @@ namespace server.Data
                         Id = 1,
                         Name = "Счастливые часы",
                         Description = "Два коктейля по цене одного каждый вторник и четверг с 16:00 до 19:00.",
-                        StartDate = new DateTime(2026, 7, 17, 12, 0, 0, DateTimeKind.Utc),
-                        EndDate = new DateTime(2026, 9, 17, 12, 0, 0, DateTimeKind.Utc)
+                        StartDate = new DateTime(2025, 1, 1, 12, 0, 0, DateTimeKind.Utc),
+                        EndDate = new DateTime(2025, 12, 31, 12, 0, 0, DateTimeKind.Utc)
                     },
                     new Promotion
                     {
                         Id = 2,
                         Name = "Скидка в День Рождения",
                         Description = "Дарим скидку 15% на всё меню кухни при предъявлении паспорта.",
-                        StartDate = new DateTime(2026, 7, 17, 12, 0, 0, DateTimeKind.Utc),
-                        EndDate = new DateTime(2026, 9, 17, 12, 0, 0, DateTimeKind.Utc).AddHours(24)
+                        StartDate = new DateTime(2025, 1, 1, 12, 0, 0, DateTimeKind.Utc),
+                        EndDate = new DateTime(2025, 12, 31, 12, 0, 0, DateTimeKind.Utc)
                     }
                 );
             });
