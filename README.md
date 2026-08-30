@@ -18,8 +18,8 @@
 
 ### Frontend
 
-  * **HTML5**
-  * **CSS3** 
+  * **HTML 5**
+  * **CSS 3** 
   * **JavaScript (ES6+)** 
   * **Система сборки Vite**
 
@@ -61,7 +61,7 @@
 
 ### Frontend
 
-```powershell
+```bash
 cd client
 npm i
 npm run dev
@@ -69,7 +69,7 @@ npm run dev
 
 ### Backend
 
-```powershell
+```bash
 cd server
 dotnet restore
 dotnet ef migrations add Init
