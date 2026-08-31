@@ -61,18 +61,18 @@
 
 ### Frontend
 
-```bash
-$ cd client
-$ npm i
-$ npm run dev
+```powershell
+cd client
+npm i
+npm run dev
 ```
 
 ### Backend
 
-```bash
-$ cd server
-$ dotnet restore
-$ dotnet ef migrations add Init
-$ dotnet ef database update
-$ dotnet run
+```powershell
+cd server
+dotnet restore
+dotnet ef migrations add Init
+dotnet ef database update
+dotnet run
 ```
