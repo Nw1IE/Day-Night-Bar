@@ -1,6 +1,6 @@
 # «День / Ночь» — Элитный бар
 
-Веб-сайт бара с современным дизайном и административной панелью. Проект объединяет минималистичный фронтенд на чистом JavaScript с мощным бэкенд-сервисом на C# для управления контентом в реальном времени.
+Веб-сайт бара с современным дизайном и административной панелью. Проект объединяет фронтенд на чистом JavaScript с бэкенд-сервисом на C# для управления контентом в реальном времени.
 
 -----
 
@@ -62,17 +62,17 @@
 ### Frontend
 
 ```bash
-cd client
-npm i
-npm run dev
+$ cd client
+$ npm i
+$ npm run dev
 ```
 
 ### Backend
 
 ```bash
-cd server
-dotnet restore
-dotnet ef migrations add Init
-dotnet ef database update
-dotnet run
+$ cd server
+$ dotnet restore
+$ dotnet ef migrations add Init
+$ dotnet ef database update
+$ dotnet run
 ```
