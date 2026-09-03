@@ -43,7 +43,7 @@
 
 **Frontend:**
 - **Component-Based Architecture**: Каждый элемент UI — это отдельный компонент с независимой логикой
-- **Module Pattern**: Разделение функциональности на модули (render, admin, public)
+- **Module Pattern**: Разделение функциональности на модули
 - **Event-Driven**: Обработка событий пользователя через делегирование
 
 **Backend:**
@@ -53,16 +53,16 @@
 
 -----
 
-## Установка
+## Установка и запуск
 
 ### Требования
 
-- **Node.js** ≥ 18.0 (для frontend)
-- **.NET SDK** 9.0+ (для backend)
-- **PostgreSQL** 12+ (для базы данных)
-- **npm** (менеджер пакетов)
+- **Node.js** ≥ 22.0
+- **.NET SDK** 10.0
+- **PostgreSQL** 16+
+- **npm**
 
-### Frontend установка и запуск
+### Frontend
 
 ```bash
 cd client
@@ -70,10 +70,10 @@ npm i
 npm run dev
 ```
 
-### Backend установка
+### Backend
 
 ```bash
-cd ../server
+cd server
 dotnet restore
 dotnet ef migrations add Init
 dotnet ef database update
