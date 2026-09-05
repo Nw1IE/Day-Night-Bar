@@ -51,41 +51,6 @@
 - **Dependency Injection**: Использование встроенного DI контейнера ASP.NET Core
 - **Middleware Pipeline**: Обработка запросов через middleware
 
-```text
-client/
-├── css/ 
-│   ├── Modules/
-│   └── style.css
-├── js/
-│   ├── Modules/
-│   ├── api/
-│   └── main.js
-├── images/
-├── components/
-└── index.html
-
-server/
-├── Controllers/ 
-├── Data/
-│   └── AppDbContext.cs
-├── Middlewares/
-│   └── IpBanMiddleware.cs
-├── Models/
-│   └── Enums/
-├── Services/
-└── Program.cs
-```
-
------
-
-## Функционал
-
-  * **Анимированный Hero-баннер:** Плавный бесконечный слайдер с изображениями коктейлей.
-  * **Система бронирования:** Форма с валидацией данных для резерва столов.
-  * **Динамическое меню:** Фильтрация позиций по категориям (коктейли, вино, закуски).
-  * **Панель администратора:** 
-      * Управление меню, объявлениями и акциями в реальном времени.
-
 -----
 
 ## Установка
@@ -95,52 +60,22 @@ server/
 - **Node.js** ≥ 18.0 (для frontend)
 - **.NET SDK** 9.0+ (для backend)
 - **PostgreSQL** 12+ (для базы данных)
-- **npm** или **yarn** (менеджер пакетов)
+- **npm** (менеджер пакетов)
 
-### Frontend установка
+### Frontend установка и запуск
 
 ```bash
 cd client
 npm i
+npm run dev
 ```
 
 ### Backend установка
 
 ```bash
 cd ../server
-
-# Восстановление зависимостей
 dotnet restore
-
-# Применение миграций базы данных
+dotnet ef migrations add Init
 dotnet ef database update
-```
-
----
-
-## Запуск
-
-### Frontend
-
-```bash
-cd client
-
-# Запуск dev-сервера
-npm run dev
-
-# Сервер будет доступен на http://localhost:5173
-```
-
-### Backend
-
-```bash
-cd server
-
-# Запуск в режиме разработки
 dotnet run
-
-# Или с hot-reload
-dotnet watch run
-
-# API будет доступен на http://localhost:5000
 ```
