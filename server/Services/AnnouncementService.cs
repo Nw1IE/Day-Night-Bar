@@ -10,10 +10,8 @@ namespace server.Properties.Services
         {
             try
             {
-                // Сортируем по дате изменения И по Id, чтобы свежесозданные записи были выше
                 return await db.Announcements
                     .OrderByDescending(a => a.UpdatedAt)
-                    .ThenByDescending(a => a.Id)
                     .FirstOrDefaultAsync();
             }
             catch (Exception ex)
@@ -60,7 +58,6 @@ namespace server.Properties.Services
         {
             try
             {
-                // Обновляем метку времени при редактировании
                 announcement.UpdatedAt = DateTime.UtcNow;
                 db.Entry(announcement).State = EntityState.Modified;
                 await db.SaveChangesAsync();

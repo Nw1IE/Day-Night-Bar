@@ -4,6 +4,7 @@ import { showErrorModal } from '../../components/error.js';
 import { showSuccess } from '../../components/success.js';
 import { openDeleteModal } from '../../components/delete.js';
 import { request } from '../api/api.js';
+import { authApi } from '../api/services/authService.js';
 
 export function initAdmin() {
     const adminLogin = document.getElementById('adminLogin');
@@ -254,7 +255,7 @@ export function initAdmin() {
             try {
                 const payload = {
                     name: nameVal,
-                    category: catVal,
+                    category: parseInt(catVal, 10),
                     description: descVal,
                     price: parseFloat(priceVal)
                 };

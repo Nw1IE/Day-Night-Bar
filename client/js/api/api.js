@@ -18,7 +18,7 @@ export async function request(endpoint, options = {}) {
 
     options.headers = {
         'Content-Type': 'application/json',
-        'X-Admin-Client-Key': 'SuperSecretAppKey123!',
+        'X-Admin-Client-Key': 'FallbackKeyMakeSureItsLongEnough123!',
         ...options.headers
     };
 
