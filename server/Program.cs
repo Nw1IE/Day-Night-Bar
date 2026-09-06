@@ -8,6 +8,7 @@ using server.Middlewares;
 using server.Models;
 using server.Properties.Services;
 using System.Text;
+using System.Text.Json.Serialization;
 
 
 namespace server
@@ -89,8 +90,19 @@ namespace server
             builder.Services.AddScoped<AnnouncementService>();
             builder.Services.AddScoped<PromotionService>();
             builder.Services.AddScoped<AuthService>();
-            builder.Services.AddControllers();
+            //builder.Services.AddControllers();
             builder.Services.AddOpenApi();
+
+            builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
+            {
+                options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
+
+            builder.Services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
 
             var app = builder.Build();
             app.UseCors();

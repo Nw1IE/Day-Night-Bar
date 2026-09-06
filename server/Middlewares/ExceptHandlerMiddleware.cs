@@ -20,6 +20,18 @@ namespace server.Middlewares
 
                 await HandleExceptionAsync(context, ex.StatusCode, ex.Message);
             }
+            catch (BadHttpRequestException ex)
+            {
+                logger.LogWarning("Некорректный запрос от клиента [{Method}] {Path}. Причина: {Message}",
+                    context.Request.Method,
+                    context.Request.Path,
+                    ex.Message);
+
+                await HandleExceptionAsync(
+                    context,
+                    StatusCodes.Status400BadRequest,
+                    "Переданы некорректные данные или неверный формат JSON.");
+            }
             catch (Exception ex)
             {
                 logger.LogError(ex, "КРИТИЧЕСКИЙ СБОЙ СЕРВЕРА при обработке запроса [{Method}] {Path} с IP: {Ip}",
