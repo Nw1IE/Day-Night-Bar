@@ -72,7 +72,7 @@ namespace server.Data
                     {
                         Id = 2,
                         Text = "График работы в праздничные дни изменен. Ждем вас до 04:00!",
-                        UpdatedAt = new DateTime(2026, 9, 17, 12, 0, 0, DateTimeKind.Utc)
+                        UpdatedAt = new DateTime(2026, 7, 22, 12, 0, 0, DateTimeKind.Utc)
                     }
                 );
             });
@@ -90,7 +90,7 @@ namespace server.Data
                         Name = "Счастливые часы",
                         Description = "Два коктейля по цене одного каждый вторник и четверг с 16:00 до 19:00.",
                         StartDate = new DateTime(2026, 7, 17, 12, 0, 0, DateTimeKind.Utc),
-                        EndDate = new DateTime(2026, 9, 17, 12, 0, 0, DateTimeKind.Utc)
+                        EndDate = new DateTime(2026, 6, 17, 12, 0, 0, DateTimeKind.Utc)
                     },
                     new Promotion
                     {
@@ -98,7 +98,7 @@ namespace server.Data
                         Name = "Скидка в День Рождения",
                         Description = "Дарим скидку 15% на всё меню кухни при предъявлении паспорта.",
                         StartDate = new DateTime(2026, 7, 17, 12, 0, 0, DateTimeKind.Utc),
-                        EndDate = new DateTime(2026, 9, 17, 12, 0, 0, DateTimeKind.Utc).AddHours(24)
+                        EndDate = new DateTime(2026, 5, 17, 12, 0, 0, DateTimeKind.Utc).AddHours(24)
                     }
                 );
             });
