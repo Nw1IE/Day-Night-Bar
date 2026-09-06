@@ -38,7 +38,6 @@ filteredItems.forEach(item => {
                 </section>
             `;
 
-            // Убрали обработчик клика (addEventListener) и вызов openDishModal
             menuItemsContainer.appendChild(menuItem);
         });
     } 
@@ -54,7 +53,6 @@ export async function renderPromotions() {
     
     try {
         const promotions = await promotionsApi.getAll();
-        // Передаем данные в логику из promtiom.js или отрисовываем корректно
         promotionCardsContainer.innerHTML = '';
         
         promotions.forEach(promo => {

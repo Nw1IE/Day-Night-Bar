@@ -204,7 +204,6 @@ export function initSlider() {
     startAutoSlide(sliderContainer);
 }
 
-// Вычисляем максимальный индекс так, чтобы последний слайд ровно доходил до правого края контейнера
 function getMaxIndex() {
     const sliderViewport = document.querySelector('.slider-container');
     if (!sliderViewport) return totalSlides - 1;
