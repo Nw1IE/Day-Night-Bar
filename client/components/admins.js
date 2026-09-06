@@ -39,14 +39,14 @@ export function initAdminModal() {
                             </div>
                             <div class="form-group">
                                 <label for="itemCategory">Категория</label>
-                                <select id="itemCategory" required>
-                                    <option value="cocktails">Коктейли</option>
-                                    <option value="wine">Вино</option>
-                                    <option value="beer">Пиво</option>
-                                    <option value="snacks">Закуски</option>
-                                    <option value="main">Основные блюда</option>
-                                    <option value="desserts">Десерты</option>
-                                </select>
+                                    <select id="itemCategory" required>
+                                        <option value="Коктейли">Коктейли</option>
+                                        <option value="Вино">Вино</option>
+                                        <option value="Пиво">Пиво</option>
+                                        <option value="Закуски">Закуски</option>
+                                        <option value="Основные_блюда">Основные блюда</option>
+                                        <option value="Десерты">Десерты</option>
+                                    </select>
                             </div>
                         </div>
                         <div class="form-row">
@@ -54,23 +54,6 @@ export function initAdminModal() {
                                 <label for="itemPrice">Цена (руб.)</label>
                                 <input type="number" id="itemPrice" required>
                             </div>
-
-                            <div class="form-group file-upload-wrapper">
-                                <label>Фотография блюда</label>
-                                <div class="file-input-container">
-                                    <!-- Input ДОЛЖЕН быть скрыт, но существовать -->
-                                    <input type="file" id="itemImageFile" accept="image/*" class="file-input-hidden">
-                                    
-                                    <!-- Кнопка -->
-                                    <label for="itemImageFile" class="file-custom-btn">
-                                        <i class="fas fa-cloud-upload-alt"></i> Выберите файл
-                                    </label>
-                                    
-                                    <!-- Текст, который мы будем менять -->
-                                    <span class="file-name-display" id="fileName">Файл не выбран</span>
-                                </div>
-                            </div>
-                            
                             <div class="form-group">
                                 <label for="itemDescription">Описание</label>
                                 <textarea id="itemDescription" rows="3" required></textarea>

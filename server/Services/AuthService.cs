@@ -87,20 +87,25 @@ namespace server.Properties.Services
             }
         }
 
-        public async Task<bool> VerifyAdminAsync(string passcode)
-        {
-            try
+            public async Task<bool> VerifyAdminAsync(string passcode)
             {
-                var admin = await db.Admins.FirstOrDefaultAsync();
-                if (admin == null) return false;
-
-                return BCrypt.Net.BCrypt.Verify(passcode, admin.PasscodeHash);
+                if (string.IsNullOrWhiteSpace(passcode)) 
+                    return false;
+                    try
+                {
+                    var admin = await db.Admins.FirstOrDefaultAsync();
+                        if (admin == null) 
+                            {
+                                logger.LogWarning("Попытка входа, но учетная запись администратора не найдена в БД.");
+                                    return false;
+                            }
+                        return BCrypt.Net.BCrypt.Verify(passcode, admin.PasscodeHash);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "Ошибка при проверке пароля администратора");
+                        return false;
+                }
             }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Ошибка при проверке администратора");
-                throw;
-            }
-        }
     }
 }

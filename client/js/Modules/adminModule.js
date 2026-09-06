@@ -4,7 +4,6 @@ import { showErrorModal } from '../../components/error.js';
 import { showSuccess } from '../../components/success.js';
 import { openDeleteModal } from '../../components/delete.js';
 import { request } from '../api/api.js';
-import { authApi } from '../api/services/authService.js';
 
 export function initAdmin() {
     const adminLogin = document.getElementById('adminLogin');
@@ -28,22 +27,22 @@ export function initAdmin() {
         toggleAdminAccessButtons(isAdminLoggedIn);
     }
 
-async function loadAdminData() {
-    try {
-        const [menuRes, promoRes, annRes] = await Promise.all([
-            request('/menu'),
-            request('/promotions/all'),
-            request('/announcements/current')
-        ]);
+    async function loadAdminData() {
+        try {
+            const [menuRes, promoRes, annRes] = await Promise.all([
+                request('/menu'),
+                request('/promotions/all'),
+                request('/announcements/current')
+            ]);
 
-        menuItems = menuRes;
-        promotions = promoRes;
-        announcement = annRes.text || '';
-    } 
-    catch (e) {
-        console.warn('Админ-данные недоступны (требуется вход)', e);
+            menuItems = menuRes;
+            promotions = promoRes;
+            announcement = annRes.text || '';
+        } 
+        catch (e) {
+            console.warn('Админ-данные недоступны (требуется вход)', e);
+        }
     }
-}
 
     function resetMenuForm() {
         if (!menuForm) return;
@@ -65,20 +64,20 @@ async function loadAdminData() {
         if (submitBtn) submitBtn.textContent = 'Добавить в меню';
     }
 
-function toggleAdminAccessButtons(isLoggedIn) {
-    const floatingAdminPanel = document.getElementById('adminPanel') || document.querySelector('.admin-floating-panel');
-    
-    if (floatingAdminPanel) {
-        if (isLoggedIn) {
-            floatingAdminPanel.style.display = 'flex';
-            floatingAdminPanel.style.opacity = '1';
-            floatingAdminPanel.style.pointerEvents = 'auto';
-        } 
-        else {
-            floatingAdminPanel.style.display = 'none';
+    function toggleAdminAccessButtons(isLoggedIn) {
+        const floatingAdminPanel = document.getElementById('adminPanel') || document.querySelector('.admin-floating-panel');
+        
+        if (floatingAdminPanel) {
+            if (isLoggedIn) {
+                floatingAdminPanel.style.display = 'flex';
+                floatingAdminPanel.style.opacity = '1';
+                floatingAdminPanel.style.pointerEvents = 'auto';
+            } 
+            else {
+                floatingAdminPanel.style.display = 'none';
+            }
         }
     }
-}
 
     checkAuthStatus();
 
@@ -255,7 +254,7 @@ function toggleAdminAccessButtons(isLoggedIn) {
             try {
                 const payload = {
                     name: nameVal,
-                    category: parseInt(catVal, 10),
+                    category: catVal,
                     description: descVal,
                     price: parseFloat(priceVal)
                 };
@@ -518,30 +517,30 @@ function toggleAdminAccessButtons(isLoggedIn) {
         });
     }
 
-document.addEventListener('keydown', async (e) => {
-    const isHotkey = e.ctrlKey && (e.shiftKey || e.altKey) && (e.code === 'KeyA' || e.key === 'A' || e.key === 'a' || e.key === 'Ф' || e.key === 'ф');
+    document.addEventListener('keydown', async (e) => {
+        const isHotkey = e.ctrlKey && (e.shiftKey || e.altKey) && (e.code === 'KeyA' || e.key === 'A' || e.key === 'a' || e.key === 'Ф' || e.key === 'ф');
 
-    if (isHotkey) {
-        e.preventDefault();
+        if (isHotkey) {
+            e.preventDefault();
 
-        const isDashboardOpen = adminDashboardModal && getComputedStyle(adminDashboardModal).display !== 'none';
+            const isDashboardOpen = adminDashboardModal && getComputedStyle(adminDashboardModal).display !== 'none';
 
-        checkAuthStatus();
+            checkAuthStatus();
 
-        if (isAdminLoggedIn) { 
-            if (isDashboardOpen) return;
+            if (isAdminLoggedIn) { 
+                if (isDashboardOpen) return;
 
-            if (adminDashboardModal) {
-                adminDashboardModal.style.display = 'flex';
-                await loadAdminData();
-                renderCurrentMenuItems();
-                renderCurrentPromotions();
-                renderCurrentAnnouncement();
+                if (adminDashboardModal) {
+                    adminDashboardModal.style.display = 'flex';
+                    await loadAdminData();
+                    renderCurrentMenuItems();
+                    renderCurrentPromotions();
+                    renderCurrentAnnouncement();
+                }
+                return;
             }
-            return;
-        }
 
-        showAdminLogin();
-    }
-});
+            showAdminLogin();
+        }
+    });
 }
