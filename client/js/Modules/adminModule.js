@@ -5,6 +5,7 @@ import { showSuccess } from '../../components/success.js';
 import { openDeleteModal } from '../../components/delete.js';
 import { request } from '../api/api.js';
 import { authApi } from '../api/services/authService.js';
+import { AdminApi } from '../api/services/adminService.js';
 
 export function initAdmin() {
     const adminLogin = document.getElementById('adminLogin');
@@ -253,27 +254,25 @@ export function initAdmin() {
             }
 
             try {
+                const adminApi = new AdminApi();
+
                 const payload = {
                     name: nameVal,
-                    category: parseInt(catVal, 10),
+                    category: catVal,
                     description: descVal,
                     price: parseFloat(priceVal)
                 };
 
                 let savedItem;
                 if (editingId !== null) {
-                    savedItem = await request(`/menu/${editingId}`, {
-                        method: 'PUT',
-                        body: payload
-                    });
+                    console.log("Отправляемый JSON payload:", JSON.stringify(payload));
+                    savedItem = await adminApi.updateMenuItem(editingId, payload);
                     menuItems = menuItems.map(item => item.id === editingId ? savedItem : item);
                     showSuccess('Позиция обновлена', `Позиция "${nameVal}" успешно изменена.`);
                 } 
                 else {
-                    savedItem = await request('/menu', {
-                        method: 'POST',
-                        body: payload
-                    });
+                    console.log("Отправляемый JSON payload:", JSON.stringify(payload));
+                    savedItem = await adminApi.createMenuItem(payload);
                     menuItems.push(savedItem);
                     showSuccess('Позиция добавлена', `Позиция "${savedItem.name}" добавлена в меню.`);
                 }
@@ -281,7 +280,8 @@ export function initAdmin() {
                 resetMenuForm();
                 renderCurrentMenuItems();
                 renderMenuItems('all');
-            } catch (err) {
+            } 
+            catch (err) {
                 showErrorModal('Не удалось отправить данные на сервер.');
             }
         });
