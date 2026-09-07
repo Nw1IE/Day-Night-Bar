@@ -4,8 +4,6 @@ import { showErrorModal } from '../../components/error.js';
 import { showSuccess } from '../../components/success.js';
 import { openDeleteModal } from '../../components/delete.js';
 import { request } from '../api/api.js';
-import { authApi } from '../api/services/authService.js';
-import { AdminApi } from '../api/services/adminService.js';
 
 export function initAdmin() {
     const adminLogin = document.getElementById('adminLogin');
@@ -254,8 +252,6 @@ export function initAdmin() {
             }
 
             try {
-                const adminApi = new AdminApi();
-
                 const payload = {
                     name: nameVal,
                     category: catVal,
@@ -265,14 +261,18 @@ export function initAdmin() {
 
                 let savedItem;
                 if (editingId !== null) {
-                    console.log("Отправляемый JSON payload:", JSON.stringify(payload));
-                    savedItem = await adminApi.updateMenuItem(editingId, payload);
+                    savedItem = await request(`/menu/${editingId}`, {
+                        method: 'PUT',
+                        body: payload
+                    });
                     menuItems = menuItems.map(item => item.id === editingId ? savedItem : item);
                     showSuccess('Позиция обновлена', `Позиция "${nameVal}" успешно изменена.`);
                 } 
                 else {
-                    console.log("Отправляемый JSON payload:", JSON.stringify(payload));
-                    savedItem = await adminApi.createMenuItem(payload);
+                    savedItem = await request('/menu', {
+                        method: 'POST',
+                        body: payload
+                    });
                     menuItems.push(savedItem);
                     showSuccess('Позиция добавлена', `Позиция "${savedItem.name}" добавлена в меню.`);
                 }
@@ -370,7 +370,12 @@ export function initAdmin() {
             }
 
             try {
-                const response = await authApi.login(passcodeVal);
+                await request('/auth/l1og9in_enter04', {
+                    method: 'POST',
+                    body: { passcode: passcodeVal }
+                });
+
+                
 
                 isAdminLoggedIn = true;
                 localStorage.setItem('isAdminLoggedIn', 'true');
