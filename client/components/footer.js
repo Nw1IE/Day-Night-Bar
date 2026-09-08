@@ -5,7 +5,7 @@ export function renderFooter() {
     if (!footerContainer) return;
 
     footerContainer.innerHTML = `
-        <section class="footer-wrapper">
+        <section class="footer-wrapper" style="padding-bottom: 1px;">
             <div class="container">
                 <div class="footer-content" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; align-items: start;">
                     <div class="footer-section">
@@ -35,18 +35,6 @@ export function renderFooter() {
                                 <i class="fas fa-envelope"></i> walentina.com18@mail.ru
                             </a>
                         </p> 
-                        <!-- <p style="font-size: 1.2rem;"><i class="fas fa-clock"></i> Круглосуточно</p> -->
-
-                        <div class="footer-map-container" style="margin-top: 20px; border-radius: 8px; overflow: hidden; height: 220px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-                            <iframe 
-                                src="https://yandex.ru/map-widget/v1/?um=constructor%3A&amp;source=constructorStatic&amp;id=YkkYcQNpSUUFQFtsfXVxcX5qYA%3D%3D&amp;ll=60.749002%2C56.900295&amp;z=16.69&amp;pt=60.749002%2C56.900295,pm2rdl" 
-                                width="100%" 
-                                height="100%" 
-                                frameborder="0" 
-                                allowfullscreen="true" 
-                                style="position:relative; border:0;">
-                            </iframe>
-                        </div>
                     </div>
                     
                     <div class="footer-section">
