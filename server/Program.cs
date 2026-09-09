@@ -90,7 +90,6 @@ namespace server
             builder.Services.AddScoped<AnnouncementService>();
             builder.Services.AddScoped<PromotionService>();
             builder.Services.AddScoped<AuthService>();
-            //builder.Services.AddControllers();
             builder.Services.AddOpenApi();
 
             builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
