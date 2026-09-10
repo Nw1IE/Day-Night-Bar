@@ -4,6 +4,7 @@ import { showErrorModal } from '../../components/error.js';
 import { showSuccess } from '../../components/success.js';
 import { openDeleteModal } from '../../components/delete.js';
 import { request } from '../api/api.js';
+import { authApi } from '../api/services/authService.js';
 
 export function initAdmin() {
     const adminLogin = document.getElementById('adminLogin');
@@ -370,12 +371,7 @@ export function initAdmin() {
             }
 
             try {
-                await request('/auth/l1og9in_enter04', {
-                    method: 'POST',
-                    body: { passcode: passcodeVal }
-                });
-
-                
+                await authApi.login(passcodeVal);
 
                 isAdminLoggedIn = true;
                 localStorage.setItem('isAdminLoggedIn', 'true');
@@ -413,7 +409,7 @@ export function initAdmin() {
     if (logoutBtn) {
         logoutBtn.addEventListener('click', async () => {
             try {
-                await request('/auth/logout', { method: 'POST' });
+                await authApi.logout();
             }
             catch (e) {
                 console.error(e);
