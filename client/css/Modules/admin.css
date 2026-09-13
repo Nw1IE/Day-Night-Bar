@@ -415,8 +415,6 @@
 
         .social-icons a:hover 
         {
-            background-color: var(--primary);
-            color: var(--dark);
             transform: translateY(-5px);
         }
 
