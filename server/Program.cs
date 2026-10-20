@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
@@ -91,6 +92,14 @@ namespace server
             builder.Services.AddScoped<PromotionService>();
             builder.Services.AddScoped<AuthService>();
             builder.Services.AddOpenApi();
+            builder.Services.AddMemoryCache();
+
+            builder.Services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                options.KnownIPNetworks.Clear();
+                options.KnownProxies.Clear();
+            });
 
             builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
             {
@@ -106,6 +115,8 @@ namespace server
                 });
 
             var app = builder.Build();
+
+            app.UseForwardedHeaders();
             app.UseCors();
 
             app.UseStaticFiles();

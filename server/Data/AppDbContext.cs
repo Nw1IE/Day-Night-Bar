@@ -55,6 +55,7 @@ namespace server.Data
                 entity.Property(e => e.IpAddress).IsRequired().HasMaxLength(45);
                 entity.Property(e => e.BannedUntil).IsRequired();
                 entity.Property(e => e.Reason).HasMaxLength(255).HasDefaultValue("Brute-force attempt");
+                entity.HasIndex(e => new { e.IpAddress, e.BannedUntil });
             });
 
             modelBuilder.Entity<Announcement>(entity =>
