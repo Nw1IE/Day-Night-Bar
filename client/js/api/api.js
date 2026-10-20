@@ -17,7 +17,12 @@ export async function request(endpoint, options = {}) {
 
     let adminKey = import.meta.env.VITE_ADMIN_CLIENT_KEY;
     if (!adminKey) {
-        console.warn('VITE_ADMIN_CLIENT_KEY не указан в переменных окружения');
+        // In production we must have the admin client key, otherwise the request will be rejected by the server
+        if (import.meta.env.PROD) {
+            throw new Error('ADMIN_CLIENT_KEY is required in production environment');
+        } else {
+            console.warn('VITE_ADMIN_CLIENT_KEY не указан в переменных окружения');
+        }
     }
 
     options.headers = {

@@ -135,6 +135,23 @@ namespace server
             app.UseForwardedHeaders();
             app.UseCors();
 
+        // ---- Security Headers Middleware ----
+        app.Use(async (context, next) =>
+        {
+            // Content Security Policy – allow only self and trusted sources
+            context.Response.Headers["Content-Security-Policy"] = "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';";
+            // HSTS – enforce HTTPS (only in non‑development)
+            if (!app.Environment.IsDevelopment())
+            {
+                context.Response.Headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload";
+            }
+            // Other security headers
+            context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+            context.Response.Headers["X-Frame-Options"] = "DENY";
+            context.Response.Headers["Referrer-Policy"] = "no-referrer";
+            await next();
+        });
+
             app.UseStaticFiles();
 
             app.UseMiddleware<ExceptHandlerMiddleware>();
@@ -187,7 +204,7 @@ namespace server
                     logger.LogInformation("Применение миграций базы данных...");
                     db.Database.Migrate();
 
-                    var adminPassword = Environment.GetEnvironmentVariable("ADMIN_PASSWORD") ?? "AdminSecretDefault!";
+                    var adminPassword = Environment.GetEnvironmentVariable("ADMIN_PASSWORD") ?? throw new InvalidOperationException("ADMIN_PASSWORD environment variable is required for production");
                     var admin = db.Admins.FirstOrDefault();
 
                     if (admin == null)
