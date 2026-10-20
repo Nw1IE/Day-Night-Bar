@@ -1,13 +1,12 @@
+import { formatDate } from '../js/Modules/utilsModule.js';
+
 let cachedPromos = [];
 
 export function renderPromotionsSection(promos = []) {
     cachedPromos = promos || [];
     
     const container = document.getElementById('promotions-container');
-    if (!container) {
-        console.error('ОШИБКА: #promotions-container не найден!');
-        return;
-    }
+    if (!container) return;
 
     if (cachedPromos.length === 0) {
         container.innerHTML = `
@@ -34,7 +33,7 @@ export function renderPromotionsSection(promos = []) {
                                 <div class="promotion-content">
                                     <h3 class="promotion-title">${promo.title || ''}</h3>
                                     <p class="promotion-desc">${promo.description || ''}</p>
-                                    ${promo.endDate ? `<p class="promo-card-date"><i class="far fa-calendar-alt"></i> Действует до: ${promo.endDate}</p>` : ''}
+                                    ${promo.endDate ? `<p class="promo-card-date"><i class="far fa-calendar-alt"></i> Действует до: ${formatDate(promo.endDate)}</p>` : ''}
                                 </div>
                             </article>
                         `;

@@ -15,9 +15,14 @@ export async function request(endpoint, options = {}) {
 
     options.credentials = options.credentials || 'include';
 
+    let adminKey = import.meta.env.VITE_ADMIN_CLIENT_KEY;
+    if (!adminKey) {
+        console.warn('VITE_ADMIN_CLIENT_KEY не указан в переменных окружения');
+    }
+
     options.headers = {
         'Content-Type': 'application/json',
-        'X-Admin-Client-Key': import.meta.env.VITE_ADMIN_CLIENT_KEY || 'SuperSecretAppKey123!',
+        'X-Admin-Client-Key': adminKey,
         ...options.headers
     };
 

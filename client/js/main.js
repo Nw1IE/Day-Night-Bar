@@ -10,7 +10,6 @@ import { renderSlider } from '../components/slider.js';
 import { renderMenu } from '../components/menu.js';
 import { renderPromotionsSection, renderPromotionCards } from '../components/promotions.js';
 import { initAdminModal } from '../components/admins.js';
-import { openDeleteModal } from '../components/delete.js';
 import { request } from '../js/api/api.js';
 
 document.addEventListener('DOMContentLoaded', async function() {
@@ -43,16 +42,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     initPublicEvents();
     initAdmin();
-
-    document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('delete-item-btn') || e.target.classList.contains('delete-promo-btn')) {
-            const itemId = e.target.dataset.id;
-
-            openDeleteModal(() => {
-                console.log('Удаляем элемент из админки с ID:', itemId);
-            });
-        }
-    });
 
     const today = new Date().toISOString().split('T')[0];
     const promoDateInput = document.getElementById('promoDate');

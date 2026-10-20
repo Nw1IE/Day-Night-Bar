@@ -5,12 +5,12 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:5101',
+        target: import.meta.env.VITE_API_URL || 'http://localhost:5101',
         changeOrigin: true,
         secure: false
       },
       '/imgs': {
-        target: 'http://localhost:5101',
+        target: import.meta.env.VITE_IMAGES_URL || 'http://localhost:5101',
         changeOrigin: true,
         secure: false
       }

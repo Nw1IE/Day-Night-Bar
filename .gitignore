@@ -1,0 +1,9 @@
+# Ignore environment files
+.env
+.env.local
+# Node modules
+node_modules/
+# Build outputs
+client/dist/
+server/bin/
+server/obj/

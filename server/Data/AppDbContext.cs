@@ -91,16 +91,16 @@ namespace server.Data
                         Id = 1,
                         Name = "Счастливые часы",
                         Description = "Два коктейля по цене одного каждый вторник и четверг с 16:00 до 19:00.",
-                        StartDate = new DateTime(2026, 7, 17, 12, 0, 0, DateTimeKind.Utc),
-                        EndDate = new DateTime(2026, 6, 17, 12, 0, 0, DateTimeKind.Utc)
+                        StartDate = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                        EndDate = new DateTime(2030, 12, 31, 23, 59, 59, DateTimeKind.Utc)
                     },
                     new Promotion
                     {
                         Id = 2,
                         Name = "Скидка в День Рождения",
                         Description = "Дарим скидку 15% на всё меню кухни при предъявлении паспорта.",
-                        StartDate = new DateTime(2026, 7, 17, 12, 0, 0, DateTimeKind.Utc),
-                        EndDate = new DateTime(2026, 5, 17, 12, 0, 0, DateTimeKind.Utc).AddHours(24)
+                        StartDate = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                        EndDate = new DateTime(2030, 12, 31, 23, 59, 59, DateTimeKind.Utc)
                     }
                 );
             });
