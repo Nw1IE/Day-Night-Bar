@@ -149,6 +149,43 @@ namespace server
             app.MapMenuEndpoints();
             app.MapControllers();
 
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                try
+                {
+                    var db = services.GetRequiredService<AppDbContext>();
+
+                    logger.LogInformation("Применение миграций базы данных...");
+                    db.Database.Migrate();
+
+                    var adminPassword = Environment.GetEnvironmentVariable("ADMIN_PASSWORD") ?? "AdminSecretDefault!";
+                    var admin = db.Admins.FirstOrDefault();
+
+                    if (admin == null)
+                    {
+                        admin = new Admin
+                        {
+                            PasscodeHash = BCrypt.Net.BCrypt.HashPassword(adminPassword)
+                        };
+                        db.Admins.Add(admin);
+                        db.SaveChanges();
+                        logger.LogInformation("Создана начальная учетная запись администратора.");
+                    }
+                    else if (!string.IsNullOrEmpty(adminPassword) && !BCrypt.Net.BCrypt.Verify(adminPassword, admin.PasscodeHash))
+                    {
+                        admin.PasscodeHash = BCrypt.Net.BCrypt.HashPassword(adminPassword);
+                        db.SaveChanges();
+                        logger.LogInformation("Пароль администратора синхронизирован со значением из ADMIN_PASSWORD.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "Ошибка при автоматической миграции базы данных или сидинге администратора");
+                }
+            }
+
             app.Run();
         }
     }
