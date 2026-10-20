@@ -1,4 +1,4 @@
-﻿using BCrypt.Net;
+using BCrypt.Net;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using server.Data;
@@ -15,7 +15,7 @@ namespace server.Controllers
         public static void MapAuthEndpoints(this IEndpointRouteBuilder app)
         {
             var gatewayPath = Environment.GetEnvironmentVariable("AUTH_GATEWAY_PATH") ?? "login";
-            var group = app.MapGroup($"/api/auth");
+            var group = app.MapGroup("/api/auth");
 
             group.MapPost($"/{gatewayPath}", async (AdminLoginDto dto, AuthService auth, HttpContext ctx) =>
             {
@@ -24,14 +24,14 @@ namespace server.Controllers
                 var clientHeader = ctx.Request.Headers["X-Admin-Client-Key"].ToString();
                 var expectedHeader = Environment.GetEnvironmentVariable("ADMIN_CLIENT_KEY");
 
-                if (string.IsNullOrEmpty(clientHeader) || clientHeader != expectedHeader)
+                if (!string.IsNullOrEmpty(expectedHeader) && clientHeader != expectedHeader)
                 {
                     return Results.NotFound();
                 }
 
                 if (await auth.IsIpBlockedAsync(ip))
                 {
-                    return Results.Json(new { error = "Доступ заблокирован." }, statusCode: 403);
+                    return Results.Json(new { error = "Доступ заблокирован из-за подозрительной активности." }, statusCode: 403);
                 }
 
                 if (!await auth.VerifyAdminAsync(dto.Passcode))
@@ -53,19 +53,28 @@ namespace server.Controllers
                         new Claim(ClaimTypes.Role, "Admin")
                     }),
                     Expires = DateTime.UtcNow.AddHours(12),
-                    Issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? "MyAwesomeServer",
-                    Audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? "MyAwesomeClient",
+                    Issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? "BarServer",
+                    Audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? "BarClient",
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                 };
 
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 var jwtToken = tokenHandler.WriteToken(token);
 
+                var isHttps = ctx.Request.IsHttps;
+                var cookieSameSiteEnv = Environment.GetEnvironmentVariable("COOKIE_SAME_SITE");
+                var sameSiteMode = cookieSameSiteEnv?.ToLowerInvariant() switch
+                {
+                    "none" => SameSiteMode.None,
+                    "strict" => SameSiteMode.Strict,
+                    _ => SameSiteMode.Lax
+                };
+
                 ctx.Response.Cookies.Append("AdminAuth", jwtToken, new CookieOptions
                 {
                     HttpOnly = true,
-                    Secure = true,
-                    SameSite = SameSiteMode.Strict,
+                    Secure = isHttps || sameSiteMode == SameSiteMode.None,
+                    SameSite = sameSiteMode,
                     Expires = DateTimeOffset.UtcNow.AddHours(12)
                 });
 
@@ -74,8 +83,23 @@ namespace server.Controllers
 
             group.MapPost("/logout", (HttpContext ctx) =>
             {
-                ctx.Response.Cookies.Delete("AdminAuth");
-                return Results.Ok();
+                var isHttps = ctx.Request.IsHttps;
+                var cookieSameSiteEnv = Environment.GetEnvironmentVariable("COOKIE_SAME_SITE");
+                var sameSiteMode = cookieSameSiteEnv?.ToLowerInvariant() switch
+                {
+                    "none" => SameSiteMode.None,
+                    "strict" => SameSiteMode.Strict,
+                    _ => SameSiteMode.Lax
+                };
+
+                ctx.Response.Cookies.Delete("AdminAuth", new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = isHttps || sameSiteMode == SameSiteMode.None,
+                    SameSite = sameSiteMode
+                });
+
+                return Results.Ok(new { message = "Выход выполнен успешно" });
             });
         }
 

@@ -1,5 +1,5 @@
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -10,7 +10,7 @@ using server.Models;
 using server.Properties.Services;
 using System.Text;
 using System.Text.Json.Serialization;
-
+using System.Threading.RateLimiting;
 
 namespace server
 {
@@ -26,11 +26,17 @@ namespace server
             builder.Logging.AddConsole();
             builder.Logging.AddDebug();
 
+            var corsOriginsEnv = Environment.GetEnvironmentVariable("CORS_ALLOWED_ORIGINS");
+            var allowedOrigins = !string.IsNullOrWhiteSpace(corsOriginsEnv)
+                ? corsOriginsEnv.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                : builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
+                    ?? new[] { "http://localhost:5173", "http://localhost:5174", "http://localhost:3000" };
+
             builder.Services.AddCors(options =>
             {
                 options.AddDefaultPolicy(policy =>
                 {
-                    policy.WithOrigins("http://localhost:5173")
+                    policy.WithOrigins(allowedOrigins)
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
@@ -38,6 +44,8 @@ namespace server
             });
 
             var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? "FallbackKeyMakeSureItsLongEnough123!";
+            var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? "BarServer";
+            var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? "BarClient";
             var key = Encoding.UTF8.GetBytes(jwtKey);
 
             builder.Services.AddAuthentication(options =>
@@ -53,8 +61,8 @@ namespace server
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? "MyAwesomeServer",
-                    ValidAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? "MyAwesomeClient",
+                    ValidIssuer = jwtIssuer,
+                    ValidAudience = jwtAudience,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ClockSkew = TimeSpan.Zero
                 };
@@ -76,13 +84,21 @@ namespace server
                 options.OnRejected = async (context, token) =>
                 {
                     context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
-                    await context.HttpContext.Response.WriteAsJsonAsync(new { error = "Too many requests. Wait a minute" });
+                    await context.HttpContext.Response.WriteAsJsonAsync(
+                        new { error = "Слишком много запросов. Пожалуйста, подождите 1 минуту." },
+                        cancellationToken: token);
                 };
 
-                options.AddFixedWindowLimiter("auth-limit", opt =>
+                options.AddPolicy("auth-limit", httpContext =>
                 {
-                    opt.Window = TimeSpan.FromMinutes(1);
-                    opt.PermitLimit = 5;
+                    var ip = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+                    return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 5,
+                        Window = TimeSpan.FromMinutes(1),
+                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                        QueueLimit = 0
+                    });
                 });
             });
 
