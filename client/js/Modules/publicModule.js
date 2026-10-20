@@ -1,5 +1,4 @@
-import { menuApi } from '../api/services/menuService.js';
-import { renderMenuItems } from '../../components/menu.js';
+import { renderMenuItems } from './renderModule.js';
 
 export function initPublicEvents() {
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
@@ -8,7 +7,6 @@ export function initPublicEvents() {
 
     const nameInput = document.getElementById('name');
     const phoneInput = document.getElementById('phone');
-    const dateInput = document.getElementById('date');
     const commentsInput = document.getElementById('comments');
 
     nameInput?.addEventListener('input', function() {
@@ -58,24 +56,7 @@ export function initPublicEvents() {
             button.classList.add('active');
             
             const selectedCategory = button.getAttribute('data-category');
-            
-            try {
-                const localData = JSON.parse(localStorage.getItem('menuItems'));
-                const menuItems = (Array.isArray(localData) && localData.length > 0) 
-                    ? localData 
-                    : await menuApi.getAll();
-
-                const normalize = (str) => (str || '').replace(/[_|-]/g, ' ').trim().toLowerCase();
-                const targetCategory = normalize(selectedCategory);
-
-                const filtered = (targetCategory === 'all' || targetCategory === '') 
-                    ? menuItems 
-                    : menuItems.filter(item => normalize(item.category) === targetCategory);
-
-                renderMenuItems(filtered);
-            } catch (e) {
-                console.error('Ошибка фильтрации меню:', e);
-            }
+            await renderMenuItems(selectedCategory);
         });
     });
 

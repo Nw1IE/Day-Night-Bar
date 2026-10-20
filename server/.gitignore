@@ -454,7 +454,6 @@ $RECYCLE.BIN/
 !.vscode/extensions.json
 
 # EF
-Migrations/
 *.db*
 
 .env

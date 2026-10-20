@@ -1,4 +1,4 @@
-import { updateAnnouncementUI } from './Modules/renderModule.js';
+import { updateAnnouncementUI, renderMenuItems } from './Modules/renderModule.js';
 import { initPublicEvents } from './Modules/publicModule.js';
 import { initErrorModal } from '../components/error.js';
 import { initAdmin } from './Modules/adminModule.js';
@@ -7,11 +7,12 @@ import { renderFooter } from '../components/footer.js';
 import { renderAnnouncement } from '../components/announcement.js';
 import { renderHero } from '../components/mainPage.js';
 import { renderSlider } from '../components/slider.js';
-import { renderMenu, renderMenuItems } from '../components/menu.js';
+import { renderMenu } from '../components/menu.js';
 import { renderPromotionsSection, renderPromotionCards } from '../components/promotions.js';
 import { initAdminModal } from '../components/admins.js';
-import { createDeleteModalMarkup } from '../components/delete.js';
+import { openDeleteModal } from '../components/delete.js';
 import { request } from '../js/api/api.js';
+
 document.addEventListener('DOMContentLoaded', async function() {
     initErrorModal();
     initAdminModal();
@@ -25,22 +26,16 @@ document.addEventListener('DOMContentLoaded', async function() {
     renderFooter();
 
     try {
-        const [serverMenu, serverPromotions] = await Promise.all([
-            request('/menu'),
-            request('/promotions')
+        const [serverPromotions] = await Promise.all([
+            request('/promotions'),
+            renderMenuItems('all')
         ]);
 
-        // Меню
-        const localData = JSON.parse(localStorage.getItem('menuItems'));
-        const dataToRender = (Array.isArray(localData) && localData.length > 0) ? localData : serverMenu;
-        renderMenuItems(dataToRender);
-
         // Акции
-        renderPromotionCards(serverPromotions);
+        renderPromotionCards(serverPromotions || []);
     } 
     catch (e) {
         console.error('Ошибка при загрузке данных с сервера:', e);
-        renderMenuItems([]);
         renderPromotionCards([]);
     }
 

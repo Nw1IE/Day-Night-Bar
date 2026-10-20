@@ -31,14 +31,14 @@ export function initAdmin() {
     async function loadAdminData() {
         try {
             const [menuRes, promoRes, annRes] = await Promise.all([
-                request('/menu'),
-                request('/promotions/all'),
-                request('/announcements/current')
+                request('/menu').catch(() => []),
+                request('/promotions/all').catch(() => []),
+                request('/announcements/current').catch(() => null)
             ]);
 
-            menuItems = menuRes;
-            promotions = promoRes;
-            announcement = annRes.text || '';
+            menuItems = menuRes || [];
+            promotions = promoRes || [];
+            announcement = annRes?.text || '';
         } 
         catch (e) {
             console.warn('Админ-данные недоступны (требуется вход)', e);

@@ -1,5 +1,5 @@
-export const BASE_URL = 'http://localhost:5101/api'; 
-export const IMAGES_URL = `http://localhost:5101/imgs`;
+export const BASE_URL = import.meta.env.VITE_API_URL || '/api';
+export const IMAGES_URL = import.meta.env.VITE_IMAGES_URL || `/imgs`;
 
 export class ApiError extends Error {
     constructor(message, status, data = null) {
@@ -17,7 +17,7 @@ export async function request(endpoint, options = {}) {
 
     options.headers = {
         'Content-Type': 'application/json',
-        'X-Admin-Client-Key': 'FallbackKeyMakeSureItsLongEnough123!',
+        'X-Admin-Client-Key': import.meta.env.VITE_ADMIN_CLIENT_KEY || 'SuperSecretAppKey123!',
         ...options.headers
     };
 

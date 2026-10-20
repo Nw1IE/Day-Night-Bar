@@ -5,7 +5,12 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:5101', // порт твоего бэкенда
+        target: 'http://localhost:5101',
+        changeOrigin: true,
+        secure: false
+      },
+      '/imgs': {
+        target: 'http://localhost:5101',
         changeOrigin: true,
         secure: false
       }

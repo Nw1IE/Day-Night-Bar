@@ -1,10 +1,14 @@
-import { BASE_URL } from "../api.js"
+import { request, BASE_URL } from "../api.js";
 
 export const AdminApi = {
     // announcement
     getCurrentAnnouncement: async () => {
-        const list = await request('/announcements').catch(() => []);
-        return list && list.length > 0 ? list[0] : null;
+        try {
+            return await request('/announcements/current');
+        } 
+        catch {
+            return null;
+        }
     },
     createAnnouncement: (text) => request('/announcements', { method: 'POST', body: { text } }),
     updateAnnouncement: (id, text) => request(`/announcements/${id}`, { method: 'PATCH', body: { text } }),
@@ -16,7 +20,7 @@ export const AdminApi = {
     deleteMenuItem: (id) => request(`/menu/${id}`, { method: 'DELETE' }),
 
     // promotions
-    getAllPromotions: () => request('/promotions'),
+    getAllPromotions: () => request('/promotions/all'),
     createPromotion: (data) => request('/promotions', { method: 'POST', body: data }),
     deletePromotion: (id) => request(`/promotions/${id}`, { method: 'DELETE' })
-}
+};
