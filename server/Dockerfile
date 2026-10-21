@@ -1,6 +1,6 @@
 # Backend Dockerfile
 # Use the official .NET ASP.NET runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS runtime
 WORKDIR /app
 
 # Copy published output

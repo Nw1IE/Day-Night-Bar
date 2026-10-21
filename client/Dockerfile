@@ -1,14 +1,14 @@
 # Frontend Dockerfile (multistage)
 # Stage 1: Build the React/Vite app
-FROM node:22-alpine AS builder
+FROM node:22 AS builder
 WORKDIR /app
 
 # Copy package files and install dependencies
-COPY client/package*.json ./
+COPY package*.json ./
 RUN npm ci
 
 # Copy the rest of the client source code
-COPY client/ ./
+COPY . ./
 
 # Build the production static files
 RUN npm run build
