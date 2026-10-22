@@ -102,7 +102,8 @@ namespace server
                 });
             });
 
-            var dbConnection = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
+            var dbConnection = Environment.GetEnvironmentVariable("DB_CONNECTION")
+                ?? Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
 
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(dbConnection));
