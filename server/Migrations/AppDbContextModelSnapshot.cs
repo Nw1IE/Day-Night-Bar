@@ -70,7 +70,7 @@ namespace server.Migrations
                         {
                             Id = 2,
                             Text = "График работы в праздничные дни изменен. Ждем вас до 04:00!",
-                            UpdatedAt = new DateTime(2026, 9, 17, 12, 0, 0, 0, DateTimeKind.Utc)
+                            UpdatedAt = new DateTime(2026, 7, 22, 12, 0, 0, 0, DateTimeKind.Utc)
                         });
                 });
 
@@ -98,6 +98,8 @@ namespace server.Migrations
                         .HasDefaultValue("Brute-force attempt");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IpAddress", "BannedUntil");
 
                     b.ToTable("BannedIps");
                 });
@@ -236,17 +238,17 @@ namespace server.Migrations
                         {
                             Id = 1,
                             Description = "Два коктейля по цене одного каждый вторник и четверг с 16:00 до 19:00.",
-                            EndDate = new DateTime(2026, 9, 17, 12, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateTime(2030, 12, 31, 23, 59, 59, 0, DateTimeKind.Utc),
                             Name = "Счастливые часы",
-                            StartDate = new DateTime(2026, 7, 17, 12, 0, 0, 0, DateTimeKind.Utc)
+                            StartDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 2,
                             Description = "Дарим скидку 15% на всё меню кухни при предъявлении паспорта.",
-                            EndDate = new DateTime(2026, 9, 18, 12, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateTime(2030, 12, 31, 23, 59, 59, 0, DateTimeKind.Utc),
                             Name = "Скидка в День Рождения",
-                            StartDate = new DateTime(2026, 7, 17, 12, 0, 0, 0, DateTimeKind.Utc)
+                            StartDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         });
                 });
 #pragma warning restore 612, 618
