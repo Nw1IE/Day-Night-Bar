@@ -205,7 +205,9 @@ namespace server
                 {
                     var db = services.GetRequiredService<AppDbContext>();
 
-                    // Получаем пароль из переменной окружения (может быть null)
+                    logger.LogInformation("Применение миграций базы данных...");
+                    db.Database.Migrate();
+
                     var adminPassword = Environment.GetEnvironmentVariable("ADMIN_PASSWORD");
                     var admin = db.Admins.FirstOrDefault();
 
