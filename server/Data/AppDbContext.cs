@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using server.Models;
 using server.Models.Enums;
 using System.Data.Common;
@@ -23,8 +23,7 @@ namespace server.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING")
-                    ?? _configuration.GetConnectionString("DefaultConnection");
+                var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
 
                 if (string.IsNullOrEmpty(connectionString))
                 {

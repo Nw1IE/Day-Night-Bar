@@ -102,7 +102,10 @@ namespace server
                 });
             });
 
-            builder.Services.AddDbContext<AppDbContext>();
+            var dbConnection = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
+
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseNpgsql(dbConnection));
             builder.Services.AddScoped<MenuService>();
             builder.Services.AddScoped<AnnouncementService>();
             builder.Services.AddScoped<PromotionService>();
