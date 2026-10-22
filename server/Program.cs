@@ -204,10 +204,15 @@ namespace server
                 {
                     var db = services.GetRequiredService<AppDbContext>();
 
-                    var adminPassword = Environment.GetEnvironmentVariable("ADMIN_PASSWORD") ?? throw new InvalidOperationException("ADMIN_PASSWORD environment variable is required for production");
+                    // Получаем пароль из переменной окружения (может быть null)
+                    var adminPassword = Environment.GetEnvironmentVariable("ADMIN_PASSWORD");
                     var admin = db.Admins.FirstOrDefault();
 
-                    if (admin == null)
+                    if (string.IsNullOrEmpty(adminPassword))
+                    {
+                        logger.LogWarning("ADMIN_PASSWORD not set; skipping admin account initialization.");
+                    }
+                    else if (admin == null)
                     {
                         admin = new Admin
                         {
@@ -217,16 +222,16 @@ namespace server
                         db.SaveChanges();
                         logger.LogInformation("Создана начальная учетная запись администратора.");
                     }
-                    else if (!string.IsNullOrEmpty(adminPassword) && !BCrypt.Net.BCrypt.Verify(adminPassword, admin.PasscodeHash))
+                    else if (!BCrypt.Net.BCrypt.Verify(adminPassword, admin.PasscodeHash))
                     {
                         admin.PasscodeHash = BCrypt.Net.BCrypt.HashPassword(adminPassword);
                         db.SaveChanges();
-                        logger.LogInformation("Пароль администратора синхронизирован со значением из ADMIN_PASSWORD.");
+                        logger.LogInformation("Пароль администратора синхрон… (updated).");
                     }
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError(ex, "Ошибка при автоматической миграции базы данных или сидинге администратора");
+                    logger.LogError(ex, "Ошибка при инициализации администратора");
                 }
             }
 
