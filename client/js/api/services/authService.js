@@ -1,7 +1,7 @@
 import { request } from "../api.js";
 
-const GATEWAY_PATH = import.meta.env.VITE_GATEWAY_PATH || 'l1og9in_enter04';
-const ADMIN_CLIENT_KEY = import.meta.env.VITE_ADMIN_CLIENT_KEY || 'SuperSecretAppKey123!';
+const GATEWAY_PATH = import.meta.env.VITE_GATEWAY_PATH;
+const ADMIN_CLIENT_KEY = import.meta.env.VITE_ADMIN_CLIENT_KEY;
 
 export const authApi = {
     login: (credentials) => {
