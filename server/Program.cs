@@ -204,9 +204,6 @@ namespace server
                 {
                     var db = services.GetRequiredService<AppDbContext>();
 
-                    logger.LogInformation("Применение миграций базы данных...");
-                    db.Database.Migrate();
-
                     var adminPassword = Environment.GetEnvironmentVariable("ADMIN_PASSWORD") ?? throw new InvalidOperationException("ADMIN_PASSWORD environment variable is required for production");
                     var admin = db.Admins.FirstOrDefault();
 
