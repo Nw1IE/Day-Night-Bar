@@ -147,6 +147,33 @@ git pull
 docker compose up -d --build   # пересобрать образы и перезапустить сервисы
 ```
 
+### SEO и проверка домена
+
+В SEO-разметке указан основной адрес `https://day-night-bar.ru/`.
+После подключения DNS и HTTPS проверьте, что HTTP и другие используемые
+варианты домена перенаправляют на него. Настройки внешнего прокси и TLS
+зависят от конфигурации VDS и клиентской сборкой не меняются.
+
+Перед обновлением сравните код на сервере с репозиторием и сохраните все
+локальные изменения: пересборка frontend создаст образ из кода на VDS и
+может заменить работающую версию, если она отличается от репозитория.
+После получения изменений и проверки кода клиент можно пересобрать отдельно:
+
+```bash
+docker compose up -d --build --no-deps frontend
+docker compose ps
+curl -I https://day-night-bar.ru/
+curl -i https://day-night-bar.ru/robots.txt
+curl -i https://day-night-bar.ru/sitemap.xml
+curl -I https://day-night-bar.ru/nesushchestvuyushchaya-stranitsa
+```
+
+Главная страница и SEO-файлы должны возвращать HTTP 200, несуществующий
+адрес — HTTP 404. Проверьте также меню, изображения и админку. Добавьте
+`https://day-night-bar.ru/sitemap.xml` в Яндекс Вебмастер и Google Search
+Console. При изменении контактов обновляйте исходный HTML, структурированные
+данные и компонент `client/components/footer.js`.
+
 ---
 
 ## Быстрый запуск для разработки (без Docker)
