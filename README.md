@@ -23,33 +23,6 @@
 
 ---
 
-## Настройка переменных окружения
-
-Перед запуском создайте файлы `.env` в папках `client` и `server` (на основе `.env.example`).
-
-### 1. Сервер (`server/.env`)
-```ini
-DATABASE_CONNECTION_STRING=Host=localhost;Port=5432;Database=barDb;Username=postgres;Password=ВашПароль
-AUTH_GATEWAY_PATH=l1og9in_enter04
-ADMIN_PASSWORD=ВашНадежныйПарольАдмина
-ADMIN_CLIENT_KEY=SuperSecretAppKey123!
-JWT_KEY=СуперСекретныйКлючМинимум32Символа12345!
-JWT_ISSUER=BarServer
-JWT_AUDIENCE=BarClient
-CORS_ALLOWED_ORIGINS=http://localhost:5173,http://localhost:5174
-COOKIE_SAME_SITE=lax
-```
-
-### 2. Клиент (`client/.env`)
-```ini
-VITE_API_URL=/api
-VITE_IMAGES_URL=/imgs
-VITE_GATEWAY_PATH=l1og9in_enter04
-VITE_ADMIN_CLIENT_KEY=SuperSecretAppKey123!
-```
-
----
-
 ## Развёртывание проекта с помощью Docker
 
 ### 1. Предварительные требования
