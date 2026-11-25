@@ -12,15 +12,18 @@ const check = (condition, message) => {
 };
 
 try {
-    const [html, robots, sitemap] = await Promise.all([
-        read('index.html'), read('robots.txt'), read('sitemap.xml')
+    const [html, robots, sitemap, llms] = await Promise.all([
+        read('index.html'), read('robots.txt'), read('sitemap.xml'), read('llms.txt')
     ]);
     check(/<html\s+lang="ru"/i.test(html), 'Не указан русский язык страницы.');
     check(/<title>[^<]+<\/title>/i.test(html), 'Отсутствует title.');
     check(/<meta\s+name="description"\s+content="[^"]+"/i.test(html), 'Отсутствует description.');
     check(html.includes(`rel="canonical" href="${expectedUrl}"`), 'Неверный canonical.');
+    check(/<meta\s+name="robots"\s+content="index,follow,max-image-preview:large"/i.test(html), 'Отсутствует директива robots для страницы.');
+    check(html.includes('property="og:image" content="https://day-night-bar.ru/img/1.jpg"'), 'Отсутствует изображение предпросмотра для социальных сетей.');
     check((html.match(/<h1(?:\s[^>]*)?>/gi) || []).length === 1, 'В исходном HTML должен быть один H1.');
     check(html.includes('Берёзовский') && html.includes('+7 (922) 147-70-81'), 'В исходном HTML отсутствуют контакты.');
+    check(html.includes('авторские коктейли, вино, пиво, закуски, основные блюда и десерты'), 'В исходном HTML отсутствует краткое описание меню.');
     check(/User-agent:\s*\*/i.test(robots) && !/Disallow:\s*\/(?:\s|$)/im.test(robots), 'Проверьте доступ роботов к сайту.');
     check(robots.includes(`Sitemap: ${expectedUrl}sitemap.xml`), 'Неверная ссылка на sitemap в robots.txt.');
     check(sitemap.includes(`<loc>${expectedUrl}</loc>`), 'Главная страница отсутствует в sitemap.');
@@ -29,9 +32,12 @@ try {
     try {
         const schema = JSON.parse(schemaText);
         check(schema['@type'] === 'BarOrPub' && schema.url === expectedUrl, 'Проверьте данные BarOrPub.');
+        check(schema.email === 'walentina.com18@mail.ru' && schema.hasMenu === `${expectedUrl}#menu`, 'В JSON-LD отсутствуют контакты или ссылка на меню.');
     } catch {
         errors.push('JSON-LD отсутствует или содержит ошибку.');
     }
+
+    check(llms.includes('# День / Ночь') && llms.includes(expectedUrl), 'Проверьте llms.txt.');
 
     const favicon = html.match(/<link\s+rel="icon"\s+href="([^"]+)"/i)?.[1];
     if (!favicon || !favicon.startsWith('/') || favicon.includes('..')) {
