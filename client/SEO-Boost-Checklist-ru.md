@@ -31,14 +31,15 @@
 
 ---
 
-### 2️⃣ Метатеги и Open‑Graph
-| Тег | Рекомендация |
-|-----|--------------|
-| `meta name="author"` | Указать название заведения или автора контента. |
-| `meta name="keywords"` | Добавить 5‑7 ключевых слов, напр. "бар Берёзовский, коктейли, ночные мероприятия". |
-| `meta property="og:image:width"` и `og:image:height` | Указать реальные размеры изображения. |
-| `meta name="twitter:card"` | Уже `summary_large_image`. Добавить `twitter:site` и `twitter:creator`. |
-| `link rel="preload"` | Предзагрузить основные CSS/JS‑бандлы для ускорения первого показа. |
+### 2️⃣ Метатеги и Open‑Graph (Выполнено ✔️)
+| Тег | Рекомендация | Статус |
+|-----|--------------|--------|
+| `meta name="author"` | Указать название заведения («Бар «День / Ночь»»). | ✔️ Готово |
+| `meta name="keywords"` | Добавить целевые ключевые слова (Берёзовский, бар, коктейли, меню, ресторан). | ✔️ Готово |
+| `meta property="og:image:width"` и `height` | Указать реальные размеры изображения (2333x3500) + `image:type` и `secure_url`. | ✔️ Готово |
+| `meta name="twitter:*"` | Добавлены карточки `summary_large_image`, `twitter:site`, `twitter:creator`, `twitter:title`, `desc`, `image`. | ✔️ Готово |
+| `meta name="theme-color"` | Добавлен цвет `#121212` под стилистику бара для мобильных браузеров. | ✔️ Готово |
+| `preconnect / dns-prefetch` | Добавлены подсказки для CDN внешних ресурсов (cdnjs FontAwesome). | ✔️ Готово |
 
 **Пример добавлений в `<head>`:**
 ```html

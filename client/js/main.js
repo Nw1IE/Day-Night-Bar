@@ -1,3 +1,4 @@
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import { updateAnnouncementUI, renderMenuItems } from './Modules/renderModule.js';
 import { initPublicEvents } from './Modules/publicModule.js';
 import { initErrorModal } from '../components/error.js';
