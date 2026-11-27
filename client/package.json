@@ -7,11 +7,13 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "check:seo": "node scripts/check-seo.mjs"
+    "check:seo": "node scripts/check-seo.mjs",
+    "optimize:images": "node scripts/optimize-images.mjs"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^7.3.1",
     "@vitejs/plugin-react": "^6.0.5",
+    "sharp": "^0.35.5",
     "vite": "^8.0.0"
   }
 }
