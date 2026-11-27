@@ -20,51 +20,51 @@ export function renderSlider() {
 
                 <section class="slider-wrapper" style="position: relative; width: 100%;">
 
-                    <button class="nav-btn prev" id="prevBtn" aria-label="Предыдущий слайд" 
+                    <button class="nav-btn prev" id="prevBtn" aria-label="Предыдущий слайд" title="Предыдущий слайд"
                         style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); z-index: 10; width: 42px; height: 42px; border-radius: 50%; background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.35); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); display: flex; align-items: center; justify-content: center; cursor: pointer;">
-                        <i class="fas fa-chevron-left"></i>
+                        <i class="fas fa-chevron-left" aria-hidden="true"></i>
                     </button>
 
                     <section class="slider-container" style="overflow: hidden; width: 100%; touch-action: pan-y;">
                         <section class="slider-track" id="sliderTrack" style="display: flex; cursor: grab; user-select: none;">
                             <article class="slide">
-                                <img src="${imageApi.getImageUrl('1.jpg')}" width="300" height="400" alt="Мартини" fetchpriority="high" decoding="async" draggable="false">
+                                <img src="${imageApi.getImageUrl('1.jpg')}" width="300" height="400" alt="Авторский коктейль Мартини в баре День / Ночь в Берёзовском" fetchpriority="high" decoding="async" draggable="false">
                                 <section class="slide-info"><h3>Мартини</h3></section>
                             </article>
                             <article class="slide">
-                                <img src="${imageApi.getImageUrl('2.jpg')}" width="300" height="400" alt="Апероль Спритц" fetchpriority="high" decoding="async" draggable="false">
+                                <img src="${imageApi.getImageUrl('2.jpg')}" width="300" height="400" alt="Освежающий коктейль Апероль Спритц в баре День / Ночь" fetchpriority="high" decoding="async" draggable="false">
                                 <section class="slide-info"><h3>Апероль Спритц</h3></section>
                             </article>
                             <article class="slide">
-                                <img src="${imageApi.getImageUrl('3.jpg')}" width="300" height="400" alt="Виски" decoding="async" draggable="false">
+                                <img src="${imageApi.getImageUrl('3.jpg')}" width="300" height="400" alt="Премиальный выдержанный виски в баре День / Ночь" decoding="async" draggable="false">
                                 <section class="slide-info"><h3>Виски</h3></section>
                             </article>
                             <article class="slide">
-                                <img src="${imageApi.getImageUrl('4.jpg')}" width="300" height="400" alt="Уиски Сауэр" decoding="async" draggable="false">
+                                <img src="${imageApi.getImageUrl('4.jpg')}" width="300" height="400" alt="Классический коктейль Виски Сауэр в баре День / Ночь" decoding="async" draggable="false">
                                 <section class="slide-info"><h3>Уиски Сауэр</h3></section>
                             </article>
                             <article class="slide">
-                                <img src="${imageApi.getImageUrl('5.jpg')}" width="300" height="400" alt="Космополитен" decoding="async" draggable="false">
+                                <img src="${imageApi.getImageUrl('5.jpg')}" width="300" height="400" alt="Яркий коктейль Космополитен в баре День / Ночь" decoding="async" draggable="false">
                                 <section class="slide-info"><h3>Космополитен</h3></section>
                             </article>
                             <article class="slide">
-                                <img src="${imageApi.getImageUrl('6.jpg')}" width="300" height="400" alt="Экзотический Мартини" decoding="async" draggable="false">
+                                <img src="${imageApi.getImageUrl('6.jpg')}" width="300" height="400" alt="Авторский экзотический Мартини с тропическими нотками" decoding="async" draggable="false">
                                 <section class="slide-info"><h3>Экзотический Мартини</h3></section>
                             </article>
                             <article class="slide">
-                                <img src="${imageApi.getImageUrl('7.jpg')}" width="300" height="400" alt="Космополитен" decoding="async" draggable="false">
+                                <img src="${imageApi.getImageUrl('7.jpg')}" width="300" height="400" alt="Коктейль Космополитен с цитрусовым ароматом в баре День / Ночь" decoding="async" draggable="false">
                                 <section class="slide-info"><h3>Космополитен</h3></section>
                             </article>
                             <article class="slide">
-                                <img src="${imageApi.getImageUrl('8.jpg')}" width="300" height="400" alt="Яблочный Мартини" decoding="async" draggable="false">
+                                <img src="${imageApi.getImageUrl('8.jpg')}" width="300" height="400" alt="Освежающий яблочный Мартини в баре День / Ночь" decoding="async" draggable="false">
                                 <section class="slide-info"><h3>Яблочный Мартини</h3></section>
                             </article>
                         </section>
                     </section>
 
-                    <button class="nav-btn next" id="nextBtn" aria-label="Следующий слайд" 
+                    <button class="nav-btn next" id="nextBtn" aria-label="Следующий слайд" title="Следующий слайд"
                             style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); z-index: 10; width: 42px; height: 42px; border-radius: 50%; background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.35); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); display: flex; align-items: center; justify-content: center; cursor: pointer;">
-                        <i class="fas fa-chevron-right"></i>
+                        <i class="fas fa-chevron-right" aria-hidden="true"></i>
                     </button>
                 </section>
             </section>

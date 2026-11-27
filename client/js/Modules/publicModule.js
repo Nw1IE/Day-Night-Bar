@@ -52,8 +52,14 @@ export function initPublicEvents() {
 
     categoryButtons.forEach(button => {
         button.addEventListener('click', async () => {
-            categoryButtons.forEach(btn => btn.classList.remove('active'));
+            categoryButtons.forEach(btn => {
+                btn.classList.remove('active');
+                btn.setAttribute('aria-selected', 'false');
+                btn.setAttribute('aria-pressed', 'false');
+            });
             button.classList.add('active');
+            button.setAttribute('aria-selected', 'true');
+            button.setAttribute('aria-pressed', 'true');
             
             const selectedCategory = button.getAttribute('data-category');
             await renderMenuItems(selectedCategory);

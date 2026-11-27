@@ -7,14 +7,14 @@ export function renderMenu() {
             <section class="container">
                 <h2 class="section-title">Наше меню</h2>
 
-                <nav class="menu-categories" aria-label="Категории меню">
-                    <button class="category-btn active" data-category="all">Все</button>
-                    <button class="category-btn" data-category="Коктейли">Коктейли</button>
-                    <button class="category-btn" data-category="Вино">Вино</button>
-                    <button class="category-btn" data-category="Пиво">Пиво</button>
-                    <button class="category-btn" data-category="Закуски">Закуски</button>
-                    <button class="category-btn" data-category="Основные_блюда">Основные блюда</button>
-                    <button class="category-btn" data-category="Десерты">Десерты</button>
+                <nav class="menu-categories" role="tablist" aria-label="Категории меню">
+                    <button class="category-btn active" role="tab" aria-selected="true" aria-pressed="true" data-category="all" title="Показать всё меню">Все</button>
+                    <button class="category-btn" role="tab" aria-selected="false" aria-pressed="false" data-category="Коктейли" title="Показать авторские коктейли">Коктейли</button>
+                    <button class="category-btn" role="tab" aria-selected="false" aria-pressed="false" data-category="Вино" title="Показать винную карту">Вино</button>
+                    <button class="category-btn" role="tab" aria-selected="false" aria-pressed="false" data-category="Пиво" title="Показать пенные напитки">Пиво</button>
+                    <button class="category-btn" role="tab" aria-selected="false" aria-pressed="false" data-category="Закуски" title="Показать закуски">Закуски</button>
+                    <button class="category-btn" role="tab" aria-selected="false" aria-pressed="false" data-category="Основные_блюда" title="Показать основные горячие блюда">Основные блюда</button>
+                    <button class="category-btn" role="tab" aria-selected="false" aria-pressed="false" data-category="Десерты" title="Показать десерты">Десерты</button>
                 </nav>
 
                 <section class="menu-items" id="menuItems"></section>
