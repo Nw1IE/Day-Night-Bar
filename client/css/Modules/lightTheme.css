@@ -385,3 +385,48 @@ body.light-theme label:has(input[type="file"]) *,
     color: #222222 !important;
 }
 
+/* --- FAQ В СВЕТЛОЙ ТЕМЕ --- */
+body.light-theme .faq-item,
+[data-theme="light"] .faq-item {
+    background: #ffffff !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06) !important;
+}
+
+body.light-theme .faq-item:hover,
+[data-theme="light"] .faq-item:hover {
+    border-color: rgba(201, 167, 105, 0.6) !important;
+}
+
+body.light-theme .faq-item.active,
+[data-theme="light"] .faq-item.active {
+    border-color: var(--primary) !important;
+    box-shadow: 0 6px 20px rgba(201, 167, 105, 0.2) !important;
+}
+
+body.light-theme .faq-question,
+[data-theme="light"] .faq-question {
+    color: #1a1a1a !important;
+}
+
+body.light-theme .faq-question:hover,
+[data-theme="light"] .faq-question:hover {
+    color: var(--primary-dark) !important;
+}
+
+body.light-theme .faq-answer p,
+[data-theme="light"] .faq-answer p {
+    color: #333333 !important;
+}
+
+body.light-theme .faq-answer a,
+[data-theme="light"] .faq-answer a {
+    color: var(--primary-dark) !important;
+}
+
+body.light-theme .faq-icon,
+[data-theme="light"] .faq-icon {
+    color: var(--primary) !important;
+}
+
+

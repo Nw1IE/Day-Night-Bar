@@ -9,6 +9,7 @@ import { renderHero } from '../components/mainPage.js';
 import { renderSlider } from '../components/slider.js';
 import { renderMenu } from '../components/menu.js';
 import { renderPromotionsSection, renderPromotionCards } from '../components/promotions.js';
+import { renderFaq } from '../components/faq.js';
 import { initAdminModal } from '../components/admins.js';
 import { request } from '../js/api/api.js';
 
@@ -22,6 +23,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     renderHero();
     renderSlider();
     renderMenu();
+    renderFaq();
     renderFooter();
 
     try {

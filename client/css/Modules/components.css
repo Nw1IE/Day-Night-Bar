@@ -1073,3 +1073,98 @@ body.light-theme .cancel-btn:hover {
 .clickable-promo-card {
     cursor: pointer !important;
 }
+
+/* --- СЕКЦИЯ FAQ --- */
+.faq-section {
+    padding: 60px 0;
+    position: relative;
+}
+
+.faq-accordion {
+    max-width: 860px;
+    margin: 40px auto 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.faq-item {
+    border-radius: 16px;
+    background: #161618;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.faq-item:hover {
+    border-color: rgba(201, 167, 105, 0.35);
+    transform: translateY(-2px);
+}
+
+.faq-item.active {
+    border-color: var(--primary);
+    box-shadow: 0 10px 30px rgba(201, 167, 105, 0.15);
+}
+
+.faq-question {
+    width: 100%;
+    background: transparent;
+    border: none;
+    text-align: left;
+    padding: 20px 24px;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    gap: 16px;
+    transition: color 0.3s ease;
+}
+
+.faq-question:hover {
+    color: var(--primary);
+}
+
+.faq-icon {
+    color: var(--primary);
+    font-size: 16px;
+    transition: transform 0.35s ease;
+    flex-shrink: 0;
+}
+
+.faq-item.active .faq-icon {
+    transform: rotate(180deg);
+}
+
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease, padding 0.35s ease;
+    padding: 0 24px;
+}
+
+.faq-item.active .faq-answer {
+    max-height: 300px;
+    padding: 0 24px 22px 24px;
+}
+
+.faq-answer p {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 15px;
+    line-height: 1.65;
+    margin: 0;
+}
+
+.faq-answer a {
+    color: var(--primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s ease;
+}
+
+.faq-answer a:hover {
+    color: var(--light);
+}

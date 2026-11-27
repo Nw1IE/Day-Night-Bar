@@ -11,6 +11,7 @@ export function renderHeader() {
                     <li><a href="#home"><i class="fas fa-home"></i> Главная</a></li>
                     <li><a href="#menu"><i class="fas fa-utensils"></i> Меню</a></li>
                     <li><a href="#promotions"><i class="fas fa-tags"></i> Акции</a></li>
+                    <li><a href="#faq"><i class="fas fa-question-circle"></i> FAQ</a></li>
                     <li><a href="#footer-container"><i class="fas fa-map-marker-alt"></i> Контакты</a></li>
                 </ul>
             </nav>

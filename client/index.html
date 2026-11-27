@@ -35,13 +35,88 @@
                 "addressLocality": "Берёзовский",
                 "addressCountry": "RU"
             },
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.8",
+                "reviewCount": "27",
+                "bestRating": "5",
+                "worstRating": "1"
+            },
             "sameAs": ["https://vk.com/club228933906"]
         }
         </script>
         <link rel="stylesheet" href="./css/style.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
         <script type="module" src="./js/main.js"></script>
-    </head>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Главная",
+          "item": "https://day-night-bar.ru/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Меню",
+          "item": "https://day-night-bar.ru/#menu"
+        }
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Как забронировать столик?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Забронировать столик можно по телефону +7 (922) 147-70-81 или написав нам в сообщество ВКонтакте. Рекомендуем бронировать столы заранее на вечер пятницы и субботы."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Какой режим работы у бара?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Мы открыты ежедневно. В будние дни и воскресенье ждём вас с 12:00 до 02:00, а в пятницу и субботу — с 12:00 до 04:00 для ярких ночных впечатлений."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Есть ли безалкогольные напитки и полноценная кухня?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Да, в «День / Ночь» представлена авторская коктейльная карта, крафтовые лимонады, безалкогольные напитки, а также полноценная кухня: холодные и горячие закуски, сочные бургеры, основные блюда и десерты."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Действуют ли скидки для именинников?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Да! Именинникам предоставляется праздничная скидка 10% на весь чек непосредственно в день рождения и 3 дня после него при предъявлении паспорта или водительского удостоверения."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Где вы находитесь и есть ли парковка?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Наш адрес: г. Берёзовский, ул. Академика Королёва, 8А. Рядом со зданием бара находится удобная бесплатная парковка для гостей."
+          }
+        }
+      ]
+    }
+    </script>
+</head>
 
     <body>
         <header id="header-container"></header>
@@ -73,6 +148,60 @@
                     <div class="container">
                         <h2 class="section-title">Акции и события</h2>
                         <p>Актуальные акции и события бара публикуются на этой странице.</p>
+                    </div>
+                </section>
+            </section>
+            <section id="faq-container">
+                <section class="faq-section" id="faq">
+                    <div class="container">
+                        <h2 class="section-title">Часто задаваемые вопросы</h2>
+                        <div class="faq-accordion" id="faqAccordion">
+                            <article class="faq-item">
+                                <button class="faq-question" aria-expanded="false">
+                                    <span>Как забронировать столик?</span>
+                                    <i class="fas fa-chevron-down faq-icon" aria-hidden="true"></i>
+                                </button>
+                                <div class="faq-answer">
+                                    <p>Забронировать столик можно по телефону <a href="tel:+79221477081">+7 (922) 147-70-81</a> или написав нам в <a href="https://vk.com/club228933906" target="_blank" rel="noopener noreferrer">сообщество ВКонтакте</a>. Рекомендуем бронировать столы заранее на вечер пятницы и субботы.</p>
+                                </div>
+                            </article>
+                            <article class="faq-item">
+                                <button class="faq-question" aria-expanded="false">
+                                    <span>Какой режим работы у бара?</span>
+                                    <i class="fas fa-chevron-down faq-icon" aria-hidden="true"></i>
+                                </button>
+                                <div class="faq-answer">
+                                    <p>Мы открыты ежедневно. В будние дни и воскресенье ждём вас с 12:00 до 02:00, а в пятницу и субботу — с 12:00 до 04:00 для ярких ночных впечатлений.</p>
+                                </div>
+                            </article>
+                            <article class="faq-item">
+                                <button class="faq-question" aria-expanded="false">
+                                    <span>Есть ли безалкогольные напитки и полноценная кухня?</span>
+                                    <i class="fas fa-chevron-down faq-icon" aria-hidden="true"></i>
+                                </button>
+                                <div class="faq-answer">
+                                    <p>Да, в «День / Ночь» представлена авторская коктейльная карта, крафтовые лимонады, безалкогольные напитки, а также полноценная кухня: холодные и горячие закуски, сочные бургеры, основные блюда и десерты.</p>
+                                </div>
+                            </article>
+                            <article class="faq-item">
+                                <button class="faq-question" aria-expanded="false">
+                                    <span>Действуют ли скидки для именинников?</span>
+                                    <i class="fas fa-chevron-down faq-icon" aria-hidden="true"></i>
+                                </button>
+                                <div class="faq-answer">
+                                    <p>Да! Именинникам предоставляется праздничная скидка 10% на весь чек непосредственно в день рождения и 3 дня после него при предъявлении паспорта или водительского удостоверения.</p>
+                                </div>
+                            </article>
+                            <article class="faq-item">
+                                <button class="faq-question" aria-expanded="false">
+                                    <span>Где вы находитесь и есть ли парковка?</span>
+                                    <i class="fas fa-chevron-down faq-icon" aria-hidden="true"></i>
+                                </button>
+                                <div class="faq-answer">
+                                    <p>Наш адрес: г. Берёзовский, ул. Академика Королёва, 8А. Рядом со зданием бара находится удобная бесплатная парковка для гостей.</p>
+                                </div>
+                            </article>
+                        </div>
                     </div>
                 </section>
             </section>
